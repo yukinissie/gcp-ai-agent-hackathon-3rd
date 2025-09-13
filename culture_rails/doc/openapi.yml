@@ -1,0 +1,394 @@
+openapi: 3.0.3
+info:
+  title: Culture Web API
+  description: API for culture content management system
+  version: 1.0.0
+  contact:
+    name: Culture Web Team
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+# API定義は未定のため、最小限のダミーパス
+paths:
+  /_placeholder:
+    get:
+      summary: Placeholder endpoint
+      responses:
+        "200":
+          description: Placeholder response
+
+components:
+  schemas:
+    # Core User Types
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        avatar_url:
+          type: string
+          nullable: true
+        admin:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [id, email, name, admin, created_at, updated_at]
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        bio:
+          type: string
+        avatar_url:
+          type: string
+
+    # Core Tag Types
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+          enum: [anime, book, movie, game, music]
+        description:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+        external_id:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [id, name, category, created_at, updated_at]
+
+    TagCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+          enum: [anime, book, movie, game, music]
+        description:
+          type: string
+        image_url:
+          type: string
+        external_id:
+          type: string
+        metadata:
+          type: object
+      required: [name, category]
+
+    # User-specific Tag Information
+    UserTagInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        tag_id:
+          type: integer
+        tag:
+          $ref: "#/components/schemas/Tag"
+        personal_rating:
+          type: integer
+          minimum: 1
+          maximum: 10
+          nullable: true
+        personal_note:
+          type: string
+          nullable: true
+        favorite:
+          type: boolean
+        custom_metadata:
+          type: object
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [id, user_id, tag_id, tag, favorite, created_at, updated_at]
+
+    UserTagInfoRequest:
+      type: object
+      properties:
+        personal_rating:
+          type: integer
+          minimum: 1
+          maximum: 10
+        personal_note:
+          type: string
+        favorite:
+          type: boolean
+        custom_metadata:
+          type: object
+
+    # Activity & History Types
+    UserActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        tag_id:
+          type: integer
+        tag:
+          $ref: "#/components/schemas/Tag"
+        activity_type:
+          type: string
+          enum: [view, rate, favorite, complete, start]
+        activity_value:
+          type: string
+          nullable: true
+        activity_date:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+      required:
+        [id, user_id, tag_id, tag, activity_type, activity_date, created_at]
+
+    ActivityCreateRequest:
+      type: object
+      properties:
+        tag_id:
+          type: integer
+        activity_type:
+          type: string
+          enum: [view, rate, favorite, complete, start]
+        activity_value:
+          type: string
+        activity_date:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+      required: [tag_id, activity_type, activity_date]
+
+    # Statistics & Component Analysis Types
+    UserPreference:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        preference_type:
+          type: string
+        preference_value:
+          type: string
+        weight:
+          type: number
+          format: decimal
+        source:
+          type: string
+          enum: [activity, manual, ai_analysis]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        [
+          id,
+          user_id,
+          preference_type,
+          preference_value,
+          weight,
+          source,
+          created_at,
+          updated_at,
+        ]
+
+    UserStat:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        stat_type:
+          type: string
+        stat_value:
+          type: object
+        calculated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        [
+          id,
+          user_id,
+          stat_type,
+          stat_value,
+          calculated_at,
+          created_at,
+          updated_at,
+        ]
+
+    # Blog Post Types
+    BlogPost:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        user:
+          $ref: "#/components/schemas/User"
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+        excerpt:
+          type: string
+          nullable: true
+        published:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        featured_image_url:
+          type: string
+          nullable: true
+        view_count:
+          type: integer
+        ai_summary:
+          type: string
+          nullable: true
+        ai_summary_generated_at:
+          type: string
+          format: date-time
+          nullable: true
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        [
+          id,
+          user_id,
+          user,
+          title,
+          slug,
+          content,
+          published,
+          view_count,
+          tags,
+          created_at,
+          updated_at,
+        ]
+
+    BlogPostCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        excerpt:
+          type: string
+        published:
+          type: boolean
+        featured_image_url:
+          type: string
+        tag_ids:
+          type: array
+          items:
+            type: integer
+      required: [title, content]
+
+    BlogPostUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        excerpt:
+          type: string
+        published:
+          type: boolean
+        featured_image_url:
+          type: string
+        tag_ids:
+          type: array
+          items:
+            type: integer
+
+    # Common Utility Types
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        total_pages:
+          type: integer
+        total_count:
+          type: integer
+        per_page:
+          type: integer
+      required: [current_page, total_pages, total_count, per_page]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          nullable: true
+      required: [error, message]
