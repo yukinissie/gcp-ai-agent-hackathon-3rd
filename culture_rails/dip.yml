@@ -1,0 +1,63 @@
+version: "6"
+
+environment:
+  COMPOSE_INTERACTIVE_NO_CLI: 1
+
+compose:
+  files:
+    - docker-compose.yml
+
+interaction:
+  sh:
+    description: Run an arbitrary command in a service container
+    service: web
+    command: /bin/bash
+    compose:
+      run_options: [no-deps]
+
+  bundle:
+    description: Run Bundler commands
+    service: web
+    command: bundle
+
+  rails:
+    description: Run Rails commands
+    service: web
+    command: bundle exec rails
+    compose:
+      run_options: [no-deps, rm, "-T"]
+
+  rake:
+    description: Run Rake commands
+    service: web
+    command: bundle exec rake
+    compose:
+      run_options: [no-deps]
+
+  rspec:
+    description: Run RSpec tests
+    service: web
+    command: bundle exec rspec
+    compose:
+      run_options: [no-deps, rm, "-T"]
+
+  rubocop:
+    description: Run RuboCop linter
+    service: web
+    command: bundle exec rubocop
+    compose:
+      run_options: [no-deps]
+
+  brakeman:
+    description: Run Brakeman security scanner
+    service: web
+    command: bundle exec brakeman
+    compose:
+      run_options: [no-deps]
+
+provision:
+  - dip compose down --volumes
+  - dip compose up -d db
+  - dip bundle install
+  - dip rails db:prepare
+  - dip compose up -d
