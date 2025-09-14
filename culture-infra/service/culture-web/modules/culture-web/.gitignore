@@ -1,0 +1,12 @@
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+
+# Testing and development files
+terraform.tfvars
+*.auto.tfvars
+*.local.tfvars

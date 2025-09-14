@@ -1,0 +1,17 @@
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+
+# Variable files
+terraform.tfvars
+*.auto.tfvars
+
+# Environment-specific sensitive files
+*.local.tfvars
+
+# Backend configuration file
+backend.hcl
