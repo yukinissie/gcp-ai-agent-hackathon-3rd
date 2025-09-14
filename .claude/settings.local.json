@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "mcp__serena__onboarding",
+      "mcp__serena__list_dir",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
