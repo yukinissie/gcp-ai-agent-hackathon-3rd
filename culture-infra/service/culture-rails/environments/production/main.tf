@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
+    }
   }
 
   backend "gcs" {}
@@ -14,6 +18,26 @@ terraform {
 provider "google" {
   project = var.project_id
   region  = var.region
+}
+
+data "google_compute_network" "default" {
+  name    = "default"
+  project = var.project_id
+}
+
+module "database" {
+  source = "../../modules/database"
+
+  project_id      = var.project_id
+  region          = var.region
+  environment     = "production"
+  vpc_network_id  = data.google_compute_network.default.id
+
+  db_tier                = "db-custom-2-4096"
+  availability_type      = "REGIONAL"
+  disk_size             = 100
+  disk_autoresize_limit = 500
+  deletion_protection   = true
 }
 
 module "culture_rails" {
@@ -29,6 +53,17 @@ module "culture_rails" {
   cpu_limit     = "4"
   memory_limit  = "8Gi"
 
-  # Artifact Registry dependency
-  depends_on = [google_artifact_registry_repository.culture_rails]
+  # Database configuration
+  database_url                    = module.database.database_url
+  database_host                   = module.database.database_host
+  database_port                   = module.database.database_port
+  database_name                   = module.database.database_name
+  database_user                   = module.database.database_user
+  database_password_secret_name   = module.database.database_password_secret_name
+
+  # Dependencies
+  depends_on = [
+    google_artifact_registry_repository.culture_rails,
+    module.database
+  ]
 }

@@ -1,3 +1,19 @@
 project_id   = "your-actual-project-id"
 region       = "asia-northeast1"
 service_name = "culture-rails"
+
+# Staging Database Configuration (automatically managed by database module)
+# The following variables are configured automatically:
+# - database_url: Generated from database module
+# - database_host: Private IP of Cloud SQL instance
+# - database_port: 5432 (PostgreSQL default)
+# - database_name: culture_rails (default)
+# - database_user: culture_rails_user (default)
+# - database_password: Stored in Secret Manager
+
+# Database instance settings (optional overrides)
+# db_tier = "db-f1-micro"           # Staging: Micro instance for cost efficiency
+# availability_type = "ZONAL"       # Single zone deployment
+# disk_size = 20                    # Initial disk size in GB
+# disk_autoresize_limit = 100       # Maximum disk size in GB
+# deletion_protection = false       # Allow deletion for cleanup

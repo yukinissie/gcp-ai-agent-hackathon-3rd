@@ -44,3 +44,40 @@ variable "memory_limit" {
   type        = string
   default     = "4Gi"
 }
+
+# Database configuration variables
+variable "database_url" {
+  description = "The database URL for Rails"
+  type        = string
+  default     = ""
+}
+
+variable "database_host" {
+  description = "Database host"
+  type        = string
+  default     = ""
+}
+
+variable "database_port" {
+  description = "Database port"
+  type        = string
+  default     = "5432"
+}
+
+variable "database_name" {
+  description = "Database name"
+  type        = string
+  default     = ""
+}
+
+variable "database_user" {
+  description = "Database user"
+  type        = string
+  default     = ""
+}
+
+variable "database_password_secret_name" {
+  description = "Name of the secret containing the database password"
+  type        = string
+  default     = ""
+}

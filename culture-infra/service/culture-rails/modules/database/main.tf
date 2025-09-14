@@ -1,0 +1,154 @@
+resource "google_project_service" "sql_apis" {
+  for_each = toset([
+    "sqladmin.googleapis.com",
+    "servicenetworking.googleapis.com"
+  ])
+
+  project = var.project_id
+  service = each.value
+
+  disable_dependent_services = false
+}
+
+resource "random_id" "db_name_suffix" {
+  byte_length = 4
+}
+
+resource "google_sql_database_instance" "culture_rails_postgres" {
+  name             = "${var.db_name}-${random_id.db_name_suffix.hex}"
+  database_version = var.database_version
+  project          = var.project_id
+  region           = var.region
+
+  settings {
+    tier                        = var.db_tier
+    availability_type          = var.availability_type
+    disk_type                  = "PD_SSD"
+    disk_size                  = var.disk_size
+    disk_autoresize           = true
+    disk_autoresize_limit     = var.disk_autoresize_limit
+
+    backup_configuration {
+      enabled                        = true
+      start_time                     = "02:00"
+      location                       = var.region
+      point_in_time_recovery_enabled = true
+      backup_retention_settings {
+        retained_backups = 7
+        retention_unit   = "COUNT"
+      }
+    }
+
+    ip_configuration {
+      ipv4_enabled                                  = false
+      private_network                               = var.vpc_network_id
+      enable_private_path_for_google_cloud_services = true
+      ssl_mode                                       = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
+    }
+
+    database_flags {
+      name  = "log_checkpoints"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "log_connections"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "log_disconnections"
+      value = "on"
+    }
+
+    maintenance_window {
+      day          = 7
+      hour         = 3
+      update_track = "stable"
+    }
+
+    insights_config {
+      query_insights_enabled  = true
+      record_application_tags = true
+      record_client_address   = true
+    }
+  }
+
+  deletion_protection = var.deletion_protection
+
+  depends_on = [
+    google_project_service.sql_apis,
+    google_service_networking_connection.private_vpc_connection
+  ]
+}
+
+resource "google_compute_global_address" "private_ip_address" {
+  project       = var.project_id
+  name          = "${var.db_name}-private-ip"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = var.vpc_network_id
+}
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = var.vpc_network_id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+
+  depends_on = [google_project_service.sql_apis]
+}
+
+resource "google_sql_database" "culture_rails_database" {
+  name     = var.database_name
+  instance = google_sql_database_instance.culture_rails_postgres.name
+  project  = var.project_id
+}
+
+resource "random_password" "database_password" {
+  length  = 32
+  special = true
+}
+
+resource "google_sql_user" "database_user" {
+  name     = var.database_user
+  instance = google_sql_database_instance.culture_rails_postgres.name
+  password = random_password.database_password.result
+  project  = var.project_id
+}
+
+resource "google_secret_manager_secret" "database_password" {
+  secret_id = "${var.db_name}-password-${var.environment}"
+  project   = var.project_id
+
+  replication {
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
+  }
+}
+
+resource "google_secret_manager_secret_version" "database_password" {
+  secret      = google_secret_manager_secret.database_password.id
+  secret_data = random_password.database_password.result
+}
+
+resource "google_project_service" "secret_manager" {
+  project = var.project_id
+  service = "secretmanager.googleapis.com"
+
+  disable_dependent_services = false
+}
+
+data "google_compute_default_service_account" "default" {
+  project = var.project_id
+}
+
+resource "google_secret_manager_secret_iam_member" "database_password_access" {
+  project   = var.project_id
+  secret_id = google_secret_manager_secret.database_password.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${data.google_compute_default_service_account.default.email}"
+}

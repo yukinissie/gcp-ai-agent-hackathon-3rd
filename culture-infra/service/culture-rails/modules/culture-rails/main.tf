@@ -2,7 +2,8 @@ resource "google_project_service" "required_apis" {
   for_each = toset([
     "run.googleapis.com",
     "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com"
+    "artifactregistry.googleapis.com",
+    "secretmanager.googleapis.com"
   ])
 
   project = var.project_id
@@ -40,6 +41,42 @@ resource "google_cloud_run_service" "culture_rails" {
         env {
           name  = "RACK_ENV"
           value = "production"
+        }
+
+        # Database configuration
+        env {
+          name  = "DATABASE_URL"
+          value = var.database_url
+        }
+
+        env {
+          name  = "POSTGRES_HOST"
+          value = var.database_host
+        }
+
+        env {
+          name  = "POSTGRES_PORT"
+          value = var.database_port
+        }
+
+        env {
+          name  = "POSTGRES_DB"
+          value = var.database_name
+        }
+
+        env {
+          name  = "POSTGRES_USER"
+          value = var.database_user
+        }
+
+        env {
+          name = "POSTGRES_PASSWORD"
+          value_from {
+            secret_key_ref {
+              name = var.database_password_secret_name
+              key  = "latest"
+            }
+          }
         }
 
         resources {
