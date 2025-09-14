@@ -1,4 +1,4 @@
-name: Deploy Culture Web to Cloud Run
+name: Deploy Culture Web to Staging
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GAR_LOCATION: asia-northeast1
-  SERVICE: culture-web-prod
+  SERVICE: culture-web-staging
   REGION: asia-northeast1
 
 jobs:
