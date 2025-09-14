@@ -1,0 +1,74 @@
+{
+  // Ruby LSP Configuration for VS Code
+  "ruby.lsp": {
+    "enabled": true,
+    "rubyVersionManager": {
+      "identifier": "auto"
+    },
+    "formatter": "auto",
+    "enableExperimentalFeatures": false
+  },
+
+  // Disable conflicting language servers
+  "ruby.intellisense": "rubyLsp",
+  "solargraph.useBundler": false,
+
+  // Editor settings for Ruby
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.rulers": [120],
+    "editor.semanticHighlighting.enabled": true
+  },
+
+  // RSpec settings
+  "[rspec]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.formatOnSave": true
+  },
+
+  // ERB settings
+  "[erb]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.formatOnSave": true
+  },
+
+  // File associations
+  "files.associations": {
+    "*.jbuilder": "ruby",
+    "*.rabl": "ruby",
+    "*.rake": "ruby",
+    "*.rb": "ruby",
+    "*.ru": "ruby",
+    "Berksfile": "ruby",
+    "Capfile": "ruby",
+    "Gemfile": "ruby",
+    "Guardfile": "ruby",
+    "Rakefile": "ruby",
+    "Vagrantfile": "ruby",
+    "*.gemspec": "ruby"
+  },
+
+  // Search and file exclusions
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/vendor": true,
+    "**/tmp": true,
+    "**/log": true,
+    "**/.git": true,
+    "**/coverage": true
+  },
+
+  "files.exclude": {
+    "**/.git": true,
+    "**/tmp": true,
+    "**/log": true,
+    "**/coverage": true
+  },
+
+  // Terminal settings for Rails development
+  "terminal.integrated.defaultProfile.osx": "bash",
+  "terminal.integrated.cwd": "${workspaceFolder}/culture_rails"
+}

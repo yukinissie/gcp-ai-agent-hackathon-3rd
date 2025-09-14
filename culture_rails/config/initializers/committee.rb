@@ -1,25 +1,19 @@
 # Committee Rails configuration
-Committee::Rails.configure do |config|
-  # OpenAPI schema file path
-  config.schema_path = Rails.root.join('doc', 'openapi.yml')
+# Note: OpenAPI parser deprecation warning is expected and will be addressed in future gem versions
 
-  # Enable request validation
-  config.request_validation = true
+Rails.application.configure do
+  # Only enable committee middleware in development and test environments
+  if Rails.env.development? || Rails.env.test?
+    schema_path = Rails.root.join('doc', 'openapi.yml')
 
-  # Enable response validation (disable in production for performance)
-  config.response_validation = Rails.env.development? || Rails.env.test?
+    if File.exist?(schema_path)
+      config.middleware.use Committee::Middleware::RequestValidation,
+                            schema_path: schema_path,
+                            accept_request_filter: -> (request) { request.path.start_with?('/api/') }
 
-  # Query parameter validation
-  config.query_hash_key = :query
-
-  # Parameter coercion
-  config.parameter_coercion = true
-
-  # Optimistic parsing (don't fail on unknown properties)
-  config.parse_response_by_content_type = true
-
-  # Accept request filters (only validate API routes)
-  config.accept_request_filter = -> (request) do
-    request.path.start_with?('/api/')
+      config.middleware.use Committee::Middleware::ResponseValidation,
+                            schema_path: schema_path,
+                            accept_request_filter: -> (request) { request.path.start_with?('/api/') }
+    end
   end
 end

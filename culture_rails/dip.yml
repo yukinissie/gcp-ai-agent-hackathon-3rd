@@ -27,6 +27,15 @@ interaction:
     compose:
       run_options: [no-deps, rm, "-T"]
 
+  c:
+    description: Run Rails console
+    service: web
+    command: bundle exec rails console
+    compose:
+      run_options: [no-deps, rm, "-it"]
+    environment:
+      TERM: xterm
+
   rake:
     description: Run Rake commands
     service: web

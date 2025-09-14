@@ -1,0 +1,76 @@
+# Ruby LSP configuration
+# https://shopify.github.io/ruby-lsp/
+
+enabledFeatures:
+  # Code completion and IntelliSense
+  completion: true
+
+  # Go to definition
+  definition: true
+
+  # Hover information
+  hover: true
+
+  # Document formatting
+  documentFormatting: true
+
+  # Code lens (e.g., run test buttons)
+  codeLens: true
+
+  # Find references
+  references: true
+
+  # Document symbols
+  documentSymbol: true
+
+  # Workspace symbols
+  workspaceSymbol: true
+
+  # Document highlights
+  documentHighlight: true
+
+  # Signature help
+  signatureHelp: true
+
+  # Folding ranges
+  foldingRange: true
+
+  # Selection ranges
+  selectionRange: true
+
+  # Document links
+  documentLink: true
+
+  # Semantic tokens
+  semanticHighlighting: true
+
+  # Diagnostics
+  diagnostics: true
+
+  # Inlay hints
+  inlayHint: true
+
+# Formatter configuration
+formatter: auto  # options: auto, rubocop, syntax_tree, none
+
+# Additional settings
+indexing:
+  # Include patterns for indexing
+  includedPatterns:
+    - "**/*.rb"
+    - "**/*.rake"
+    - "**/Rakefile"
+    - "**/Gemfile"
+    - "**/*.gemspec"
+    - "**/*.ru"
+
+  # Exclude patterns from indexing
+  excludedPatterns:
+    - "**/vendor/**"
+    - "**/tmp/**"
+    - "**/log/**"
+    - "**/node_modules/**"
+    - "**/.git/**"
+
+# Experimental features
+experimentalFeaturesEnabled: false

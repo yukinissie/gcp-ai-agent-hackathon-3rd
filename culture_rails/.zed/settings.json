@@ -1,0 +1,96 @@
+{
+  // Zed Editor Configuration for Ruby LSP
+  "languages": {
+    "Ruby": {
+      "language_servers": ["ruby-lsp", "!solargraph"],
+      "formatter": "language_server",
+      "format_on_save": "on",
+      "tab_size": 2,
+      "hard_tabs": false,
+      "soft_wrap": "preferred_line_length",
+      "preferred_line_length": 120
+    },
+    "ERB": {
+      "language_servers": ["ruby-lsp"],
+      "formatter": "language_server",
+      "format_on_save": "on"
+    }
+  },
+
+  // Ruby LSP specific configuration
+  "lsp": {
+    "ruby-lsp": {
+      "initialization_options": {
+        "enabledFeatures": {
+          "completion": true,
+          "definition": true,
+          "hover": true,
+          "documentFormatting": true,
+          "documentSymbol": true,
+          "workspaceSymbol": true,
+          "references": true,
+          "codeLens": true,
+          "documentHighlight": true,
+          "signatureHelp": true,
+          "foldingRange": true,
+          "selectionRange": true,
+          "semanticHighlighting": true,
+          "diagnostics": true,
+          "inlayHint": true
+        },
+        "formatter": "auto",
+        "experimentalFeaturesEnabled": false
+      }
+    }
+  },
+
+  // File settings
+  "file_types": {
+    "Ruby": [
+      "*.rb",
+      "*.rake",
+      "Rakefile",
+      "Gemfile",
+      "*.gemspec",
+      "*.ru",
+      "Guardfile",
+      "Capfile",
+      "*.jbuilder",
+      "*.rabl"
+    ],
+    "ERB": ["*.erb", "*.html.erb"]
+  },
+
+  // Project-specific settings
+  "project_panel": {
+    "dock": "left"
+  },
+
+  "outline_panel": {
+    "dock": "right"
+  },
+
+  // Search settings
+  "file_scan_exclusions": [
+    "**/vendor/**",
+    "**/tmp/**",
+    "**/log/**",
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/coverage/**"
+  ],
+
+  // Terminal settings
+  "terminal": {
+    "shell": {
+      "program": "/bin/bash"
+    },
+    "working_directory": "current_project_directory"
+  },
+
+  // Theme and appearance
+  "buffer_font_family": "JetBrains Mono",
+  "buffer_font_size": 14,
+  "ui_font_size": 16,
+  "theme": "One Dark"
+}
