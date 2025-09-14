@@ -14,3 +14,29 @@ variable "service_name" {
   type        = string
   default     = "culture-web"
 }
+
+# Load balancer and CDN variables
+variable "domains" {
+  description = "List of domains for SSL certificate (empty list for HTTP-only setup)"
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_cdn" {
+  description = "Enable Cloud CDN for better performance"
+  type        = bool
+  default     = true
+}
+
+# Note: Health check path is not needed for serverless NEGs
+# variable "health_check_path" {
+#   description = "The path for load balancer health checks"
+#   type        = string
+#   default     = "/"
+# }
+
+variable "redirect_http_to_https" {
+  description = "Whether to redirect HTTP traffic to HTTPS"
+  type        = bool
+  default     = true
+}

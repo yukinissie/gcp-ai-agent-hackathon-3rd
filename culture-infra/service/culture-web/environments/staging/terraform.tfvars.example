@@ -1,3 +1,24 @@
-project_id   = "your-actual-project-id"
-region       = "asia-northeast1"
+# Staging Environment Configuration
+# Copy this file to terraform.tfvars and customize for your deployment
+
+# Required: Your GCP Project ID
+project_id = "your-actual-project-id"
+
+# Required: GCP Region for resources
+region = "asia-northeast1"
+
+# Optional: Base name for services (will be suffixed with -staging)
 service_name = "culture-web"
+
+# Load Balancer Configuration (Optional for staging)
+# Option 1: Direct Cloud Run access (default, cost-effective)
+enable_load_balancer = false
+
+# Option 2: With Load Balancer + CDN (production-like testing)
+# enable_load_balancer = true
+# domains = ["staging.your-domain.com"]
+# enable_cdn = true
+# redirect_http_to_https = true
+
+# Direct Cloud Run deployment is recommended for staging to minimize costs.
+# Enable load balancer only when testing production-like setup.

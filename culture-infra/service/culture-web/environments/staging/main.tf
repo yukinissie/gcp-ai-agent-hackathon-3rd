@@ -28,4 +28,25 @@ module "culture_web" {
   max_instances = 5
   cpu_limit     = "2"
   memory_limit  = "2Gi"
+
+  # Load balancer configuration for staging (optional)
+  # Ingress controls access: "all" for direct access, "internal-and-cloud-load-balancing" for LB
+  ingress = var.enable_load_balancer ? "internal-and-cloud-load-balancing" : "all"
+}
+
+# Optional load balancer with CDN for staging
+module "load_balancer" {
+  count  = var.enable_load_balancer ? 1 : 0
+  source = "../../modules/load-balancer"
+
+  project_id   = var.project_id
+  region       = var.region
+  service_name = "${var.service_name}-staging"
+
+  cloud_run_service_name = module.culture_web.service_name
+  domains                = var.domains
+  enable_cdn             = var.enable_cdn
+  redirect_http_to_https = var.redirect_http_to_https
+
+  depends_on = [module.culture_web]
 }

@@ -4,22 +4,18 @@ variable "project_id" {
 }
 
 variable "region" {
-  description = "The GCP region where resources will be created"
+  description = "The GCP region for regional resources"
   type        = string
-  default     = "asia-northeast1"
 }
 
 variable "service_name" {
-  description = "Base name of the Cloud Run service"
+  description = "The name of the service (used as prefix for resources)"
   type        = string
-  default     = "culture-web"
 }
 
-# Load balancer configuration for staging
-variable "enable_load_balancer" {
-  description = "Enable load balancer and CDN for staging environment"
-  type        = bool
-  default     = false
+variable "cloud_run_service_name" {
+  description = "The name of the Cloud Run service to route traffic to"
+  type        = string
 }
 
 variable "domains" {
@@ -29,14 +25,14 @@ variable "domains" {
 }
 
 variable "enable_cdn" {
-  description = "Enable Cloud CDN for better performance"
+  description = "Enable Cloud CDN for the backend service"
   type        = bool
   default     = true
 }
 
 # Note: Health check path is not needed for serverless NEGs
 # variable "health_check_path" {
-#   description = "The path for load balancer health checks"
+#   description = "The path for health checks"
 #   type        = string
 #   default     = "/"
 # }
@@ -45,4 +41,13 @@ variable "redirect_http_to_https" {
   description = "Whether to redirect HTTP traffic to HTTPS"
   type        = bool
   default     = true
+}
+
+variable "path_rules" {
+  description = "List of path-based routing rules"
+  type = list(object({
+    paths           = list(string)
+    backend_service = string
+  }))
+  default = []
 }

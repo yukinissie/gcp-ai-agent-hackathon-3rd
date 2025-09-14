@@ -37,6 +37,12 @@ resource "google_cloud_run_service" "culture_web" {
           value = "production"
         }
 
+        # Add environment variables for better caching with CDN
+        env {
+          name  = "NEXT_PUBLIC_CDN_ENABLED"
+          value = "true"
+        }
+
         resources {
           limits = {
             cpu    = var.cpu_limit
@@ -76,6 +82,7 @@ resource "google_cloud_run_service" "culture_web" {
         "autoscaling.knative.dev/maxScale"         = tostring(var.max_instances)
         "run.googleapis.com/cpu-throttling"        = "false"
         "run.googleapis.com/execution-environment" = "gen2"
+        "run.googleapis.com/ingress"               = var.ingress
       }
     }
   }
@@ -91,7 +98,10 @@ resource "google_cloud_run_service" "culture_web" {
   ]
 }
 
-resource "google_cloud_run_service_iam_binding" "public_access" {
+# IAM for Cloud Run service
+# When using a load balancer, we need to allow "allUsers" to invoke the service
+# but the ingress annotation will restrict access to only load balancer traffic
+resource "google_cloud_run_service_iam_binding" "invoker" {
   location = google_cloud_run_service.culture_web.location
   project  = google_cloud_run_service.culture_web.project
   service  = google_cloud_run_service.culture_web.name

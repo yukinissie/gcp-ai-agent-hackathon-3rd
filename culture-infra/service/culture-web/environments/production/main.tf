@@ -29,6 +29,25 @@ module "culture_web" {
   cpu_limit     = "4"
   memory_limit  = "4Gi"
 
+  # Load balancer configuration - ingress controls access, not IAM
+  ingress = "internal-and-cloud-load-balancing"
+
   # Artifact Registry dependency
   depends_on = [google_artifact_registry_repository.culture_web]
+}
+
+# Load balancer with CDN
+module "load_balancer" {
+  source = "../../modules/load-balancer"
+
+  project_id   = var.project_id
+  region       = var.region
+  service_name = "${var.service_name}-prod"
+
+  cloud_run_service_name = module.culture_web.service_name
+  domains                = var.domains
+  enable_cdn             = var.enable_cdn
+  redirect_http_to_https = var.redirect_http_to_https
+
+  depends_on = [module.culture_web]
 }

@@ -44,3 +44,25 @@ variable "memory_limit" {
   type        = string
   default     = "2Gi"
 }
+
+# Note: IAM access is always set to "allUsers" but ingress annotation controls actual access
+# variable "allow_public_access" {
+#   description = "Whether to allow public access to the Cloud Run service"
+#   type        = bool
+#   default     = false
+# }
+
+variable "ingress" {
+  description = "Ingress traffic sources allowed to call the service"
+  type        = string
+  default     = "internal-and-cloud-load-balancing"
+  validation {
+    condition = contains([
+      "all",
+      "internal",
+      "internal-and-cloud-load-balancing",
+      "none"
+    ], var.ingress)
+    error_message = "Ingress must be one of: 'all', 'internal', 'internal-and-cloud-load-balancing', or 'none'."
+  }
+}

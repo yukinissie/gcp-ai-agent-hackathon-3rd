@@ -1,3 +1,31 @@
-project_id   = "your-actual-project-id"
-region       = "asia-northeast1"
+# Production Environment Configuration
+# Copy this file to terraform.tfvars and customize for your deployment
+
+# Required: Your GCP Project ID
+project_id = "your-actual-project-id"
+
+# Required: GCP Region for resources
+region = "asia-northeast1"
+
+# Optional: Base name for services (will be suffixed with -prod)
 service_name = "culture-web"
+
+# Load Balancer and SSL Configuration
+# Option 1: With Custom Domain (recommended for production)
+domains = ["your-domain.com", "www.your-domain.com"]
+
+# Option 2: HTTP-only (use load balancer IP)
+# domains = []
+
+# CDN Configuration
+enable_cdn = true
+
+# SSL and redirect configuration
+redirect_http_to_https = true
+
+# Example DNS Configuration After Deployment:
+# 1. Run: terraform output load_balancer_ip
+# 2. Create DNS A records:
+#    your-domain.com     →  <load_balancer_ip>
+#    www.your-domain.com →  <load_balancer_ip>
+# 3. Wait 10-15 minutes for SSL certificate provisioning
