@@ -1,11 +1,10 @@
 .title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: green;
-  margin-bottom: 1rem;
+	font-size: 2rem;
+	font-weight: bold;
+	color: green;
 }
 
 .description {
-  font-size: 1.25rem;
-  color: #666;
+	font-size: 1.25rem;
+	color: #666;
 }
