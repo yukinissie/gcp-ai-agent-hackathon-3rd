@@ -10,385 +10,269 @@ servers:
   - url: http://localhost:3000/api/v1
     description: Development server
 
-# API定義は未定のため、最小限のダミーパス
+# Authentication API endpoints
 paths:
-  /_placeholder:
+  /users:
+    post:
+      summary: User registration
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      minLength: 6
+                    password_confirmation:
+                      type: string
+                      minLength: 6
+                  required: [name, email, password, password_confirmation]
+              required: [user]
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          email:
+                            type: string
+                      token:
+                        type: string
+                required: [success, data]
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
+  /users/{id}:
     get:
-      summary: Placeholder endpoint
+      summary: Get user information
+      tags: [Authentication]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: Placeholder response
+          description: User information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                required: [success, data]
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    patch:
+      summary: Update user
+      tags: [Authentication]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                  required: [name, email]
+              required: [user]
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                required: [success, data]
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
+  /session:
+    post:
+      summary: User login
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required: [email, password]
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          email:
+                            type: string
+                      token:
+                        type: string
+                required: [success, data]
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      summary: User logout
+      tags: [Authentication]
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                required: [success, message]
 
 components:
   schemas:
-    # Core User Types
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-          format: email
-        name:
-          type: string
-        bio:
-          type: string
-          nullable: true
-        avatar_url:
-          type: string
-          nullable: true
-        admin:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-      required: [id, email, name, admin, created_at, updated_at]
-
-    UserUpdateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        bio:
-          type: string
-        avatar_url:
-          type: string
-
-    # Core Tag Types
-    Tag:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        category:
-          type: string
-          enum: [anime, book, movie, game, music]
-        description:
-          type: string
-          nullable: true
-        image_url:
-          type: string
-          nullable: true
-        external_id:
-          type: string
-          nullable: true
-        metadata:
-          type: object
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-      required: [id, name, category, created_at, updated_at]
-
-    TagCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-        category:
-          type: string
-          enum: [anime, book, movie, game, music]
-        description:
-          type: string
-        image_url:
-          type: string
-        external_id:
-          type: string
-        metadata:
-          type: object
-      required: [name, category]
-
-    # User-specific Tag Information
-    UserTagInfo:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        tag_id:
-          type: integer
-        tag:
-          $ref: "#/components/schemas/Tag"
-        personal_rating:
-          type: integer
-          minimum: 1
-          maximum: 10
-          nullable: true
-        personal_note:
-          type: string
-          nullable: true
-        favorite:
-          type: boolean
-        custom_metadata:
-          type: object
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-      required: [id, user_id, tag_id, tag, favorite, created_at, updated_at]
-
-    UserTagInfoRequest:
-      type: object
-      properties:
-        personal_rating:
-          type: integer
-          minimum: 1
-          maximum: 10
-        personal_note:
-          type: string
-        favorite:
-          type: boolean
-        custom_metadata:
-          type: object
-
-    # Activity & History Types
-    UserActivity:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        tag_id:
-          type: integer
-        tag:
-          $ref: "#/components/schemas/Tag"
-        activity_type:
-          type: string
-          enum: [view, rate, favorite, complete, start]
-        activity_value:
-          type: string
-          nullable: true
-        activity_date:
-          type: string
-          format: date-time
-        duration_minutes:
-          type: integer
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-      required:
-        [id, user_id, tag_id, tag, activity_type, activity_date, created_at]
-
-    ActivityCreateRequest:
-      type: object
-      properties:
-        tag_id:
-          type: integer
-        activity_type:
-          type: string
-          enum: [view, rate, favorite, complete, start]
-        activity_value:
-          type: string
-        activity_date:
-          type: string
-          format: date-time
-        duration_minutes:
-          type: integer
-      required: [tag_id, activity_type, activity_date]
-
-    # Statistics & Component Analysis Types
-    UserPreference:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        preference_type:
-          type: string
-        preference_value:
-          type: string
-        weight:
-          type: number
-          format: decimal
-        source:
-          type: string
-          enum: [activity, manual, ai_analysis]
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-      required:
-        [
-          id,
-          user_id,
-          preference_type,
-          preference_value,
-          weight,
-          source,
-          created_at,
-          updated_at,
-        ]
-
-    UserStat:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        stat_type:
-          type: string
-        stat_value:
-          type: object
-        calculated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-      required:
-        [
-          id,
-          user_id,
-          stat_type,
-          stat_value,
-          calculated_at,
-          created_at,
-          updated_at,
-        ]
-
-    # Blog Post Types
-    BlogPost:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        user:
-          $ref: "#/components/schemas/User"
-        title:
-          type: string
-        slug:
-          type: string
-        content:
-          type: string
-        excerpt:
-          type: string
-          nullable: true
-        published:
-          type: boolean
-        published_at:
-          type: string
-          format: date-time
-          nullable: true
-        featured_image_url:
-          type: string
-          nullable: true
-        view_count:
-          type: integer
-        ai_summary:
-          type: string
-          nullable: true
-        ai_summary_generated_at:
-          type: string
-          format: date-time
-          nullable: true
-        tags:
-          type: array
-          items:
-            $ref: "#/components/schemas/Tag"
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-      required:
-        [
-          id,
-          user_id,
-          user,
-          title,
-          slug,
-          content,
-          published,
-          view_count,
-          tags,
-          created_at,
-          updated_at,
-        ]
-
-    BlogPostCreateRequest:
-      type: object
-      properties:
-        title:
-          type: string
-        content:
-          type: string
-        excerpt:
-          type: string
-        published:
-          type: boolean
-        featured_image_url:
-          type: string
-        tag_ids:
-          type: array
-          items:
-            type: integer
-      required: [title, content]
-
-    BlogPostUpdateRequest:
-      type: object
-      properties:
-        title:
-          type: string
-        content:
-          type: string
-        excerpt:
-          type: string
-        published:
-          type: boolean
-        featured_image_url:
-          type: string
-        tag_ids:
-          type: array
-          items:
-            type: integer
-
-    # Common Utility Types
-    Pagination:
-      type: object
-      properties:
-        current_page:
-          type: integer
-        total_pages:
-          type: integer
-        total_count:
-          type: integer
-        per_page:
-          type: integer
-      required: [current_page, total_pages, total_count, per_page]
-
+    # Common Error Types
     Error:
       type: object
       properties:
+        success:
+          type: boolean
+          example: false
         error:
           type: string
         message:
           type: string
-        details:
-          type: object
-          nullable: true
-      required: [error, message]
+      required: [success, error, message]
+
+    ValidationError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        errors:
+          type: array
+          items:
+            type: string
+      required: [success, errors]
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
