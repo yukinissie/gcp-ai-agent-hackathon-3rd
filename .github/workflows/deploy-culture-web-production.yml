@@ -12,7 +12,7 @@ env:
 jobs:
   deploy:
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     runs-on: ubuntu-latest
@@ -59,6 +59,33 @@ jobs:
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
+
+      - name: Create Release Tag
+        run: |
+          # バージョンを日付とコミットハッシュで生成
+          VERSION="v$(date +'%Y.%m.%d')-${GITHUB_SHA:0:7}"
+
+          # タグが既に存在する場合はスキップ
+          if git tag -l | grep -q "^${VERSION}$"; then
+            echo "Tag ${VERSION} already exists, skipping tag creation"
+            exit 0
+          fi
+
+          # アノテーション付きタグを作成
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git tag -a "${VERSION}" -m "Production Release ${VERSION}
+
+          Deployed to: ${{ steps.deploy.outputs.url }}
+          Commit: ${GITHUB_SHA}
+
+          Auto-generated on production deployment"
+
+          # タグをリモートにプッシュ
+          git push origin "${VERSION}"
+
+          echo "Created and pushed release tag: ${VERSION}"
 
       # MEMO: Next.js 側できめ細やかなキャッシュ制御をしているので、Cloud CDN 側のキャッシュは無効化しない
       # - name: Invalidate CDN Cache
