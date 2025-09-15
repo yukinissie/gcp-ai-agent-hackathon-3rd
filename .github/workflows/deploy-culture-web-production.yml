@@ -77,7 +77,7 @@ jobs:
 
           git tag -a "${VERSION}" -m "Production Release ${VERSION}
 
-          Deployed to: ${{ steps.deploy.outputs.url }}
+          Deployed to: https://culture.yukinissie.com
           Commit: ${GITHUB_SHA}
 
           Auto-generated on production culture web deployment"
