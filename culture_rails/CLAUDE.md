@@ -278,6 +278,39 @@ let(:user_params) { { email: generate_email, password: SecureRandom.hex } }
 - `doc/openapi.yml`でエンドポイント仕様定義
 - リクエスト/レスポンス形式を明確化
 
+#### API定義時の必須設定（Committee Rails準拠）
+
+- **`additionalProperties: false`**: すべてのオブジェクトスキーマに必須
+  - 意図しないプロパティ（パスワード等の機密情報）の漏洩を防止
+  - レスポンスの予測可能性を保証
+- **`required`配列**: 必須プロパティを明確に定義
+- **具体的な`example`値**: 開発者が理解しやすいサンプルデータを日本語で記載
+- **`enum`制約**: status等の値を厳密に制限
+
+```yaml
+# Good: 安全で予測可能なスキーマ定義
+schema:
+  type: object
+  additionalProperties: false
+  properties:
+    user:
+      type: object
+      additionalProperties: false
+      properties:
+        id: { type: integer }
+        status: { type: string, enum: [active, inactive] }
+      required: [id, status]
+  required: [user]
+
+# Bad: 機密情報漏洩のリスク
+schema:
+  type: object
+  properties:
+    user:
+      type: object
+      # additionalProperties未設定は危険！
+```
+
 **2. Model定義 + FactoryBot**  
 - User等の必要モデル作成
 - `spec/factories/`でテストデータ定義
