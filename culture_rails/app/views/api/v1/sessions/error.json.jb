@@ -1,5 +1,0 @@
-{
-  success: false,
-  error: "invalid_credentials",
-  message: "メールアドレスまたはパスワードが正しくありません"
-}

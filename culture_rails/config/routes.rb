@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
-      resource :session, only: [ :create, :destroy ], controller: "sessions"
+      # 新しい設計でのルートは後で追加
     end
   end
 
