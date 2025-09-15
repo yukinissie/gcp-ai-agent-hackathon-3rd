@@ -12,6 +12,12 @@ resource "google_project_service" "required_apis" {
   disable_dependent_services = false
 }
 
+# Rails master key secret (existing, created per environment)
+data "google_secret_manager_secret" "rails_master_key" {
+  secret_id = var.rails_master_key_secret_name
+  project   = var.project_id
+}
+
 # Artifact Registry is managed externally (in production environment)
 data "google_artifact_registry_repository" "culture_rails" {
   location      = var.region
@@ -43,37 +49,31 @@ resource "google_cloud_run_service" "culture_rails" {
           value = "production"
         }
 
-        # Database configuration
         env {
-          name  = "DATABASE_URL"
-          value = var.database_url
-        }
-
-        env {
-          name  = "POSTGRES_HOST"
+          name  = "DATABASE_HOST"
           value = var.database_host
         }
 
         env {
-          name  = "POSTGRES_PORT"
-          value = var.database_port
-        }
-
-        env {
-          name  = "POSTGRES_DB"
-          value = var.database_name
-        }
-
-        env {
-          name  = "POSTGRES_USER"
+          name  = "DATABASE_USER"
           value = var.database_user
         }
 
         env {
-          name = "POSTGRES_PASSWORD"
+          name = "DATABASE_PASSWORD"
           value_from {
             secret_key_ref {
               name = var.database_password_secret_name
+              key  = "latest"
+            }
+          }
+        }
+
+        env {
+          name = "RAILS_MASTER_KEY"
+          value_from {
+            secret_key_ref {
+              name = var.rails_master_key_secret_name
               key  = "latest"
             }
           }
@@ -88,7 +88,7 @@ resource "google_cloud_run_service" "culture_rails" {
 
         startup_probe {
           http_get {
-            path = "/health"
+            path = "/up"
             port = 3000
           }
           initial_delay_seconds = 15
@@ -99,7 +99,7 @@ resource "google_cloud_run_service" "culture_rails" {
 
         liveness_probe {
           http_get {
-            path = "/health"
+            path = "/up"
             port = 3000
           }
           initial_delay_seconds = 30
@@ -139,4 +139,18 @@ resource "google_cloud_run_service_iam_binding" "public_access" {
   service  = google_cloud_run_service.culture_rails.name
   role     = "roles/run.invoker"
   members  = ["allUsers"]
+}
+
+# IAM binding for Secret Manager access
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
+resource "google_secret_manager_secret_iam_binding" "rails_master_key_access" {
+  project   = var.project_id
+  secret_id = data.google_secret_manager_secret.rails_master_key.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  members = [
+    "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",
+  ]
 }
