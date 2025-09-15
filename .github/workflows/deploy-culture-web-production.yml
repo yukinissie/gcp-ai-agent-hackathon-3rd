@@ -46,8 +46,10 @@ jobs:
           tags: |
             ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/culture-web/culture-web:${{ github.sha }}
             ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/culture-web/culture-web:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=culture-web-buildx
+          cache-to: type=gha,mode=max,scope=culture-web-buildx
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
 
       - name: Deploy to Cloud Run
         id: deploy
