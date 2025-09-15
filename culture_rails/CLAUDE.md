@@ -1,28 +1,76 @@
 # Rails API認証システム設定ガイド
 
+## システム全体アーキテクチャ
+
+### 全体構成図
+```
+[DNS] → [ロードバランサー] → [Next.js フロントエンド] → [Rails バックエンド]
+                              ↓                        ↓
+                          [ログ収集]                [RDB/NoSQL/Cache]
+                                                      ↓
+                          [LLM関連システム] ← [Agent/MCP Server/Tools]
+                              ↓
+                          [VectorDB]
+```
+
+本システムは**NextJS フロントエンド + Rails API バックエンド**の分離型アーキテクチャです。
+
 ## 認証システム概要
 
+### 設計方針の変更
+- **従来**: Sorcery gem中心の認証
+- **新方針**: Profile中心設計 + 自作認証システム（bcrypt + JWT）
+- **優先順位**: 
+  1. NextJS連携のためのJWT Token返却API
+  2. スライド設計思想に基づくテーブル分離
+  3. シンプルで拡張性の高い認証システム
+
 ### 技術スタック
-- **認証Gem**: Sorcery
+- **認証方式**: bcrypt + JWT（自作認証）
 - **JSONレスポンス**: jb gem（.jbファイル形式）
 - **CSRF保護**: API用に無効化済み
 - **テスト**: RSpec + Committee Rails（OpenAPI検証）
 
 ### APIエンドポイント
-- `POST /api/v1/session` - ログイン
-- `DELETE /api/v1/session` - ログアウト
+- `POST /api/v1/session` - ログイン（JWT返却）
+- `DELETE /api/v1/session` - ログアウト（JWT無効化）
 
-## アーキテクチャ
+## テーブル設計（スライド思想準拠）
 
-### Controller構成
+### Profile中心設計
+```sql
+users (アイデンティティ中核)
+├── id (PK)
+├── uuid (外部参照用)  
+├── status (active/inactive/suspended)
+├── created_at, updated_at
+
+credentials (認証情報)
+├── id (PK)
+├── user_id (FK) → users.id (1:1関係)
+├── email (unique)
+├── password_digest (bcrypt)
+├── created_at, updated_at
+```
+
+### モデル関係性
+- `User.session?` - 認証状態判定メソッド
+- `User has_one :credential`
+- `Credential belongs_to :user`
+- `Credential.authenticate(password)` - パスワード検証
+
+## Controller構成
+
+### API Controller階層
 ```
 Api::V1::BaseController
 ├── CSRF保護無効化
+├── JWT認証ヘルパー
 └── protect_from_forgery with: :null_session
 
 Api::V1::SessionsController < Api::V1::BaseController
-├── POST #create - ログイン処理
-└── DELETE #destroy - ログアウト処理
+├── POST #create - ログイン処理（JWT発行）
+└── DELETE #destroy - ログアウト処理（JWT無効化）
 ```
 
 ### レスポンステンプレート（jb形式）
@@ -32,16 +80,16 @@ Api::V1::SessionsController < Api::V1::BaseController
 
 ### レスポンス形式例
 ```json
-// ログイン成功
+// ログイン成功（新設計）
 {
   "success": true,
   "data": {
     "user": {
       "id": 1,
-      "name": "ユーザー名",
-      "email": "user@example.com"
+      "uuid": "abc-123-def",
+      "status": "active"
     },
-    "token": "認証トークン"
+    "token": "eyJhbGciOiJIUzI1NiJ9..."
   }
 }
 
