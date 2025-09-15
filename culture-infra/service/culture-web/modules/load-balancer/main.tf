@@ -50,7 +50,7 @@ resource "google_compute_backend_service" "backend" {
   dynamic "cdn_policy" {
     for_each = var.enable_cdn ? [1] : []
     content {
-      cache_mode        = "CACHE_ALL_STATIC"
+      cache_mode        = "USE_ORIGIN_HEADERS"
       default_ttl       = 3600  # 1 hour for static content
       max_ttl           = 86400 # 24 hours max
       client_ttl        = 3600  # 1 hour client cache

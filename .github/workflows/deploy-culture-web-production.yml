@@ -59,3 +59,11 @@ jobs:
 
       - name: Show Output
         run: echo ${{ steps.deploy.outputs.url }}
+
+      # MEMO: Next.js 側できめ細やかなキャッシュ制御をしているので、Cloud CDN 側のキャッシュは無効化しない
+      # - name: Invalidate CDN Cache
+      #   run: |
+      #     gcloud compute url-maps invalidate-cdn-cache culture-web-prod-url-map \
+      #       --path "/*" \
+      #       --project ${{ env.PROJECT_ID }} \
+      #       --async
