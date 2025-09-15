@@ -209,13 +209,53 @@ let(:user_params) { { email: generate_email, password: SecureRandom.hex } }
   - `refactor: 未使用ファイルを削除`
   - `chore: 依存関係を更新`
 
-### 1. 新規APIエンドポイント追加時
-1. OpenAPIスキーマ（`doc/openapi.yml`）を更新
-2. Controllerとアクションを実装
-3. .jbテンプレートを作成
-4. FactoryBotでテストデータ準備
-5. RSpecテスト作成（上記ガイドライン準拠）
-6. `assert_schema_conform`でスキーマ検証確認
+### Rails実装手順（TDDアプローチ）
+
+新規APIエンドポイント実装時は以下の手順で進める：
+
+```
+1. API定義（OpenAPIスキーマ）
+2. Model定義 + FactoryBot設定
+3. ルーティング追加  
+4. 空Controller追加（基本構造のみ）
+5. JB定義（ベタ書き）
+6. RSpecテスト作成
+7. Controller実装（レッド→グリーン）
+8. リファクタリング
+```
+
+#### 各段階の詳細
+
+**1. API定義**
+- `doc/openapi.yml`でエンドポイント仕様定義
+- リクエスト/レスポンス形式を明確化
+
+**2. Model定義 + FactoryBot**  
+- User等の必要モデル作成
+- `spec/factories/`でテストデータ定義
+- 認証機能の基盤整備
+
+**3-4. ルーティング + 空Controller**
+- `config/routes.rb`にエンドポイント追加
+- Controller骨格作成（空メソッドで200返すレベル）
+
+**5. JB定義**
+- `.json.jb`テンプレートでレスポンス構造定義
+- 実装時の調整余地を残す
+
+**6. RSpecテスト**
+- 期待値とassert_schema_conformでAPI仕様検証
+- この段階では失敗して当然（レッド）
+
+**7-8. 実装 + リファクタリング**
+- テストをパスさせる最小実装（グリーン）
+- コード品質向上
+
+#### 手順変更の理由
+
+- **Model先行**: FactoryBot動作とController内Model参照エラー回避
+- **JB後配置**: Controller実装時のレスポンス構造調整の柔軟性確保
+- **TDDサイクル**: 外側から内側への段階的実装でテスト駆動開発を実現
 
 ### 2. テスト実行
 ```bash
