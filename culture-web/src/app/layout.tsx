@@ -5,9 +5,6 @@ export const metadata: Metadata = {
   title: "Culture Web",
   description: "A web application for culture-related content",
   robots: "noindex, nofollow",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
