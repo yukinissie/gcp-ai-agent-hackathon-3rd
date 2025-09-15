@@ -48,8 +48,15 @@ RSpec.configure do |config|
   # FactoryBot configuration
   config.include FactoryBot::Syntax::Methods
 
-  # Committee Rails configuration for API testing
+  # Committee Rails API テスト設定
+  # OpenAPIスキーマ検証メソッドを有効化 (assert_schema_confirm等)
   config.include Committee::Rails::Test::Methods, type: :request
+  config.include Committee::Rails::Test::Methods, type: :controller
+  config.add_setting :committee_options
+  config.committee_options = {
+    schema_path: Rails.root.join('doc', 'openapi.yml').to_s,
+    prefix: '/api/v1'
+  }
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
