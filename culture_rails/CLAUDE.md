@@ -199,6 +199,16 @@ let(:user_params) { { email: generate_email, password: SecureRandom.hex } }
 
 ## 開発フロー
 
+### コミットメッセージガイドライン
+- **言語**: 日本語を使用
+- **形式**: `機能: 簡潔な説明`
+- **例**: 
+  - `feat: Sorcery認証システムを実装`
+  - `test: セッション管理のテストを追加`
+  - `docs: 認証システムのドキュメントを更新`
+  - `refactor: 未使用ファイルを削除`
+  - `chore: 依存関係を更新`
+
 ### 1. 新規APIエンドポイント追加時
 1. OpenAPIスキーマ（`doc/openapi.yml`）を更新
 2. Controllerとアクションを実装
