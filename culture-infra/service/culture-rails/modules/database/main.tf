@@ -8,9 +8,9 @@ locals {
       deletion_protection   = false
     }
     production = {
-      db_tier               = "db-custom-2-4096"
+      db_tier               = "db-g1-small"
       availability_type     = "REGIONAL"
-      disk_size            = 50
+      disk_size            = 20
       deletion_protection   = true
     }
   }

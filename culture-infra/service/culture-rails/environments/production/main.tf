@@ -34,10 +34,10 @@ module "database" {
   environment     = "production"
   vpc_network_id  = google_compute_network.production.id
 
-  db_tier                = "db-custom-2-4096"
+  db_tier                = "db-f1-micro"
   availability_type      = "REGIONAL"
-  disk_size             = 100
-  disk_autoresize_limit = 500
+  disk_size             = 20
+  disk_autoresize_limit = 100
   deletion_protection   = true
 }
 
@@ -50,9 +50,9 @@ module "culture_rails" {
   environment  = "production"
 
   min_instances = 1
-  max_instances = 20
-  cpu_limit     = "4"
-  memory_limit  = "8Gi"
+  max_instances = 1
+  cpu_limit     = "1"
+  memory_limit  = "512Mi"
 
   # Database configuration
   database_url                    = module.database.database_url

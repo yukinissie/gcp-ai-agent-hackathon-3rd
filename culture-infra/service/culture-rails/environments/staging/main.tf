@@ -54,10 +54,10 @@ module "culture_rails" {
   service_name = "${var.service_name}-staging"
   environment  = "staging"
 
-  min_instances = 0
-  max_instances = 5
-  cpu_limit     = "2"
-  memory_limit  = "4Gi"
+  min_instances = 1
+  max_instances = 1
+  cpu_limit     = "1"
+  memory_limit  = "512Mi"
 
   # Database configuration
   database_url                  = module.database.database_url
