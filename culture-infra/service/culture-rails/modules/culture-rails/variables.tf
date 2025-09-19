@@ -81,3 +81,9 @@ variable "database_password_secret_name" {
   type        = string
   default     = ""
 }
+
+variable "rails_master_key_secret_name" {
+  description = "Name of the secret containing the Rails master key"
+  type        = string
+  default     = ""
+}

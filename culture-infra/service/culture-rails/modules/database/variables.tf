@@ -10,7 +10,7 @@ variable "region" {
 }
 
 variable "db_name" {
-  description = "Name of the Cloud SQL instance"
+  description = "Base name of the Cloud SQL instance (environment will be appended)"
   type        = string
   default     = "culture-rails-db"
 }
@@ -36,19 +36,19 @@ variable "database_version" {
 variable "db_tier" {
   description = "Machine type for the database instance"
   type        = string
-  default     = "db-f1-micro"
+  default     = null
 }
 
 variable "availability_type" {
   description = "Availability type for the database instance (ZONAL or REGIONAL)"
   type        = string
-  default     = "ZONAL"
+  default     = null
 }
 
 variable "disk_size" {
   description = "Disk size in GB"
   type        = number
-  default     = 20
+  default     = null
 }
 
 variable "disk_autoresize_limit" {
@@ -60,13 +60,16 @@ variable "disk_autoresize_limit" {
 variable "deletion_protection" {
   description = "Enable deletion protection"
   type        = bool
-  default     = true
+  default     = null
 }
 
 variable "environment" {
   description = "Environment name (e.g., staging, production)"
   type        = string
-  default     = "staging"
+  validation {
+    condition     = contains(["staging", "production"], var.environment)
+    error_message = "Environment must be one of: staging, production."
+  }
 }
 
 variable "vpc_network_id" {

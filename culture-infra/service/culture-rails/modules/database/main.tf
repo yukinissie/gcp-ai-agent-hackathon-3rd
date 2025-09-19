@@ -1,3 +1,27 @@
+# Environment-specific configurations
+locals {
+  environment_configs = {
+    staging = {
+      db_tier               = "db-g1-small"
+      availability_type     = "ZONAL"
+      disk_size            = 20
+      deletion_protection   = false
+    }
+    production = {
+      db_tier               = "db-g1-small"
+      availability_type     = "REGIONAL"
+      disk_size            = 20
+      deletion_protection   = true
+    }
+  }
+
+  # Use environment-specific config or fallback to provided variables
+  db_tier               = var.db_tier != null ? var.db_tier : local.environment_configs[var.environment].db_tier
+  availability_type     = var.availability_type != null ? var.availability_type : local.environment_configs[var.environment].availability_type
+  disk_size            = var.disk_size != null ? var.disk_size : local.environment_configs[var.environment].disk_size
+  deletion_protection   = var.deletion_protection != null ? var.deletion_protection : local.environment_configs[var.environment].deletion_protection
+}
+
 resource "google_project_service" "sql_apis" {
   for_each = toset([
     "sqladmin.googleapis.com",
@@ -15,16 +39,16 @@ resource "random_id" "db_name_suffix" {
 }
 
 resource "google_sql_database_instance" "culture_rails_postgres" {
-  name             = "${var.db_name}-${random_id.db_name_suffix.hex}"
+  name             = "${var.db_name}-${var.environment}-${random_id.db_name_suffix.hex}"
   database_version = var.database_version
   project          = var.project_id
   region           = var.region
 
   settings {
-    tier                        = var.db_tier
-    availability_type          = var.availability_type
+    tier                        = local.db_tier
+    availability_type          = local.availability_type
     disk_type                  = "PD_SSD"
-    disk_size                  = var.disk_size
+    disk_size                  = local.disk_size
     disk_autoresize           = true
     disk_autoresize_limit     = var.disk_autoresize_limit
 
@@ -44,6 +68,7 @@ resource "google_sql_database_instance" "culture_rails_postgres" {
       private_network                               = var.vpc_network_id
       enable_private_path_for_google_cloud_services = true
       ssl_mode                                       = "ALLOW_UNENCRYPTED_AND_ENCRYPTED"
+      allocated_ip_range = google_compute_global_address.private_ip_address.name
     }
 
     database_flags {
@@ -74,7 +99,7 @@ resource "google_sql_database_instance" "culture_rails_postgres" {
     }
   }
 
-  deletion_protection = var.deletion_protection
+  deletion_protection = local.deletion_protection
 
   depends_on = [
     google_project_service.sql_apis,
@@ -84,7 +109,7 @@ resource "google_sql_database_instance" "culture_rails_postgres" {
 
 resource "google_compute_global_address" "private_ip_address" {
   project       = var.project_id
-  name          = "${var.db_name}-private-ip"
+  name          = "${var.db_name}-${var.environment}-private-ip"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
@@ -118,7 +143,7 @@ resource "google_sql_user" "database_user" {
 }
 
 resource "google_secret_manager_secret" "database_password" {
-  secret_id = "${var.db_name}-password-${var.environment}"
+  secret_id = "${var.db_name}-${var.environment}-password"
   project   = var.project_id
 
   replication {
