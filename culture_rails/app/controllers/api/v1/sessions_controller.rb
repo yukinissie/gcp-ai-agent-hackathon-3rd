@@ -3,23 +3,27 @@ class Api::V1::SessionsController < ApplicationController
   before_action :require_authentication, only: [ :destroy ]
 
   def create
-    if user_credential = UserCredential.authenticate_by(params.expect(:email_address, :password))
+    email_address = params.expect(:email_address)
+    password = params.expect(:password)
+
+    if user_credential = UserCredential.authenticate_by(email_address: email_address, password: password)
       start_new_session_for user_credential.user
       @user = user_credential.user
-      render json: @user, status: :created
+      render :create, status: :created
     else
-      render json: { error: "Invalid email or password" }, status: :unauthorized
+      @error = "Invalid email or password"
+      render :error, status: :unauthorized
     end
   end
 
   def destroy
     terminate_session
-    render json: { message: "Session terminated" }, status: :ok
+    render :destroy, status: :ok
   end
 
   def show
     @authenticated = authenticated?
     @current_user = current_user
-    render json: @current_user, status: :ok
+    render :show, status: :ok
   end
 end

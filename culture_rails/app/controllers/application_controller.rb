@@ -24,7 +24,7 @@ class ApplicationController < ActionController::API
   end
 
   def authenticated?
-    current_user&.authenticated?
+    current_user&.authenticated? || false
   end
 
   def require_authentication
