@@ -1,16 +1,3 @@
-resource "google_project_service" "required_apis" {
-  for_each = toset([
-    "run.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com"
-  ])
-
-  project = var.project_id
-  service = each.value
-
-  disable_dependent_services = false
-}
-
 # Artifact Registry is managed externally (in production environment)
 data "google_artifact_registry_repository" "culture_web" {
   location      = var.region
@@ -93,7 +80,6 @@ resource "google_cloud_run_service" "culture_web" {
   }
 
   depends_on = [
-    google_project_service.required_apis,
     data.google_artifact_registry_repository.culture_web
   ]
 }
