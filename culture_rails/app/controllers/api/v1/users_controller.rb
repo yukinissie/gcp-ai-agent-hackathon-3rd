@@ -8,16 +8,16 @@ class Api::V1::UsersController < ApplicationController
     if user.save
       start_new_session_for user
       @user = user
-      render "create", status: :created
+      render status: :created
     else
       @errors = user.errors.full_messages + user_credential.errors.full_messages
-      render "error", status: :unprocessable_entity
+      render json: { errors: @errors }, status: :unprocessable_entity
     end
   end
 
   def show
     @current_user = current_user
-    render "show"
+    render json: @current_user, status: :ok
   end
 
   private
