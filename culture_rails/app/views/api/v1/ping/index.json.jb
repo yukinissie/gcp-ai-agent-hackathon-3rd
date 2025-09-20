@@ -1,0 +1,7 @@
+{
+  success: true,
+  data: {
+    id: @ping.id,
+    message: @ping.message
+  }
+}

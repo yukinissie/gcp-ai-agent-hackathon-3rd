@@ -1,0 +1,5 @@
+{
+  success: @error[:success],
+  error: @error[:error],
+  message: @error[:message]
+}
