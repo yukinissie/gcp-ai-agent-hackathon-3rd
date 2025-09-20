@@ -1,0 +1,5 @@
+{
+  success: true,
+  authenticated: @authenticated,
+  user: @authenticated ? @current_user.as_json_for_api : nil
+}

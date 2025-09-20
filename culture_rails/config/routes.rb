@@ -4,7 +4,10 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
-      # 新しい設計でのルートは後で追加
+      # 認証関連
+      resource :session, only: [ :create, :show, :destroy ]
+      resources :users, only: [ :create, :show ]
+
       resources :ping, only: [ :index, :create ]
     end
   end

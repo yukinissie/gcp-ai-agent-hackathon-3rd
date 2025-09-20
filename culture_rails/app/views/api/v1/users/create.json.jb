@@ -1,0 +1,6 @@
+{
+  success: true,
+  data: {
+    user: @user.as_json_for_api
+  }
+}

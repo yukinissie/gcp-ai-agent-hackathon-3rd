@@ -1,0 +1,4 @@
+{
+  success: true,
+  data: @current_user.as_json_for_api
+}

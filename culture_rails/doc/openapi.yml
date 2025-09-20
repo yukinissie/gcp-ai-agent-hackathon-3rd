@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
-  title: Culture Web API
-  description: カルチャーコンテンツ管理システムAPI
+  title: Culture Rails API
+  description: Rails 8 認証システムAPI - User/UserCredential分離設計
   version: 1.0.0
   contact:
-    name: Culture Web チーム
+    name: Culture Rails チーム
 
 servers:
   - url: http://localhost:3000/api/v1
@@ -26,18 +26,19 @@ paths:
                 user:
                   type: object
                   properties:
-                    name:
-                      type: string
-                    email:
+                    email_address:
                       type: string
                       format: email
+                      example: "user@example.com"
                     password:
                       type: string
                       minLength: 6
+                      example: "password123"
                     password_confirmation:
                       type: string
                       minLength: 6
-                  required: [name, email, password, password_confirmation]
+                      example: "password123"
+                  required: [email_address, password, password_confirmation]
               required: [user]
       responses:
         "201":
@@ -61,17 +62,20 @@ paths:
                         properties:
                           id:
                             type: integer
-                          uuid:
+                            example: 1
+                          human_id:
                             type: string
-                            format: uuid
-                          status:
+                            example: "abc123def456"
+                            description: "外部参照用の一意識別子"
+                          email_address:
                             type: string
-                            enum: [active, inactive, suspended]
-                        required: [id, uuid, status]
-                      token:
-                        type: string
-                        description: JWT認証トークン
-                    required: [user, token]
+                            format: email
+                            example: "user@example.com"
+                          authenticated:
+                            type: boolean
+                            example: true
+                        required: [id, human_id, email_address, authenticated]
+                    required: [user]
                 required: [success, data]
         "422":
           description: Validation error
@@ -237,132 +241,85 @@ paths:
                   - error
                   - message
 
-  /users/{id}:
+  /users:
     get:
-      summary: Get user information
-      tags: [Authentication]
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
+      summary: ユーザー詳細取得
+      description: 現在ログイン中のユーザー情報を取得
+      tags: [認証]
       responses:
         "200":
-          description: User information
+          description: ユーザー情報取得成功
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   success:
                     type: boolean
                     example: true
                   data:
                     type: object
+                    additionalProperties: false
                     properties:
                       id:
                         type: integer
-                      uuid:
+                        example: 1
+                      human_id:
                         type: string
-                        format: uuid
-                      status:
+                        example: "abc123def456"
+                      email_address:
                         type: string
-                        enum: [active, inactive, suspended]
+                        format: email
+                        example: "user@example.com"
+                      authenticated:
+                        type: boolean
+                        example: true
+                    required: [id, human_id, email_address, authenticated]
                 required: [success, data]
         "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-
-    patch:
-      summary: Update user
-      tags: [Authentication]
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    email:
-                      type: string
-                      format: email
-                  required: [name, email]
-              required: [user]
-      responses:
-        "200":
-          description: User updated successfully
+          description: 認証が必要です
           content:
             application/json:
               schema:
                 type: object
+                additionalProperties: false
                 properties:
                   success:
                     type: boolean
-                    example: true
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      uuid:
-                        type: string
-                        format: uuid
-                      status:
-                        type: string
-                        enum: [active, inactive, suspended]
-                required: [success, data]
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        "422":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ValidationError"
+                    example: false
+                  error:
+                    type: string
+                    example: "authentication_required"
+                  message:
+                    type: string
+                    example: "ログインが必要です"
+                required: [success, error, message]
 
   /session:
     post:
-      summary: User login
-      tags: [Authentication]
+      summary: ユーザーログイン
+      description: メールアドレスとパスワードでログイン
+      tags: [認証]
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
-                email:
+                email_address:
                   type: string
                   format: email
+                  example: "user@example.com"
                 password:
                   type: string
-              required: [email, password]
+                  example: "password123"
+              required: [email_address, password]
       responses:
         "200":
-          description: Login successful
+          description: ログイン成功
           content:
             application/json:
               schema:
@@ -382,33 +339,86 @@ paths:
                         properties:
                           id:
                             type: integer
-                          uuid:
+                            example: 1
+                          human_id:
                             type: string
-                            format: uuid
-                          status:
+                            example: "abc123def456"
+                          email_address:
                             type: string
-                            enum: [active, inactive, suspended]
-                        required: [id, uuid, status]
-                      token:
-                        type: string
-                        description: JWT認証トークン
-                    required: [user, token]
+                            format: email
+                            example: "user@example.com"
+                          authenticated:
+                            type: boolean
+                            example: true
+                        required: [id, human_id, email_address, authenticated]
+                    required: [user]
                 required: [success, data]
         "401":
-          description: Invalid credentials
+          description: ログイン失敗
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "invalid_credentials"
+                  message:
+                    type: string
+                    example: "ログイン情報が正しくありません"
+                required: [success, error, message]
 
-    delete:
-      summary: User logout
-      tags: [Authentication]
-      security:
-        - BearerAuth: []
+    get:
+      summary: セッション確認
+      description: 現在のログイン状態を確認
+      tags: [認証]
       responses:
         "200":
-          description: Logout successful
+          description: セッション状態取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  authenticated:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      human_id:
+                        type: string
+                        example: "abc123def456"
+                      email_address:
+                        type: string
+                        format: email
+                        example: "user@example.com"
+                      authenticated:
+                        type: boolean
+                        example: true
+                    required: [id, human_id, email_address, authenticated]
+                    nullable: true
+                required: [success, authenticated, user]
+
+    delete:
+      summary: ユーザーログアウト
+      description: 現在のセッションを終了
+      tags: [認証]
+      responses:
+        "200":
+          description: ログアウト成功
           content:
             application/json:
               schema:
@@ -426,21 +436,6 @@ paths:
 components:
   schemas:
     # Common Error Types
-    Error:
-      type: object
-      additionalProperties: false
-      properties:
-        success:
-          type: boolean
-          example: false
-        error:
-          type: string
-          example: "invalid_credentials"
-        message:
-          type: string
-          example: "メールアドレスまたはパスワードが正しくありません"
-      required: [success, error, message]
-
     ValidationError:
       type: object
       additionalProperties: false
@@ -454,9 +449,3 @@ components:
             type: string
           example: ["パスワードは6文字以上で入力してください"]
       required: [success, errors]
-
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
