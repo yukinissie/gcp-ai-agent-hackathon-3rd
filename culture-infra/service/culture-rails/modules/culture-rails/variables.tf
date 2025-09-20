@@ -87,3 +87,9 @@ variable "rails_master_key_secret_name" {
   type        = string
   default     = ""
 }
+
+variable "vpc_network_id" {
+  description = "VPC network ID for private connectivity"
+  type        = string
+  default     = null
+}

@@ -59,6 +59,9 @@ module "culture_rails" {
   cpu_limit     = "1"
   memory_limit  = "512Mi"
 
+  # VPC configuration
+  vpc_network_id = google_compute_network.staging.id
+
   # Database configuration
   database_url                  = module.database.database_url
   database_host                 = module.database.database_host
