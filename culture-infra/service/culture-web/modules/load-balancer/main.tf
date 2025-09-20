@@ -1,24 +1,9 @@
-# Enable required APIs
-resource "google_project_service" "required_apis" {
-  for_each = toset([
-    "compute.googleapis.com",
-    "certificatemanager.googleapis.com"
-  ])
-
-  project = var.project_id
-  service = each.value
-
-  disable_dependent_services = false
-}
-
 # Reserve global static IP address
 resource "google_compute_global_address" "lb_ip" {
   name         = "${var.service_name}-lb-ip"
   project      = var.project_id
   address_type = "EXTERNAL"
   ip_version   = "IPV4"
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Create serverless NEG for Cloud Run
@@ -31,8 +16,6 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg" {
   cloud_run {
     service = var.cloud_run_service_name
   }
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Create backend service with Cloud CDN enabled
@@ -80,11 +63,6 @@ resource "google_compute_backend_service" "backend" {
   backend {
     group = google_compute_region_network_endpoint_group.serverless_neg.id
   }
-
-  # Note: Health checks are not supported with serverless NEGs
-  # Cloud Run services have their own internal health monitoring
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Note: Health checks are not used with serverless NEGs
@@ -113,8 +91,6 @@ resource "google_compute_url_map" "url_map" {
       }
     }
   }
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # SSL certificate (Google-managed)
@@ -126,8 +102,6 @@ resource "google_compute_managed_ssl_certificate" "ssl_cert" {
   managed {
     domains = var.domains
   }
-
-  depends_on = [google_project_service.required_apis]
 
   lifecycle {
     create_before_destroy = true
@@ -142,8 +116,6 @@ resource "google_compute_target_https_proxy" "https_proxy" {
   url_map = google_compute_url_map.url_map.id
 
   ssl_certificates = [google_compute_managed_ssl_certificate.ssl_cert[0].id]
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Target HTTP proxy (for redirect)
@@ -152,8 +124,6 @@ resource "google_compute_target_http_proxy" "http_proxy" {
   name    = "${var.service_name}-http-proxy"
   project = var.project_id
   url_map = google_compute_url_map.redirect_url_map[0].id
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # URL map for HTTP to HTTPS redirect
@@ -167,8 +137,6 @@ resource "google_compute_url_map" "redirect_url_map" {
     strip_query            = false
     https_redirect         = true
   }
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Global forwarding rule for HTTPS
@@ -180,8 +148,6 @@ resource "google_compute_global_forwarding_rule" "https_forwarding_rule" {
   port_range  = "443"
   ip_address  = google_compute_global_address.lb_ip.address
   ip_protocol = "TCP"
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Global forwarding rule for HTTP (redirect)
@@ -193,8 +159,6 @@ resource "google_compute_global_forwarding_rule" "http_forwarding_rule" {
   port_range  = "80"
   ip_address  = google_compute_global_address.lb_ip.address
   ip_protocol = "TCP"
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Fallback HTTP forwarding rule (when no SSL domains are configured)
@@ -206,8 +170,6 @@ resource "google_compute_global_forwarding_rule" "http_only_forwarding_rule" {
   port_range  = "80"
   ip_address  = google_compute_global_address.lb_ip.address
   ip_protocol = "TCP"
-
-  depends_on = [google_project_service.required_apis]
 }
 
 # Target HTTP proxy for HTTP-only setup
@@ -216,6 +178,4 @@ resource "google_compute_target_http_proxy" "http_only_proxy" {
   name    = "${var.service_name}-http-only-proxy"
   project = var.project_id
   url_map = google_compute_url_map.url_map.id
-
-  depends_on = [google_project_service.required_apis]
 }
