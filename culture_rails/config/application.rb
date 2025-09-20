@@ -13,6 +13,10 @@ module CultureRails
 
     config.api_only = true
 
+    # Cookie/Sessionミドルウェアを有効化
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+
     config.debug_exception_response_format = :default
 
     config.debug_exception_response_format = :api
