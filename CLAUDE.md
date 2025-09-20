@@ -11,6 +11,7 @@ This document provides comprehensive context for AI assistants working on the GC
 ## 🏗️ System Architecture
 
 ### Components
+
 - **Frontend**: Next.js 15.5 React application (`culture-web`)
 - **Backend**: Ruby on Rails 8.0 API service (`culture_rails`)
 - **Infrastructure**: Terraform-managed GCP resources (`culture-infra`)
@@ -19,6 +20,7 @@ This document provides comprehensive context for AI assistants working on the GC
 ### Technology Stack
 
 #### Frontend (culture-web)
+
 - **Framework**: Next.js 15.5.3 with React 19.1.0
 - **Language**: TypeScript 5.x with strict typing
 - **Build Tool**: Turbopack for faster development
@@ -27,6 +29,7 @@ This document provides comprehensive context for AI assistants working on the GC
 - **Architecture**: App Router with standalone output for containerization
 
 #### Backend (culture_rails)
+
 - **Framework**: Ruby on Rails 8.0.2+ (latest version)
 - **Database**: PostgreSQL with Docker Compose setup
 - **Web Server**: Puma
@@ -39,6 +42,7 @@ This document provides comprehensive context for AI assistants working on the GC
 - **Editor Support**: Ruby LSP configured
 
 #### Infrastructure & DevOps
+
 - **Cloud**: Google Cloud Platform (GCP)
 - **Containers**: Cloud Run (serverless)
 - **Registry**: Google Artifact Registry
@@ -80,6 +84,7 @@ gcp-ai-agent-hackathon-3rd/
 ## 🔧 Development Commands
 
 ### Frontend Development (culture-web)
+
 ```bash
 cd culture-web
 npm run dev          # Development server with Turbopack
@@ -90,6 +95,7 @@ npm run format       # Biome formatting
 ```
 
 ### Backend Development (culture_rails)
+
 ```bash
 # Using Dip (recommended)
 dip provision        # Initial setup: DB + dependencies + migration
@@ -106,6 +112,7 @@ docker-compose exec web bundle exec rails c  # Rails console
 ```
 
 ### Infrastructure Management
+
 ```bash
 cd culture-infra/service/culture-web/environments/production
 terraform init -backend-config=backend.hcl
@@ -117,10 +124,12 @@ terraform output     # View outputs (service URLs, etc.)
 ## 🚀 Deployment Architecture
 
 ### Environments
+
 - **Production**: `culture-web-prod` (1-20 instances, 4 CPU, 4Gi memory)
 - **Staging**: `culture-web-staging` (0-5 instances, 2 CPU, 2Gi memory)
 
 ### CI/CD Pipeline (GitHub Actions)
+
 - **Trigger**: Push to main or PR changes to `culture-web/`
 - **Process**:
   1. Build multi-stage Docker image
@@ -129,6 +138,7 @@ terraform output     # View outputs (service URLs, etc.)
   4. Output deployment URL
 
 ### Container Strategy
+
 - **Frontend**: Multi-stage Dockerfile with Node.js 24 Alpine
 - **Build**: Standalone Next.js output for minimal container size
 - **Platform**: Linux/AMD64 for Cloud Run compatibility
@@ -137,18 +147,21 @@ terraform output     # View outputs (service URLs, etc.)
 ## 🏆 Development Best Practices
 
 ### Code Quality Standards
+
 - **Rails**: RuboCop Rails Omakase (opinionated styling)
 - **Frontend**: Biome for unified TypeScript tooling
 - **Security**: Brakeman security scanning
 - **Testing**: Comprehensive RSpec + system tests
 
 ### Modern Rails Patterns
+
 - **Solid Stack**: Cache/Queue/Cable without Redis dependency
 - **API-First**: OpenAPI validation with Committee Rails
 - **Hotwire**: SPA-like experience with minimal JavaScript
 - **Modern Assets**: Propshaft pipeline
 
 ### Frontend Patterns
+
 - **TypeScript**: Strict typing throughout
 - **App Router**: Modern Next.js routing patterns
 - **Component Architecture**: CSS Modules for styling
@@ -157,18 +170,21 @@ terraform output     # View outputs (service URLs, etc.)
 ## 📝 Important Notes for AI Assistants
 
 ### Current State
+
 - **Backend**: Basic Rails setup with minimal controllers
 - **Frontend**: Simple landing page with Japanese content
 - **Infrastructure**: Full Terraform setup with production/staging
 - **CI/CD**: Automated deployment pipeline active
 
 ### Development Environment Setup
+
 1. **Prerequisites**: Docker, Docker Compose, Node.js 24, Ruby 3.x
 2. **Backend**: Use `dip provision` for complete setup
 3. **Frontend**: `npm install && npm run dev`
 4. **Database**: PostgreSQL via Docker Compose
 
 ### Key Configuration Files
+
 - **Rails**: `culture_rails/config/application.rb` - Main Rails config
 - **Next.js**: `culture-web/next.config.ts` - Standalone output enabled
 - **Docker**: `culture_rails/docker-compose.yml` - Local development
@@ -176,6 +192,7 @@ terraform output     # View outputs (service URLs, etc.)
 - **CI/CD**: `.github/workflows/deploy-culture-web.yml` - Deployment pipeline
 
 ### Common Development Tasks
+
 - **Adding API endpoints**: Create controllers in `culture_rails/app/controllers/`
 - **Frontend pages**: Add to `culture-web/src/app/`
 - **Database changes**: Rails migrations in `culture_rails/db/migrate/`
@@ -183,6 +200,7 @@ terraform output     # View outputs (service URLs, etc.)
 - **Dependencies**: Update `Gemfile` or `package.json` respectively
 
 ### Testing Strategy
+
 - **Backend**: RSpec with FactoryBot for unit/integration tests
 - **System Tests**: Capybara for end-to-end testing
 - **API Validation**: Committee Rails for OpenAPI compliance
