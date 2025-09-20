@@ -1,17 +1,3 @@
-resource "google_project_service" "required_apis" {
-  for_each = toset([
-    "run.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "secretmanager.googleapis.com"
-  ])
-
-  project = var.project_id
-  service = each.value
-
-  disable_dependent_services = false
-}
-
 # Rails master key secret (existing, created per environment)
 data "google_secret_manager_secret" "rails_master_key" {
   secret_id = var.rails_master_key_secret_name
@@ -128,7 +114,6 @@ resource "google_cloud_run_service" "culture_rails" {
   }
 
   depends_on = [
-    google_project_service.required_apis,
     data.google_artifact_registry_repository.culture_rails
   ]
 }
