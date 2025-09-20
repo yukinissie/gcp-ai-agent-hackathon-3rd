@@ -22,18 +22,6 @@ locals {
   deletion_protection   = var.deletion_protection != null ? var.deletion_protection : local.environment_configs[var.environment].deletion_protection
 }
 
-resource "google_project_service" "sql_apis" {
-  for_each = toset([
-    "sqladmin.googleapis.com",
-    "servicenetworking.googleapis.com"
-  ])
-
-  project = var.project_id
-  service = each.value
-
-  disable_dependent_services = false
-}
-
 resource "random_id" "db_name_suffix" {
   byte_length = 4
 }
@@ -102,7 +90,6 @@ resource "google_sql_database_instance" "culture_rails_postgres" {
   deletion_protection = local.deletion_protection
 
   depends_on = [
-    google_project_service.sql_apis,
     google_service_networking_connection.private_vpc_connection
   ]
 }
@@ -120,8 +107,6 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   network                 = var.vpc_network_id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
-
-  depends_on = [google_project_service.sql_apis]
 }
 
 resource "google_sql_database" "culture_rails_database" {
@@ -158,13 +143,6 @@ resource "google_secret_manager_secret" "database_password" {
 resource "google_secret_manager_secret_version" "database_password" {
   secret      = google_secret_manager_secret.database_password.id
   secret_data = random_password.database_password.result
-}
-
-resource "google_project_service" "secret_manager" {
-  project = var.project_id
-  service = "secretmanager.googleapis.com"
-
-  disable_dependent_services = false
 }
 
 data "google_compute_default_service_account" "default" {
