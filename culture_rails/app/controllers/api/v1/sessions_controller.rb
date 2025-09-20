@@ -8,7 +8,6 @@ class Api::V1::SessionsController < ApplicationController
 
     if user_credential = UserCredential.authenticate_by(email_address: email_address, password: password)
       start_new_session_for user_credential.user
-      @user = user_credential.user
 
       # Set-Cookieヘッダーを直接設定（APIモード対応）
       response.set_header(
@@ -16,10 +15,22 @@ class Api::V1::SessionsController < ApplicationController
         "session_token=#{Current.session.id}; Path=/; HttpOnly; SameSite=Lax"
       )
 
-      render :create, status: :created
+      render json: {
+        success: true,
+        data: {
+          user: {
+            id: user_credential.user.id,
+            email_address: user_credential.email_address,
+            created_at: user_credential.user.created_at
+          }
+        }
+      }, status: :created
     else
-      @error = "Invalid email or password"
-      render :error, status: :unauthorized
+      render json: {
+        success: false,
+        error: "invalid_credentials",
+        message: "Email address or password is incorrect"
+      }, status: :unauthorized
     end
   end
 
