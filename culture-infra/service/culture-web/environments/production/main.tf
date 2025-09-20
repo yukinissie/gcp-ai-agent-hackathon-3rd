@@ -32,6 +32,8 @@ module "culture_web" {
   # Load balancer configuration - ingress controls access, not IAM
   ingress = "internal-and-cloud-load-balancing"
 
+  rails_api_host_secret_name = "${var.service_name}-rails-api-host-production"
+
   # Artifact Registry dependency
   depends_on = [google_artifact_registry_repository.culture_web]
 }

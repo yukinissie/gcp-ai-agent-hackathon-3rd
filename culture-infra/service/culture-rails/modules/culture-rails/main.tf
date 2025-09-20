@@ -99,12 +99,17 @@ resource "google_cloud_run_service" "culture_rails" {
     }
 
     metadata {
-      annotations = {
+      annotations = merge({
         "autoscaling.knative.dev/minScale"         = tostring(var.min_instances)
         "autoscaling.knative.dev/maxScale"         = tostring(var.max_instances)
         "run.googleapis.com/cpu-throttling"        = "false"
         "run.googleapis.com/execution-environment" = "gen2"
-      }
+      }, var.vpc_network_id != null ? {
+        "run.googleapis.com/vpc-access-egress" = "private-ranges-only"
+        "run.googleapis.com/network-interfaces" = jsonencode([{
+          network = var.vpc_network_id
+        }])
+      } : {})
     }
   }
 
