@@ -66,3 +66,9 @@ variable "ingress" {
     error_message = "Ingress must be one of: 'all', 'internal', 'internal-and-cloud-load-balancing', or 'none'."
   }
 }
+
+variable "rails_api_host_secret_name" {
+  description = "The name of the Secret Manager secret that contains the Rails API host URL"
+  type        = string
+  default     = ""
+}

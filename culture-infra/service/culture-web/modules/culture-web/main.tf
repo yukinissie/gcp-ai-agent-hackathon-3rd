@@ -5,6 +5,13 @@ data "google_artifact_registry_repository" "culture_web" {
   repository_id = "culture-web"
 }
 
+
+data "google_secret_manager_secret" "rails_api_host" {
+  secret_id = var.rails_api_host_secret_name
+  project   = var.project_id
+}
+
+
 resource "google_cloud_run_service" "culture_web" {
   name     = var.service_name
   location = var.region
@@ -34,6 +41,16 @@ resource "google_cloud_run_service" "culture_web" {
         env {
           name  = "NEXT_PUBLIC_CDN_ENABLED"
           value = "true"
+        }
+
+        env {
+          name  = "RAILS_API_HOST"
+          value_from {
+            secret_key_ref {
+              name = var.rails_api_host_secret_name
+              key  = "latest"
+            }
+          }
         }
 
         resources {
@@ -98,4 +115,18 @@ resource "google_cloud_run_service_iam_binding" "invoker" {
   service  = google_cloud_run_service.culture_web.name
   role     = "roles/run.invoker"
   members  = ["allUsers"]
+}
+
+# IAM binding for Secret Manager access
+data "google_project" "project" {
+  project_id = var.project_id
+}
+
+resource "google_secret_manager_secret_iam_binding" "rails_api_host_access" {
+  project   = var.project_id
+  secret_id = data.google_secret_manager_secret.rails_api_host.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  members = [
+    "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",
+  ]
 }

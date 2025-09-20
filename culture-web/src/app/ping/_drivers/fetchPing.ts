@@ -8,7 +8,7 @@ type FetchPingResult = {
 
 export async function fetchPing(): Promise<FetchPingResult> {
   try {
-    const res = await fetch(`${process.env.RAILS_API}/api/v1/ping`, {
+    const res = await fetch(`${process.env.RAILS_API_HOST}/api/v1/ping`, {
       cache: "no-store",
     });
     if (!res.ok) {
