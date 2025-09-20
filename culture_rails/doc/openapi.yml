@@ -80,6 +80,163 @@ paths:
               schema:
                 $ref: "#/components/schemas/ValidationError"
 
+  /ping:
+    get:
+      summary: 疎通テスト用Ping API
+      description: APIの疎通確認用エンドポイント
+      tags: [疎通テスト]
+      responses:
+        "200":
+          description: 正常応答
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      message:
+                        type: string
+                        example: "pong"
+                required:
+                  - success
+                  - data
+        "404":
+          description: リソースが見つからない場合
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "not_found"
+                  message:
+                    type: string
+                    example: "リソースが見つかりません"
+                required:
+                  - success
+                  - error
+                  - message
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "internal_server_error"
+                  message:
+                    type: string
+                    example: "予期せぬエラーが発生しました"
+                required:
+                  - success
+                  - error
+                  - message
+    post:
+      summary: 疎通テスト用Ping API（POST）
+      description: 疎通テスト用のPOSTエンドポイント。任意のメッセージを送信して確認できる。
+      tags: [疎通テスト]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                message:
+                  type: string
+                  example: "hello ping"
+              required:
+                - message
+      responses:
+        "201":
+          description: 正常応答（作成）
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      message:
+                        type: string
+                        example: "hello ping"
+                required:
+                  - success
+                  - data
+        "404":
+          description: リソースが見つからない場合
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "not_found"
+                  message:
+                    type: string
+                    example: "リソースが見つかりません"
+                required:
+                  - success
+                  - error
+                  - message
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "internal_server_error"
+                  message:
+                    type: string
+                    example: "予期せぬエラーが発生しました"
+                required:
+                  - success
+                  - error
+                  - message
+
   /users/{id}:
     get:
       summary: Get user information

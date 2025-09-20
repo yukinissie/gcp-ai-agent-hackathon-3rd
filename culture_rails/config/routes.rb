@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # 新しい設計でのルートは後で追加
+      resources :ping, only: [ :index, :create ]
     end
   end
 
