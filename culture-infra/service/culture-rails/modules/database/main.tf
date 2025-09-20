@@ -9,7 +9,7 @@ locals {
     }
     production = {
       db_tier               = "db-g1-small"
-      availability_type     = "REGIONAL"
+      availability_type     = "ZONAL"
       disk_size            = 20
       deletion_protection   = true
     }

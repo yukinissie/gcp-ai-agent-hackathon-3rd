@@ -16,7 +16,6 @@ env:
   GAR_LOCATION: asia-northeast1
   SERVICE: culture-rails-staging
   REGION: asia-northeast1
-  DB_NAME: ${{ secrets.STG_DB_NAME }}
   DB_USER: ${{ secrets.STG_DB_USER }}
   DB_PASSWORD: ${{ secrets.STG_DB_PASSWORD }}
   INSTANCE_CONNECTION_NAME: ${{ secrets.STG_INSTANCE_CONNECTION_NAME }}
