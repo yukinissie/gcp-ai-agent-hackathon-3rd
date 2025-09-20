@@ -7,14 +7,14 @@ class Api::V1::PingController < ApplicationController
 
     if ping
       @ping = ping
-      render :index, status: :ok
+      render :index, status: :ok, formats: :json
     else
       @error = {
         success: false,
         error: "not_found",
         message: "リソースが見つかりません"
       }
-      render :error, status: :not_found
+      render :error, status: :not_found, formats: :json
     end
   end
 
@@ -24,14 +24,14 @@ class Api::V1::PingController < ApplicationController
 
     if ping.save
       @ping = ping
-      render :create, status: :created
+      render :create, status: :created, formats: :json
     else
       @error = {
         success: false,
         error: "validation_error",
         message: ping.errors.full_messages.join(", ")
       }
-      render :error, status: :unprocessable_entity
+      render :error, status: :unprocessable_entity, formats: :json
     end
   rescue => e
     @error = {
@@ -39,6 +39,6 @@ class Api::V1::PingController < ApplicationController
       error: "internal_server_error",
       message: "予期せぬエラーが発生しました"
     }
-    render :error, status: :internal_server_error
+    render :error, status: :internal_server_error, formats: :json
   end
 end
