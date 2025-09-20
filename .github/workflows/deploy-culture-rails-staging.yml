@@ -82,7 +82,7 @@ jobs:
 
       - name: Run db:migrate
         run: |
-          docker run --rm -it \
+          docker run --rm \
             --add-host=host.docker.internal:host-gateway \
             -e RAILS_ENV=production \
             -e DATABASE_USER=${{ env.DB_USER }} \
