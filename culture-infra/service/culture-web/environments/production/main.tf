@@ -25,9 +25,9 @@ module "culture_web" {
   environment  = "production"
 
   min_instances = 1
-  max_instances = 20
-  cpu_limit     = "4"
-  memory_limit  = "4Gi"
+  max_instances = 1
+  cpu_limit     = "1"
+  memory_limit  = "512Mi"
 
   # Load balancer configuration - ingress controls access, not IAM
   ingress = "internal-and-cloud-load-balancing"

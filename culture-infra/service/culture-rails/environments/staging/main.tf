@@ -25,13 +25,19 @@ data "google_compute_network" "default" {
   project = var.project_id
 }
 
+resource "google_compute_network" "staging" {
+  name                    = "culture-staging-network"
+  auto_create_subnetworks = true
+  project                 = var.project_id
+}
+
 module "database" {
   source = "../../modules/database"
 
   project_id     = var.project_id
   region         = var.region
   environment    = "staging"
-  vpc_network_id = data.google_compute_network.default.id
+  vpc_network_id = google_compute_network.staging.id
 
   db_tier               = "db-f1-micro"
   availability_type     = "ZONAL"
@@ -48,10 +54,10 @@ module "culture_rails" {
   service_name = "${var.service_name}-staging"
   environment  = "staging"
 
-  min_instances = 0
-  max_instances = 5
-  cpu_limit     = "2"
-  memory_limit  = "4Gi"
+  min_instances = 1
+  max_instances = 1
+  cpu_limit     = "1"
+  memory_limit  = "512Mi"
 
   # Database configuration
   database_url                  = module.database.database_url
@@ -60,6 +66,9 @@ module "culture_rails" {
   database_name                 = module.database.database_name
   database_user                 = module.database.database_user
   database_password_secret_name = module.database.database_password_secret_name
+
+  # Rails configuration
+  rails_master_key_secret_name  = "culture-rails-master-key-staging"
 
   # Dependencies
   depends_on = [module.database]

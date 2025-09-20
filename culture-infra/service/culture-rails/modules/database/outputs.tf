@@ -3,6 +3,11 @@ output "database_instance_name" {
   value       = google_sql_database_instance.culture_rails_postgres.name
 }
 
+output "database_instance_id" {
+  description = "The ID of the Cloud SQL instance"
+  value       = google_sql_database_instance.culture_rails_postgres.id
+}
+
 output "database_instance_connection_name" {
   description = "The connection name of the Cloud SQL instance"
   value       = google_sql_database_instance.culture_rails_postgres.connection_name
@@ -43,4 +48,20 @@ output "database_host" {
 output "database_port" {
   description = "The database port"
   value       = "5432"
+}
+
+output "environment" {
+  description = "The environment this database is deployed to"
+  value       = var.environment
+}
+
+output "database_config" {
+  description = "Database configuration used for this environment"
+  value = {
+    tier               = local.db_tier
+    availability_type  = local.availability_type
+    disk_size         = local.disk_size
+    deletion_protection = local.deletion_protection
+    environment       = var.environment
+  }
 }

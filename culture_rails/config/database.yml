@@ -13,7 +13,7 @@ development:
   <<: *default
   database: culture_rails_development
   username: <%= ENV['DATABASE_USER'] || 'yusa' %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
+  password: "<%= ENV['DATABASE_PASSWORD'] %>"
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
 
 # Warning: The database defined as "test" will be erased and
@@ -23,7 +23,7 @@ test:
   <<: *default
   database: culture_rails_test
   username: <%= ENV['DATABASE_USER'] || 'yusa' %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
+  password: "<%= ENV['DATABASE_PASSWORD'] %>"
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
 
 production:
@@ -31,26 +31,26 @@ production:
     <<: *default
     database: culture_rails_production
     username: <%= ENV["DATABASE_USER"] || "postgres" %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
+    password: "<%= ENV["DATABASE_PASSWORD"] %>"
     host: <%= ENV["DATABASE_HOST"] || "localhost" %>
   cache:
     <<: *default
     database: culture_rails_production_cache
     username: <%= ENV["DATABASE_USER"] || "postgres" %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
+    password: "<%= ENV["DATABASE_PASSWORD"] %>"
     host: <%= ENV["DATABASE_HOST"] || "localhost" %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
     database: culture_rails_production_queue
     username: <%= ENV["DATABASE_USER"] || "postgres" %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
+    password: "<%= ENV["DATABASE_PASSWORD"] %>"
     host: <%= ENV["DATABASE_HOST"] || "localhost" %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
     database: culture_rails_production_cable
     username: <%= ENV["DATABASE_USER"] || "postgres" %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
+    password: "<%= ENV["DATABASE_PASSWORD"] %>"
     host: <%= ENV["DATABASE_HOST"] || "localhost" %>
     migrations_paths: db/cable_migrate

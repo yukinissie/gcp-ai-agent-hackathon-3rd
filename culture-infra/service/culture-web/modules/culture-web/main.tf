@@ -1,16 +1,3 @@
-resource "google_project_service" "required_apis" {
-  for_each = toset([
-    "run.googleapis.com",
-    "cloudbuild.googleapis.com",
-    "artifactregistry.googleapis.com"
-  ])
-
-  project = var.project_id
-  service = each.value
-
-  disable_dependent_services = false
-}
-
 # Artifact Registry is managed externally (in production environment)
 data "google_artifact_registry_repository" "culture_web" {
   location      = var.region
@@ -22,6 +9,12 @@ resource "google_cloud_run_service" "culture_web" {
   name     = var.service_name
   location = var.region
   project  = var.project_id
+
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = var.ingress
+    }
+  }
 
   template {
     spec {
@@ -82,7 +75,6 @@ resource "google_cloud_run_service" "culture_web" {
         "autoscaling.knative.dev/maxScale"         = tostring(var.max_instances)
         "run.googleapis.com/cpu-throttling"        = "false"
         "run.googleapis.com/execution-environment" = "gen2"
-        "run.googleapis.com/ingress"               = var.ingress
       }
     }
   }
@@ -93,7 +85,6 @@ resource "google_cloud_run_service" "culture_web" {
   }
 
   depends_on = [
-    google_project_service.required_apis,
     data.google_artifact_registry_repository.culture_web
   ]
 }
