@@ -18,13 +18,13 @@ variable "db_name" {
 variable "database_name" {
   description = "Name of the database within the instance"
   type        = string
-  default     = "culture_rails"
+  default     = "culture-rails"
 }
 
 variable "database_user" {
   description = "Database user name"
   type        = string
-  default     = "culture_rails_user"
+  default     = "culture-rails-user"
 }
 
 variable "database_version" {

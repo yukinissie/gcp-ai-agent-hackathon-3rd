@@ -110,7 +110,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 }
 
 resource "google_sql_database" "culture_rails_database" {
-  name     = var.database_name
+  name     = "${var.database_name}-${var.environment}"
   instance = google_sql_database_instance.culture_rails_postgres.name
   project  = var.project_id
 }
@@ -121,7 +121,7 @@ resource "random_password" "database_password" {
 }
 
 resource "google_sql_user" "database_user" {
-  name     = var.database_user
+  name     = "${var.database_user}-${var.environment}"
   instance = google_sql_database_instance.culture_rails_postgres.name
   password = random_password.database_password.result
   project  = var.project_id
