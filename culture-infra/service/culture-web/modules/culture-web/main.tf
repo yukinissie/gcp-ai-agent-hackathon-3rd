@@ -10,6 +10,12 @@ resource "google_cloud_run_service" "culture_web" {
   location = var.region
   project  = var.project_id
 
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = var.ingress
+    }
+  }
+
   template {
     spec {
       containers {
@@ -69,7 +75,6 @@ resource "google_cloud_run_service" "culture_web" {
         "autoscaling.knative.dev/maxScale"         = tostring(var.max_instances)
         "run.googleapis.com/cpu-throttling"        = "false"
         "run.googleapis.com/execution-environment" = "gen2"
-        "run.googleapis.com/ingress"               = var.ingress
       }
     }
   }
