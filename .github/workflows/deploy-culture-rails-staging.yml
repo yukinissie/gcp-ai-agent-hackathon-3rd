@@ -85,7 +85,9 @@ jobs:
           docker run --rm -it \
             --add-host=host.docker.internal:host-gateway \
             -e RAILS_ENV=production \
-            -e DATABASE_URL="postgresql://${{ env.STG_DB_USER }}:${{ env.STG_DB_PASSWORD }}@host.docker.internal:5432/${{ env.STG_DB_NAME }}" \
+            -e DATABASE_USER=${{ env.DB_USER }} \
+            -e DATABASE_PASSWORD=${{ env.DB_PASSWORD }} \
+            -e DATABASE_HOST=host.docker.internal \
             -e RAILS_MASTER_KEY=${{ env.RAILS_MASTER_KEY }} \
             ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/culture-rails/culture-rails:latest \
             bash -lc "bundle exec rails db:migrate"
