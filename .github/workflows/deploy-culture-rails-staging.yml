@@ -19,6 +19,7 @@ env:
   DB_NAME: ${{ secrets.STG_DB_NAME }}
   DB_USER: ${{ secrets.STG_DB_USER }}
   DB_PASSWORD: ${{ secrets.STG_DB_PASSWORD }}
+  INSTANCE_CONNECTION_NAME: ${{ secrets.STG_INSTANCE_CONNECTION_NAME }}
 
 jobs:
   deploy:
@@ -62,10 +63,21 @@ jobs:
           build-args: |
             BUILDKIT_INLINE_CACHE=1
 
-      - name: Set up Cloud SQL Auth Proxy
+      - name: Download Cloud SQL Auth Proxy v2
         run: |
-          gcloud auth configure-docker
-          gcloud components install cloud-sql-proxy
+          curl -L -o cloud-sql-proxy "https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.2/cloud-sql-proxy.linux.amd64"
+          chmod +x cloud-sql-proxy
+
+      - name: Start Cloud SQL Auth Proxy
+        run: |
+          # localhost:5432 で待受（Postgres）
+          ./cloud-sql-proxy --port 5432 "${{ env.INSTANCE_CONNECTION_NAME }}" > proxy.log 2>&1 &
+          # 起動待ち（シンプルにリトライ）
+          for i in {1..20}; do
+            (echo >/dev/tcp/127.0.0.1/5432) >/dev/null 2>&1 && echo "Proxy up" && break
+            echo "Waiting proxy..."; sleep 1
+          done
+          tail -n +1 proxy.log || true
 
       - name: Run db:migrate
         run: |
