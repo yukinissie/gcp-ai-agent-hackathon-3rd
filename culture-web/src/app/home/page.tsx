@@ -4,6 +4,7 @@ import { Container, Box, Flex, IconButton } from '@radix-ui/themes';
 import { ArticleList } from './_components/ArticleList';
 import { ChatSidebar } from './_components/ChatSidebar';
 import type { Article } from './_components/types';
+import { homeStyles } from './_styles/page.styles';
 
 const sampleArticles: Article[] = [
   {
@@ -86,15 +87,10 @@ export default function Home(){
   };
 
   return (
-    <Flex style={{ height: '100vh' }}>
+    <Flex style={homeStyles.mainContainer}>
       <Box 
         id="main-content"
-        style={{ 
-          flex: 1,
-          marginRight: '400px',
-          overflow: 'auto',
-          transition: 'margin-right 0.3s ease',
-        }}
+        style={homeStyles.mainContent}
       >
         <Container size="4">
           <Box py="6">
@@ -106,14 +102,7 @@ export default function Home(){
       {/* AIチャットサイドパネル */}
       <Box
         id="chat-sidebar"
-        style={{
-          position: 'fixed',
-          right: 0,
-          top: 0,
-          height: '100vh',
-          width: '400px',
-          transition: 'transform 0.3s ease',
-        }}
+        style={homeStyles.chatSidebar}
       >
         <ChatSidebar 
           onSendMessage={handleChatMessage} 
@@ -124,30 +113,12 @@ export default function Home(){
       <Box
         id="reopen-chat-button"
         onClick={handleOpenChat}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #ff6b6b, #ffd93d)',
-          display: 'none',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          transition: 'transform 0.2s, box-shadow 0.2s',
-          fontSize: '24px',
-          zIndex: 1001,
-        }}
+        style={homeStyles.reopenChatButton}
         onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'scale(1.1)';
-          e.currentTarget.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+          Object.assign(e.currentTarget.style, homeStyles.reopenButtonHover);
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+          Object.assign(e.currentTarget.style, homeStyles.reopenButtonLeave);
         }}
         title="チャットを開く"
       >

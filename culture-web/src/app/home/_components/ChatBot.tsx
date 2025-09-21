@@ -1,6 +1,7 @@
 import { Box, Card, Heading, Flex, Text } from '@radix-ui/themes';
 import { ChatInput } from './ChatInput';
 import { ChatBotProps } from './chatTypes';
+import { chatBotStyles } from '../_styles/chatBot.styles';
 
 export function ChatBot({ 
   onSendMessage,
@@ -19,45 +20,19 @@ export function ChatBot({
   return (
     <Box 
       className={className}
-      style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 1000,
-      }}
+      style={chatBotStyles.container}
     >
       <Card
-        style={{
-          width: '350px',
-          height: '400px',
-          marginBottom: '10px',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-        }}
+        style={chatBotStyles.card}
         variant="classic"
       >
         {/* メッセージエリア */}
         <Box 
           p="3" 
-          style={{ 
-            flex: 1, 
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          style={chatBotStyles.messageArea}
         >
-          <Box
-            style={{
-              maxWidth: '80%',
-              padding: '12px 16px',
-              borderRadius: '12px',
-              backgroundColor: 'var(--gray-3)',
-              color: 'var(--gray-12)',
-              textAlign: 'center',
-            }}
-          >
-            <Text size="2" style={{ lineHeight: '1.4' }}>
+          <Box style={chatBotStyles.messageBox}>
+            <Text size="2" style={chatBotStyles.messageText}>
               {welcomeMessage}
             </Text>
           </Box>
@@ -66,11 +41,7 @@ export function ChatBot({
         {/* 入力エリア */}
         <Box
           p="3"
-          style={{
-            borderTop: '1px solid var(--gray-6)',
-            backgroundColor: 'var(--gray-1)',
-            borderRadius: '0 0 12px 12px',
-          }}
+          style={chatBotStyles.inputArea}
         >
           <ChatInput
             onSendMessage={handleSendMessage}
@@ -80,20 +51,7 @@ export function ChatBot({
       </Card>
 
       {/* ロボットアイコン（装飾のみ） */}
-      <Box
-        style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #ff6b6b, #ffd93d)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          fontSize: '24px',
-          marginLeft: 'auto',
-        }}
-      >
+      <Box style={chatBotStyles.robotIcon}>
         🤖
       </Box>
     </Box>

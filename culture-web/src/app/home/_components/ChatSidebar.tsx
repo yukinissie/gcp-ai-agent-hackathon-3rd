@@ -1,6 +1,7 @@
 import { Box, Heading, Flex, ScrollArea, IconButton, Text } from '@radix-ui/themes';
 import { ChatInput } from './ChatInput';
 import { ChatBotProps } from './chatTypes';
+import { chatSidebarStyles } from '../_styles/chatSidebar.styles';
 
 export function ChatSidebar({ 
   onSendMessage,
@@ -27,27 +28,14 @@ export function ChatSidebar({
   return (
     <Box
       className={className}
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'var(--gray-1)',
-        borderLeft: '1px solid var(--gray-6)',
-        width: '400px',
-        minWidth: '350px',
-      }}
+      style={chatSidebarStyles.container}
     >
       <Flex
         justify="between"
         align="center"
         px="3"
         py="2"
-        style={{
-          borderBottom: '1px solid var(--gray-6)',
-          backgroundColor: 'var(--gray-2)',
-          height: '40px',
-          minHeight: '40px',
-        }}
+        style={chatSidebarStyles.header}
       >
         <Flex align="center" gap="2">
           <Text size="2" weight="medium" color="gray">
@@ -60,12 +48,7 @@ export function ChatSidebar({
               variant="ghost"
               size="1"
               onClick={onClose}
-              style={{ 
-                cursor: 'pointer',
-                color: 'var(--gray-11)',
-                width: '24px',
-                height: '24px',
-              }}
+              style={chatSidebarStyles.closeButton}
             >
               ✕
             </IconButton>
@@ -73,24 +56,15 @@ export function ChatSidebar({
         </Flex>
       </Flex>
       {/* メッセージエリア */}
-      <Box style={{ flex: 1, position: 'relative', minHeight: 0 }}>
-        <ScrollArea style={{ height: '100%' }}>
+      <Box style={chatSidebarStyles.messagesContainer}>
+        <ScrollArea style={chatSidebarStyles.scrollArea}>
           <Box p="3">
             {/* 固定メッセージのみ表示 */}
             {staticMessages.map((message) => (
               <Flex key={message.id} direction="column" align="start" mb="3">
                 <Flex align="center" gap="2" mb="1">
                   <Box
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--accent-9)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '12px',
-                    }}
+                    style={chatSidebarStyles.avatarBox}
                   >
                     🤖
                   </Box>
@@ -102,16 +76,9 @@ export function ChatSidebar({
                   </Text>
                 </Flex>
                 <Box
-                  style={{
-                    maxWidth: '80%',
-                    padding: '8px 12px',
-                    borderRadius: '12px',
-                    backgroundColor: 'var(--gray-3)',
-                    color: 'var(--gray-12)',
-                    wordBreak: 'break-word',
-                  }}
+                  style={chatSidebarStyles.messageBox}
                 >
-                  <Text size="2" style={{ lineHeight: '1.4' }}>
+                  <Text size="2" style={chatSidebarStyles.messageText}>
                     {message.content}
                   </Text>
                 </Box>
@@ -124,11 +91,7 @@ export function ChatSidebar({
       {/* 入力エリア */}
       <Box
         p="3"
-        style={{
-          borderTop: '1px solid var(--gray-6)',
-          backgroundColor: 'var(--gray-2)',
-          minHeight: '70px',
-        }}
+        style={chatSidebarStyles.inputArea}
       >
         <ChatInput
           onSendMessage={handleSendMessage}

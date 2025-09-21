@@ -1,5 +1,6 @@
 import { Card, Text, Heading, Badge, Flex, Box } from '@radix-ui/themes';
 import { ArticleCardProps } from './types';
+import { articleCardStyles } from '../_styles/articleCard.styles';
 
 export function ArticleCard({ article, onClick }: ArticleCardProps) {
   const handleClick = () => {
@@ -18,20 +19,15 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
   return (
     <Card
       variant="surface"
-      style={{ 
-        cursor: onClick ? 'pointer' : 'default',
-        transition: 'transform 0.2s, box-shadow 0.2s',
-      }}
+      style={onClick ? articleCardStyles.card : articleCardStyles.cardDefault}
       onMouseEnter={(e) => {
         if (onClick) {
-          e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+          Object.assign(e.currentTarget.style, articleCardStyles.cardHover);
         }
       }}
       onMouseLeave={(e) => {
         if (onClick) {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = '';
+          Object.assign(e.currentTarget.style, articleCardStyles.cardLeave);
         }
       }}
       onClick={handleClick}
@@ -39,29 +35,17 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
       <Flex gap="4" align="start">
         {/* 画像部分 */}
         {article.imageUrl && (
-          <Box 
-            style={{ 
-              borderRadius: '8px', 
-              overflow: 'hidden',
-              flexShrink: 0,
-              width: '200px',
-              height: '120px'
-            }}
-          >
+          <Box style={articleCardStyles.imageContainer}>
             <img
               src={article.imageUrl}
               alt={article.title}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
+              style={articleCardStyles.image}
             />
           </Box>
         )}
         
         {/* コンテンツ部分 */}
-        <Flex direction="column" gap="2" style={{ flex: 1, minWidth: 0 }}>
+        <Flex direction="column" gap="2" style={articleCardStyles.contentContainer}>
           <Flex align="center" gap="2" wrap="wrap">
             <Badge color="blue" variant="soft">
               {article.category}
@@ -78,13 +62,7 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
           <Text 
             size="2" 
             color="gray" 
-            style={{ 
-              lineHeight: '1.6',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}
+            style={articleCardStyles.excerptText}
           >
             {article.excerpt}
           </Text>
@@ -103,7 +81,7 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
               )}
             </Flex>
             
-            <Text size="2" weight="medium" color="gray" style={{ flexShrink: 0 }}>
+            <Text size="2" weight="medium" color="gray" style={articleCardStyles.authorText}>
               {article.author}
             </Text>
           </Flex>
