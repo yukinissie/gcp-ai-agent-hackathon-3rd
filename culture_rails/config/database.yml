@@ -13,7 +13,7 @@ development:
   <<: *default
   database: culture_rails_development
   username: <%= ENV['DATABASE_USER'] || 'yusa' %>
-  password: "<%= ENV['DATABASE_PASSWORD'] %>"
+  password: <%= ENV['DATABASE_PASSWORD'] %>
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
 
 # Warning: The database defined as "test" will be erased and
@@ -23,7 +23,7 @@ test:
   <<: *default
   database: culture_rails_test
   username: <%= ENV['DATABASE_USER'] || 'yusa' %>
-  password: "<%= ENV['DATABASE_PASSWORD'] %>"
+  password: <%= ENV['DATABASE_PASSWORD'] %>
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
 
 production:

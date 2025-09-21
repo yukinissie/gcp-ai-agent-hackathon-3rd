@@ -43,11 +43,14 @@ class ApplicationController < ActionController::API
     user.sessions.create!(ip_address: request.remote_ip, user_agent: request.user_agent).tap do |session|
       Current.session = session
       cookies.signed.permanent[:session_token] = { value: session.id, httponly: true, same_site: :lax }
+      # CSRF Token をCookieで設定
+      cookies[:csrf_token] = { value: form_authenticity_token, same_site: :lax }
     end
   end
 
   def terminate_session
     Current.session&.destroy
     cookies.delete(:session_token)
+    cookies.delete(:csrf_token)
   end
 end

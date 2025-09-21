@@ -1,5 +1,6 @@
 class Api::V1::SessionsController < ApplicationController
   skip_before_action :authenticate, only: [ :create ]
+  skip_before_action :verify_authenticity_token, only: [ :create ]
   before_action :require_authentication, only: [ :destroy ]
 
   def create
@@ -10,12 +11,6 @@ class Api::V1::SessionsController < ApplicationController
       start_new_session_for user_credential.user
       @user = user_credential.user
       @user_credential = user_credential
-
-      # Set-Cookieヘッダーを直接設定（APIモード対応）
-      response.set_header(
-        "Set-Cookie",
-        "session_token=#{Current.session.id}; Path=/; HttpOnly; SameSite=Lax"
-      )
 
       render :create, status: :created
     else

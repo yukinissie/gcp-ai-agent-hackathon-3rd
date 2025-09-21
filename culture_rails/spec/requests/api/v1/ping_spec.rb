@@ -63,7 +63,7 @@ RSpec.describe 'Api::V1::Ping', type: :request do
     context 'メッセージが空の場合' do
       it '422エラーが返ること' do
         post '/api/v1/ping', params: { message: '' }, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         # Note: OpenAPIでバリデーションエラーのスキーマが定義されていれば追加
         # assert_schema_conform(422)
 
@@ -77,7 +77,7 @@ RSpec.describe 'Api::V1::Ping', type: :request do
     context 'メッセージパラメータが送信されない場合' do
       it '422エラーが返ること' do
         post '/api/v1/ping', params: {}, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body[:success]).to eq(false)

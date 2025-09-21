@@ -46,7 +46,7 @@ RSpec.describe 'Api::V1::User', type: :request do
           post '/api/v1/user', params: invalid_params, as: :json
         }.not_to change(User, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
 
         json = JSON.parse(response.body)
         expect(json['success']).to be false

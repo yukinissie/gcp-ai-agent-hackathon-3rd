@@ -31,7 +31,7 @@ class Api::V1::PingController < ApplicationController
         error: "validation_error",
         message: ping.errors.full_messages.join(", ")
       }
-      render :error, status: :unprocessable_entity, formats: :json
+      render :error, status: :unprocessable_content, formats: :json
     end
   rescue => e
     @error = {

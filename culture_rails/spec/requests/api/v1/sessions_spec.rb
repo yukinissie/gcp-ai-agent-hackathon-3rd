@@ -20,12 +20,11 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         post '/api/v1/session', params: params, as: :json
 
         expect(response).to have_http_status(:created)
-        # Set-Cookieヘッダーがnilの場合はresponse.cookiesも確認
-        if response.headers['Set-Cookie'].present?
-          expect(response.headers['Set-Cookie']).to include('session_token')
-        else
-          expect(response.cookies['session_token']).to be_present
-        end
+        
+        # Set-Cookieヘッダーの内容を確認
+        set_cookie_headers = response.headers['Set-Cookie']
+        expect(set_cookie_headers).to include(match(/session_token=/))
+        expect(set_cookie_headers).to include(match(/csrf_token=/))
       end
 
       it 'ユーザー情報が返ること' do

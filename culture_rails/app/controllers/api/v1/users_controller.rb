@@ -1,5 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   skip_before_action :authenticate, only: [ :create ]
+  skip_before_action :verify_authenticity_token, only: [ :create ]
 
   def create
     user = User.new
@@ -12,7 +13,7 @@ class Api::V1::UsersController < ApplicationController
       render :create, status: :created
     else
       @errors = user.errors.full_messages + user_credential.errors.full_messages
-      render :error, status: :unprocessable_entity
+      render :error, status: :unprocessable_content
     end
   end
 
