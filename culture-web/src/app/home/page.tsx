@@ -1,6 +1,7 @@
 'use client';
 
-import { Container, Box, Flex, IconButton } from '@radix-ui/themes';
+import { useState } from 'react';
+import { Container, Box, Flex, IconButton, Text } from '@radix-ui/themes';
 import { ArticleList } from './_components/ArticleList';
 import { ChatSidebar } from './_components/ChatSidebar';
 import type { Article } from './_components/types';
@@ -58,39 +59,27 @@ const sampleArticles: Article[] = [
 ];
 
 export default function Home(){
+  const [isChatOpen, setIsChatOpen] = useState(true);
+
   const handleChatMessage = async (message: string): Promise<string> => {
     return `「${message}」について調べています。`;
   };
 
   const handleCloseChat = () => {
-    const chatElement = document.getElementById('chat-sidebar');
-    const mainElement = document.getElementById('main-content');
-    const reopenButton = document.getElementById('reopen-chat-button');
-    
-    if (chatElement && mainElement && reopenButton) {
-      chatElement.style.display = 'none';
-      mainElement.style.marginRight = '0';
-      reopenButton.style.display = 'block';
-    }
+    setIsChatOpen(false);
   };
 
   const handleOpenChat = () => {
-    const chatElement = document.getElementById('chat-sidebar');
-    const mainElement = document.getElementById('main-content');
-    const reopenButton = document.getElementById('reopen-chat-button');
-    
-    if (chatElement && mainElement && reopenButton) {
-      chatElement.style.display = 'flex';
-      mainElement.style.marginRight = '400px';
-      reopenButton.style.display = 'none';
-    }
+    setIsChatOpen(true);
   };
 
   return (
     <Flex style={homeStyles.mainContainer}>
       <Box 
-        id="main-content"
-        style={homeStyles.mainContent}
+        style={{
+          ...homeStyles.mainContent,
+          marginRight: isChatOpen ? '400px' : '0',
+        }}
       >
         <Container size="4">
           <Box py="6">
@@ -100,30 +89,35 @@ export default function Home(){
       </Box>
       
       {/* AIチャットサイドパネル */}
-      <Box
-        id="chat-sidebar"
-        style={homeStyles.chatSidebar}
-      >
-        <ChatSidebar 
-          onSendMessage={handleChatMessage} 
-          onClose={handleCloseChat}
-        />
-      </Box>
+      {isChatOpen && (
+        <Box
+          style={homeStyles.chatSidebar}
+        >
+          <ChatSidebar 
+            onSendMessage={handleChatMessage} 
+            onClose={handleCloseChat}
+          />
+        </Box>
+      )}
 
-      <Box
-        id="reopen-chat-button"
-        onClick={handleOpenChat}
-        style={homeStyles.reopenChatButton}
-        onMouseEnter={(e) => {
-          Object.assign(e.currentTarget.style, homeStyles.reopenButtonHover);
-        }}
-        onMouseLeave={(e) => {
-          Object.assign(e.currentTarget.style, homeStyles.reopenButtonLeave);
-        }}
-        title="チャットを開く"
-      >
-        💬
-      </Box>
+      {/* チャット再開ボタン */}
+      {!isChatOpen && (
+        <Box
+          onClick={handleOpenChat}
+          style={homeStyles.reopenChatButton}
+          onMouseEnter={(e) => {
+            Object.assign(e.currentTarget.style, homeStyles.reopenButtonHover);
+          }}
+          onMouseLeave={(e) => {
+            Object.assign(e.currentTarget.style, homeStyles.reopenButtonLeave);
+          }}
+          title="チャットを開く"
+        >
+          <Text size="6" weight="bold">
+
+          </Text>
+        </Box>
+      )}
     </Flex>
   );
 }

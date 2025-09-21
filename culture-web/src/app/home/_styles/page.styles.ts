@@ -24,7 +24,7 @@ export const homeStyles = {
         height: '60px',
         borderRadius: '50%',
         background: 'linear-gradient(135deg, #ff6b6b, #ffd93d)',
-        display: 'none' as const,
+        display: 'flex' as const,
         alignItems: 'center' as const,
         justifyContent: 'center' as const,
         cursor: 'pointer' as const,
