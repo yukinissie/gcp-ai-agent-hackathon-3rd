@@ -161,13 +161,6 @@ The load balancer module includes optimized CDN settings:
 - **Cache Mode**: CACHE_ALL_STATIC
 - **Negative Caching**: 60 seconds for 404/410 errors
 
-### Next.js Optimization
-
-The Cloud Run service includes:
-- `NEXT_PUBLIC_CDN_ENABLED=true` environment variable
-- Proper ingress settings for load balancer integration
-- Optimized health checks for load balancer backend
-
 ## Security Features
 
 - **SSL/TLS**: Google-managed certificates with auto-renewal

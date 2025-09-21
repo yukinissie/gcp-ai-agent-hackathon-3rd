@@ -41,9 +41,8 @@ resource "google_cloud_run_service" "culture_web" {
           value = "production"
         }
 
-        # Add environment variables for better caching with CDN
         env {
-          name  = "NEXT_PUBLIC_CDN_ENABLED"
+          name = "AUTH_TRUST_HOST"
           value = "true"
         }
 
