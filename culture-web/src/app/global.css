@@ -30,3 +30,7 @@
   --danger-1: var(--red-1);
   --danger-2: var(--red-2);
 }
+
+body {
+  margin: 0;
+}

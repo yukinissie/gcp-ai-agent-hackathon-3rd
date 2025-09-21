@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { Theme, ThemePanel } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
+import "./global.css";
 
 export const metadata: Metadata = {
   // TODO: change title and description
@@ -14,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <Theme accentColor="teal" grayColor="sage" appearance="dark">
+          {children}
+          <ThemePanel />
+        </Theme>
+      </body>
     </html>
   );
 }
