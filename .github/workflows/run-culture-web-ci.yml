@@ -1,7 +1,11 @@
-name: Deploy Culture Web to Staging
+name: Run Culture Web CI
 
 on:
   push:
+    branches: [main]
+    paths:
+      - "culture-web/**"
+  pull_request:
     branches: [main]
     paths:
       - "culture-web/**"
@@ -10,11 +14,9 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GAR_LOCATION: asia-northeast1
-  SERVICE: culture-web-staging
-  REGION: asia-northeast1
 
 jobs:
-  deploy:
+  build:
     permissions:
       contents: read
       id-token: write
@@ -49,27 +51,7 @@ jobs:
           push: true
           tags: |
             ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/culture-web/culture-web:${{ github.sha }}
-            ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/culture-web/culture-web:latest
           cache-from: type=gha,scope=culture-web-buildx
           cache-to: type=gha,mode=max,scope=culture-web-buildx
           build-args: |
             BUILDKIT_INLINE_CACHE=1
-
-      - name: Deploy to Cloud Run
-        id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ env.SERVICE }}
-          region: ${{ env.REGION }}
-          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/culture-web/culture-web:${{ github.sha }}
-
-      - name: Show Output
-        run: echo ${{ steps.deploy.outputs.url }}
-
-      # MEMO: Next.js 側できめ細やかなキャッシュ制御をしているので、Cloud CDN 側のキャッシュは無効化しない
-      # - name: Invalidate CDN Cache
-      #   run: |
-      #     gcloud compute url-maps invalidate-cdn-cache culture-web-staging-url-map \
-      #       --path "/*" \
-      #       --project ${{ env.PROJECT_ID }} \
-      #       --async
