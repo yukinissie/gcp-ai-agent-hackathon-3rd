@@ -15,12 +15,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isProd = process.env.NODE_ENV === "production";
   return (
     <html lang="ja" suppressHydrationWarning>
       <body>
         <Theme accentColor="teal" grayColor="sage" appearance="dark">
           {children}
-          <ThemePanel />
+          {!isProd && <ThemePanel />}
         </Theme>
       </body>
     </html>
