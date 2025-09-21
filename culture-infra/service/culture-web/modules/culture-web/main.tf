@@ -11,6 +11,10 @@ data "google_secret_manager_secret" "rails_api_host" {
   project   = var.project_id
 }
 
+data "google_secret_manager_secret" "auth_secret" {
+  secret_id = var.auth_secret_name
+  project   = var.project_id
+}
 
 resource "google_cloud_run_service" "culture_web" {
   name     = var.service_name
@@ -48,6 +52,16 @@ resource "google_cloud_run_service" "culture_web" {
           value_from {
             secret_key_ref {
               name = var.rails_api_host_secret_name
+              key  = "latest"
+            }
+          }
+        }
+
+        env {
+          name = "AUTH_SECRET"
+          value_from {
+            secret_key_ref {
+              name = var.auth_secret_name
               key  = "latest"
             }
           }
@@ -125,6 +139,15 @@ data "google_project" "project" {
 resource "google_secret_manager_secret_iam_binding" "rails_api_host_access" {
   project   = var.project_id
   secret_id = data.google_secret_manager_secret.rails_api_host.secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  members = [
+    "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",
+  ]
+}
+
+resource "google_secret_manager_secret_iam_binding" "auth_secret_access" {
+  project   = var.project_id
+  secret_id = var.auth_secret_name
   role      = "roles/secretmanager.secretAccessor"
   members = [
     "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",

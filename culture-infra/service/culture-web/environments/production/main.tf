@@ -33,6 +33,7 @@ module "culture_web" {
   ingress = "internal-and-cloud-load-balancing"
 
   rails_api_host_secret_name = "${var.service_name}-rails-api-host-production"
+  auth_secret_name           = "${var.service_name}-auth-secret-production"
 
   # Artifact Registry dependency
   depends_on = [google_artifact_registry_repository.culture_web]
