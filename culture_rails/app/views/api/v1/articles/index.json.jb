@@ -1,0 +1,5 @@
+{
+  articles: @articles.map do |article|
+    render partial: 'api/v1/articles/article_summary', locals: { article: article }
+  end
+}

@@ -5,7 +5,7 @@ class Tag < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :category }
   validates :category, presence: true
   
-  enum category: {
+  enum :category, {
     tech: 'tech',
     art: 'art', 
     music: 'music',

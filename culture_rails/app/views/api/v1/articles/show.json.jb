@@ -1,0 +1,23 @@
+{
+  article: {
+    id: @article.id,
+    title: @article.title,
+    summary: @article.summary,
+    content: @article.content,
+    content_format: @article.content_format,
+    author: @article.author,
+    source_url: @article.source_url,
+    image_url: @article.image_url,
+    published: @article.published,
+    published_at: @article.published_at,
+    created_at: @article.created_at,
+    updated_at: @article.updated_at,
+    tags: @article.tags.map do |tag|
+      {
+        id: tag.id,
+        name: tag.name,
+        category: tag.category
+      }
+    end
+  }
+}

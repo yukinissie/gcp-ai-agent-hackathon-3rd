@@ -11,9 +11,12 @@ Rails.application.routes.draw do
       resources :ping, only: [ :index, :create ]
       
       # 記事関連
-      resources :articles do
-        resources :searches, only: [:index], module: 'articles'
+      # 記事検索（独立エンドポイント）- articlesのルートより先に定義
+      namespace :articles do
+        resources :searches, only: [:index]
       end
+      
+      resources :articles
     end
   end
 
