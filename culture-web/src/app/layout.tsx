@@ -15,13 +15,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isProd = process.env.NODE_ENV === "production";
+  const useThemePanel = process.env.NODE_ENV !== "production" && false;
   return (
     <html lang="ja" suppressHydrationWarning>
       <body>
         <Theme accentColor="teal" grayColor="sage" appearance="dark">
           {children}
-          {!isProd && <ThemePanel />}
+          {useThemePanel && <ThemePanel />}
         </Theme>
       </body>
     </html>
