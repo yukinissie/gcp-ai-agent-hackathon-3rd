@@ -83,6 +83,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ValidationError"
+    get:
+      summary: ユーザー詳細取得
+      description: 現在ログイン中のユーザー情報を取得
+      tags: [認証]
+      responses:
+        "200":
+          description: ユーザー情報取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      human_id:
+                        type: string
+                        example: "abc123def456"
+                      email_address:
+                        type: string
+                        format: email
+                        example: "user@example.com"
+                      authenticated:
+                        type: boolean
+                        example: true
+                    required: [id, human_id, email_address, authenticated]
+                required: [success, data]
+        "401":
+          description: 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "authentication_required"
+                  message:
+                    type: string
+                    example: "ログインが必要です"
+                required: [success, error, message]
 
   /ping:
     get:
@@ -241,60 +294,6 @@ paths:
                   - error
                   - message
 
-  /users:
-    get:
-      summary: ユーザー詳細取得
-      description: 現在ログイン中のユーザー情報を取得
-      tags: [認証]
-      responses:
-        "200":
-          description: ユーザー情報取得成功
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: false
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  data:
-                    type: object
-                    additionalProperties: false
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                      human_id:
-                        type: string
-                        example: "abc123def456"
-                      email_address:
-                        type: string
-                        format: email
-                        example: "user@example.com"
-                      authenticated:
-                        type: boolean
-                        example: true
-                    required: [id, human_id, email_address, authenticated]
-                required: [success, data]
-        "401":
-          description: 認証が必要です
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: false
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: "authentication_required"
-                  message:
-                    type: string
-                    example: "ログインが必要です"
-                required: [success, error, message]
 
   /session:
     post:
