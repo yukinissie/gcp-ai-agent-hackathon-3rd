@@ -14,3 +14,21 @@ variable "service_name" {
   type        = string
   default     = "culture-rails"
 }
+
+variable "domains" {
+  description = "List of domains for SSL certificate (empty list for HTTP-only setup)"
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_cdn" {
+  description = "Enable Cloud CDN for the backend service"
+  type        = bool
+  default     = true
+}
+
+variable "cacheable_paths" {
+  description = "List of cacheable paths for CDN (only relevant if enable_cdn is true)"
+  type        = list(string)
+  default     = []
+}

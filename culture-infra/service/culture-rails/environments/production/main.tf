@@ -74,3 +74,18 @@ module "culture_rails" {
     module.database
   ]
 }
+
+module "load_balancer" {
+  source = "../../modules/load-balancer"
+
+  project_id              = var.project_id
+  region                  = var.region
+  service_name            = "${var.service_name}-prod"
+  cloud_run_service_name  = module.culture_rails.service_name
+  domains                 = var.domains
+  enable_cdn              = var.enable_cdn
+  redirect_http_to_https  = true
+  cacheable_paths         = var.cacheable_paths
+
+  depends_on = [module.culture_rails]
+}

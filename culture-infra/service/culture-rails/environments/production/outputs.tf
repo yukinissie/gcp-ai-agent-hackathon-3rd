@@ -28,3 +28,14 @@ output "database_host" {
   value       = module.database.database_host
   sensitive   = true
 }
+
+# Load Balancer outputs
+output "load_balancer_ip" {
+  description = "The external IP address of the load balancer"
+  value       = module.load_balancer.lb_ip_address
+}
+
+output "load_balancer_url" {
+  description = "The URL to access the application via load balancer"
+  value       = module.load_balancer.load_balancer_url
+}

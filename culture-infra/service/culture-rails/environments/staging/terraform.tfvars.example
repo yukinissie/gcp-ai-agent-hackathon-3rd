@@ -2,6 +2,14 @@ project_id   = "your-actual-project-id"
 region       = "asia-northeast1"
 service_name = "culture-rails"
 
+# Custom domain configuration (optional)
+# Leave empty list for HTTP-only setup with IP address
+# domains = ["api-staging.yourdomain.com"]
+
+# CDN configuration (only for static assets, not API responses)
+# enable_cdn = false  # Disabled by default for staging
+# cacheable_paths = ["/assets/*", "/packs/*", "/images/*", "/css/*", "/js/*"]
+
 # Staging Database Configuration (automatically managed by database module)
 # The following variables are configured automatically:
 # - database_url: Generated from database module

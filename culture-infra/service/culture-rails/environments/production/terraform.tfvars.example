@@ -2,6 +2,13 @@ project_id   = "your-actual-project-id"
 region       = "asia-northeast1"
 service_name = "culture-rails"
 
+# Custom domain configuration (required for production HTTPS)
+# domains = ["api.yourdomain.com"]
+
+# CDN configuration (only for static assets, not API responses)
+# enable_cdn = true  # Enabled by default for production
+# cacheable_paths = ["/assets/*", "/packs/*", "/images/*", "/css/*", "/js/*"]
+
 # Production Database Configuration (automatically managed by database module)
 # The following variables are configured automatically:
 # - database_url: Generated from database module
