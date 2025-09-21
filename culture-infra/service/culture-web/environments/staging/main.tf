@@ -34,6 +34,7 @@ module "culture_web" {
   ingress = var.enable_load_balancer ? "internal-and-cloud-load-balancing" : "all"
 
   rails_api_host_secret_name = "${var.service_name}-rails-api-host-staging"
+  auth_secret_name           = "${var.service_name}-auth-secret-staging"
 }
 
 # Optional load balancer with CDN for staging

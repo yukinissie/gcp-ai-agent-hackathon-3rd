@@ -72,3 +72,9 @@ variable "rails_api_host_secret_name" {
   type        = string
   default     = ""
 }
+
+variable "auth_secret_name" {
+  description = "The name of the Secret Manager secret that contains the authentication secret"
+  type        = string
+  default     = ""
+}
