@@ -15,7 +15,7 @@ RSpec.describe 'Api::V1::User', type: :request do
 
       it 'ユーザーが作成され、セッションが開始される' do
         expect {
-          post '/api/v1/user', params: valid_params, as: :json
+          post '/api/v1/users', params: valid_params, as: :json
         }.to change(User, :count).by(1)
          .and change(UserCredential, :count).by(1)
          .and change(Session, :count).by(1)
@@ -43,7 +43,7 @@ RSpec.describe 'Api::V1::User', type: :request do
 
       it 'エラーが返される' do
         expect {
-          post '/api/v1/user', params: invalid_params, as: :json
+          post '/api/v1/users', params: invalid_params, as: :json
         }.not_to change(User, :count)
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -77,7 +77,7 @@ RSpec.describe 'Api::V1::User', type: :request do
       end
 
       it 'ユーザー情報が返される' do
-        get '/api/v1/user', as: :json
+        get '/api/v1/users', as: :json
 
         expect(response).to have_http_status(:ok)
 
@@ -89,7 +89,7 @@ RSpec.describe 'Api::V1::User', type: :request do
 
     context '未ログインユーザー' do
       it '認証エラーが返される' do
-        get '/api/v1/user', as: :json
+        get '/api/v1/users', as: :json
 
         expect(response).to have_http_status(:unauthorized)
 

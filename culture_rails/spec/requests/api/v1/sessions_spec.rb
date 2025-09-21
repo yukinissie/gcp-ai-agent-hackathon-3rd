@@ -17,7 +17,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
   describe 'POST /api/v1/session' do
     context '認証成功時' do
       it 'Set-Cookieヘッダーが返ること' do
-        post '/api/v1/session', params: params, as: :json
+        post '/api/v1/sessions', params: params, as: :json
 
         expect(response).to have_http_status(:created)
         
@@ -28,7 +28,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
       end
 
       it 'ユーザー情報が返ること' do
-        post '/api/v1/session', params: params, as: :json
+        post '/api/v1/sessions', params: params, as: :json
 
         expect(response).to have_http_status(:created)
         json = JSON.parse(response.body)
@@ -39,7 +39,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
     context '認証失敗時' do
       it 'Set-Cookieヘッダーが返らないこと' do
-        post '/api/v1/session', params: { email_address: 'wrong@example.com', password: 'wrongpass' }, as: :json
+        post '/api/v1/sessions', params: { email_address: 'wrong@example.com', password: 'wrongpass' }, as: :json
 
         expect(response).to have_http_status(:unauthorized)
         expect(response.headers['Set-Cookie']).to be_nil

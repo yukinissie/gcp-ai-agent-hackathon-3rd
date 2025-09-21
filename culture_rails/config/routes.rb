@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # 認証関連
-      resource :session, only: [ :create, :show, :destroy ]
-      resource :user, only: [ :create, :show ], controller: "users"
+      resource :sessions, only: [ :create, :show, :destroy ]
+      resource :users, only: [ :create, :show ]
 
       resources :ping, only: [ :index, :create ]
     end

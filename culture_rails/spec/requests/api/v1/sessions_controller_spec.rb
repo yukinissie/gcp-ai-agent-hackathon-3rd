@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
       it 'ログインが成功しセッションが作成される' do
         expect {
-          post '/api/v1/session', params: valid_params, as: :json
+          post '/api/v1/sessions', params: valid_params, as: :json
         }.to change(Session, :count).by(1)
 
         expect(response).to have_http_status(:created)
@@ -56,7 +56,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
       it 'ログインが失敗する' do
         expect {
-          post '/api/v1/session', params: invalid_params, as: :json
+          post '/api/v1/sessions', params: invalid_params, as: :json
         }.not_to change(Session, :count)
 
         expect(response).to have_http_status(:unauthorized)
@@ -90,7 +90,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
       end
 
       it 'セッション情報が返される' do
-        get '/api/v1/session', as: :json
+        get '/api/v1/sessions', as: :json
 
         expect(response).to have_http_status(:ok)
 
@@ -103,7 +103,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
     context '未ログインユーザー' do
       it 'ログインしていない状態が返される' do
-        get '/api/v1/session', as: :json
+        get '/api/v1/sessions', as: :json
 
         expect(response).to have_http_status(:ok)
 
@@ -137,7 +137,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
       end
 
       it 'ログアウトが成功する' do
-        delete '/api/v1/session', as: :json
+        delete '/api/v1/sessions', as: :json
 
         expect(response).to have_http_status(:ok)
 
@@ -149,7 +149,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
 
     context '未ログインユーザー' do
       it '認証エラーが返される' do
-        delete '/api/v1/session', as: :json
+        delete '/api/v1/sessions', as: :json
 
         expect(response).to have_http_status(:unauthorized)
 
