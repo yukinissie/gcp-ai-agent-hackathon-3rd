@@ -4,26 +4,26 @@ import "@radix-ui/themes/styles.css";
 import "./global.css";
 
 export const metadata: Metadata = {
-  // TODO: change title and description
-  title: "Culture Web",
-  description: "A web application for culture-related content",
-  robots: "noindex, nofollow",
+	// TODO: change title and description
+	title: "Culture Web",
+	description: "A web application for culture-related content",
+	robots: "noindex, nofollow",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const useThemePanel = process.env.NODE_ENV !== "production" && false;
-  return (
-    <html lang="ja" suppressHydrationWarning>
-      <body>
-        <Theme accentColor="teal" grayColor="sage" appearance="dark">
-          {children}
-          {useThemePanel && <ThemePanel />}
-        </Theme>
-      </body>
-    </html>
-  );
+	const useThemePanel = process.env.NODE_ENV !== "production" && false;
+	return (
+		<html lang="ja" suppressHydrationWarning>
+			<body>
+				<Theme accentColor="teal" grayColor="sage" appearance="dark">
+					{children}
+					{useThemePanel && <ThemePanel />}
+				</Theme>
+			</body>
+		</html>
+	);
 }
