@@ -1,7 +1,12 @@
+"use client";
 import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { signOutUser } from "../_actions/signOutUser";
+import { useActionState } from "react";
 
 export function LogoutSection() {
+	const [_state, formAction] = useActionState(signOutUser, {
+		errorMessage: null as string | null,
+	});
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger>
@@ -18,7 +23,7 @@ export function LogoutSection() {
 							キャンセル
 						</Button>
 					</Dialog.Close>
-					<form action={signOutUser}>
+					<form action={formAction}>
 						<Dialog.Close>
 							<Button type="submit">ログアウト</Button>
 						</Dialog.Close>

@@ -4,13 +4,13 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack --port 3030",
-		"build": "next build --turbopack",
+		"build": "next build",
 		"start": "next start",
 		"lint": "biome check",
 		"format": "biome format --write"
 	},
 	"dependencies": {
-		"@ai-sdk/google": "^1.2.22",
+		"@ai-sdk/google": "2.0.15",
 		"@mastra/core": "^0.17.1",
 		"@mastra/libsql": "^0.14.2",
 		"@mastra/loggers": "^0.10.12",
