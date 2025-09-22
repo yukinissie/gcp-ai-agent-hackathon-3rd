@@ -1,35 +1,30 @@
 FactoryBot.define do
   factory :tag do
-    sequence(:name) { |n| "Tag #{n}" }
-    category { 'anime' }
-    description { 'Sample tag description' }
-    image_url { 'https://example.com/image.jpg' }
-    external_id { nil }
-    metadata { {} }
-
-    trait :anime do
-      category { 'anime' }
-      name { 'Attack on Titan' }
+    name { "テクノロジー" }
+    category { "tech" }
+    
+    trait :tech do
+      category { "tech" }
     end
-
-    trait :book do
-      category { 'book' }
-      name { 'One Piece' }
+    
+    trait :art do
+      category { "art" }
     end
-
-    trait :movie do
-      category { 'movie' }
-      name { 'Spirited Away' }
+    
+    trait :music do
+      category { "music" }
     end
-
-    trait :with_metadata do
-      metadata do
-        {
-          genre: ['Action', 'Drama'],
-          year: 2023,
-          rating: 8.5
-        }
-      end
+    
+    trait :architecture do
+      category { "architecture" }
+    end
+    
+    trait :lifestyle do
+      category { "lifestyle" }
+    end
+    
+    trait :business do
+      category { "business" }
     end
   end
 end

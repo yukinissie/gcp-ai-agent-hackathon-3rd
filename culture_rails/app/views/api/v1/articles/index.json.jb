@@ -1,0 +1,20 @@
+{
+  articles: @articles.map do |article|
+    {
+      id: article.id,
+      title: article.title,
+      summary: article.summary,
+      author: article.author,
+      published_at: article.published_at&.iso8601(3),
+      image_url: article.image_url,
+      tags: article.display_tags.map do |tag|
+        {
+          id: tag.id,
+          name: tag.name,
+          category: tag.category
+        }
+      end,
+      additional_tags_count: article.additional_tags_count
+    }
+  end
+}

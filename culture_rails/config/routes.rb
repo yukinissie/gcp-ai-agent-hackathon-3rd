@@ -9,6 +9,10 @@ Rails.application.routes.draw do
       resource :users, only: [ :create, :show ]
 
       resources :ping, only: [ :index, :create ]
+      
+      # 記事関連
+      resources :articles
+      resources :tags, only: [:index]
     end
   end
 
