@@ -1,28 +1,33 @@
 {
-  "name": "culture-web",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack --port 3030",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "biome check",
-    "format": "biome format --write"
-  },
-  "dependencies": {
-    "@radix-ui/colors": "^3.0.0",
-    "@radix-ui/themes": "^3.2.1",
-    "next": "15.5.3",
-    "next-auth": "^5.0.0-beta.29",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "zod": "^4.1.11"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "@types/node": "24.5.2",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "typescript": "^5"
-  }
+	"name": "culture-web",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack --port 3030",
+		"build": "next build --turbopack",
+		"start": "next start",
+		"lint": "biome check",
+		"format": "biome format --write"
+	},
+	"dependencies": {
+		"@ai-sdk/google": "^1.2.22",
+		"@mastra/core": "^0.17.1",
+		"@mastra/libsql": "^0.14.2",
+		"@mastra/loggers": "^0.10.12",
+		"@mastra/memory": "^0.15.2",
+		"@radix-ui/colors": "^3.0.0",
+		"@radix-ui/themes": "^3.2.1",
+		"next": "15.5.3",
+		"next-auth": "^5.0.0-beta.29",
+		"react": "19.1.1",
+		"react-dom": "19.1.1",
+		"zod": "4.1.11"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.4",
+		"@types/node": "24.5.2",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"typescript": "^5"
+	}
 }
