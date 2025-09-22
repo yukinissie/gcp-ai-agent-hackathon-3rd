@@ -78,3 +78,9 @@ variable "auth_secret_name" {
   type        = string
   default     = ""
 }
+
+variable "google_generative_ai_api_key_secret_name" {
+  description = "The name of the Secret Manager secret that contains the Google Generative AI API key"
+  type        = string
+  default     = ""
+}

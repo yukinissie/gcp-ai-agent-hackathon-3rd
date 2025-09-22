@@ -35,6 +35,7 @@ module "culture_web" {
 
   rails_api_host_secret_name = "${var.service_name}-rails-api-host-staging"
   auth_secret_name           = "${var.service_name}-auth-secret-staging"
+  google_generative_ai_api_key_secret_name = "${var.service_name}-google-generative-ai-api-key-staging"
 }
 
 # Optional load balancer with CDN for staging
