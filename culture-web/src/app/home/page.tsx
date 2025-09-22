@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Container, Box, Flex, IconButton, Text } from '@radix-ui/themes';
+import { Container, Box, Flex, Text } from '@radix-ui/themes';
 import { ArticleList } from './_components/ArticleList';
 import { ChatSidebar } from './_components/ChatSidebar';
 import type { Article } from './_components/types';
@@ -114,7 +114,7 @@ export default function Home(){
           title="チャットを開く"
         >
           <Text size="6" weight="bold">
-
+            💬
           </Text>
         </Box>
       )}
