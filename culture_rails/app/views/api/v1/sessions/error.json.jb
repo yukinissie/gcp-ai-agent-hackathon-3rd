@@ -1,5 +1,5 @@
 {
   success: false,
-  error: 'invalid_credentials',
-  message: 'ログイン情報が正しくありません'
+  error: "invalid_credentials",
+  message: "ログイン情報が正しくありません"
 }

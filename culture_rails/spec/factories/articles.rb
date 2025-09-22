@@ -9,12 +9,12 @@ FactoryBot.define do
     image_url { "https://example.com/images/digital_art.jpg" }
     published { false }
     published_at { nil }
-    
+
     trait :published do
       published { true }
       published_at { 1.day.ago }
     end
-    
+
     trait :with_tags do
       after(:create) do |article|
         create(:tag, :art, name: "デジタルアート")

@@ -69,7 +69,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
     context 'タグ検索で指定したタグを持つ記事が存在する時' do
       let!(:tag1) { create(:tag, :art, name: "デジタルアート") }
       let!(:tag2) { create(:tag, :tech, name: "AI") }
-      
+
       let!(:article_with_tag1) { create(:article, :published, title: "記事1") }
       let!(:article_with_tag2) { create(:article, :published, title: "記事2") }
       let!(:article_without_tags) { create(:article, :published, title: "記事3") }
@@ -147,7 +147,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
             source_url: "https://example.com",
             image_url: "https://example.com/image.jpg",
             published: true,
-            tag_ids: [tag1.id, tag2.id]
+            tag_ids: [ tag1.id, tag2.id ]
           }
         }
       end

@@ -20,7 +20,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         post '/api/v1/sessions', params: params, as: :json
 
         expect(response).to have_http_status(:created)
-        
+
         # Set-Cookieヘッダーの内容を確認
         set_cookie_headers = response.headers['Set-Cookie']
         expect(set_cookie_headers).to include(match(/session_token=/))

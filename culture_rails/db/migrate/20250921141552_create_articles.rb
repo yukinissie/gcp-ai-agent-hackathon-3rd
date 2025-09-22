@@ -11,9 +11,9 @@ class CreateArticles < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :articles, :published
     add_index :articles, :published_at
-    add_index :articles, [:published, :published_at]
+    add_index :articles, [ :published, :published_at ]
   end
 end
