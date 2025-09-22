@@ -1,7 +1,26 @@
+"use client";
+
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import { signInUser } from "../_actions/signInUser";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import Form from "next/form";
+
+function SubmitButton() {
+	const { pending } = useFormStatus();
+
+	return (
+		<Button type="submit" disabled={pending}>
+			{pending ? "送信中..." : "ログイン"}
+		</Button>
+	);
+}
 
 export function LoginSection() {
+	const [state, formAction] = useActionState(signInUser, {
+		errorMessage: null as string | null,
+	});
+
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger>
@@ -14,7 +33,7 @@ export function LoginSection() {
 					<Dialog.Description size="2">
 						自分だけのニュース体験を始めましょう！
 					</Dialog.Description>
-					<form action={signInUser}>
+					<Form action={formAction}>
 						<Flex direction="column" gap="4">
 							<label>
 								<Text as="div" size="2" mb="1" weight="bold">
@@ -33,17 +52,20 @@ export function LoginSection() {
 								/>
 							</label>
 						</Flex>
+						{state.errorMessage && (
+							<Text color="red" size="2">
+								{state.errorMessage}
+							</Text>
+						)}
 						<Flex gap="3" justify="end">
 							<Dialog.Close>
 								<Button variant="soft" color="gray">
 									キャンセル
 								</Button>
 							</Dialog.Close>
-							<Dialog.Close>
-								<Button type="submit">ログイン</Button>
-							</Dialog.Close>
+							<SubmitButton />
 						</Flex>
-					</form>
+					</Form>
 				</Flex>
 			</Dialog.Content>
 		</Dialog.Root>
