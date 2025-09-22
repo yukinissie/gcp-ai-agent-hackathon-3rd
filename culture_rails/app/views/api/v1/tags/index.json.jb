@@ -1,0 +1,10 @@
+{
+  tags: @tags.map do |tag|
+    {
+      id: tag.id,
+      name: tag.name,
+      category: tag.category,
+      articles_count: tag.published_articles_count
+    }
+  end
+}

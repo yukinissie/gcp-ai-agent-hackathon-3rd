@@ -12,12 +12,15 @@ class Article < ApplicationRecord
   
   scope :published, -> { where(published: true) }
   scope :search_by_text, ->(query) {
-    where("title ILIKE ? OR summary ILIKE ? OR content ILIKE ?", 
-          "%#{query}%", "%#{query}%", "%#{query}%")
+    pattern = "%#{query}%"
+    where(arel_table[:title].matches(pattern))
+      .or(where(arel_table[:summary].matches(pattern)))
+      .or(where(arel_table[:content].matches(pattern)))
   }
   scope :with_tags, ->(tag_names) {
     joins(:tags).where(tags: { name: tag_names }).distinct
   }
+  scope :recent, -> { order(published_at: :desc) }
   
   def display_tags(limit = 2)
     tags.limit(limit)
@@ -33,5 +36,15 @@ class Article < ApplicationRecord
   
   def unpublish!
     update!(published: false, published_at: nil)
+  end
+  
+  # 記事をIDで検索し、タグをpreloadする
+  def self.find_with_tags(id)
+    preload(:tags).find(id)
+  end
+  
+  # 記事の詳細表示用にタグをpreloadして検索
+  def self.find_for_show(id)
+    find_with_tags(id)
   end
 end

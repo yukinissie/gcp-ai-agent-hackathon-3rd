@@ -14,6 +14,20 @@ class Tag < ApplicationRecord
     business: 'business'
   }
   
+  scope :search_by_name, ->(query) {
+    where(arel_table[:name].matches("%#{query}%"))
+  }
   scope :by_category, ->(category) { where(category: category) }
-  scope :popular, -> { joins(:article_taggings).group(:id).order('COUNT(article_taggings.id) DESC') }
+  scope :popular, -> { 
+    joins(article_taggings: :article)
+    .merge(Article.published)
+    .group(:id)
+    .order(Arel.sql('COUNT(article_taggings.id) DESC'))
+  }
+  
+  # 公開記事でのタグ使用回数
+  def published_articles_count
+    articles.merge(Article.published).count
+  end
+  
 end

@@ -9,9 +9,9 @@
     source_url: @article.source_url,
     image_url: @article.image_url,
     published: @article.published,
-    published_at: @article.published_at,
-    created_at: @article.created_at,
-    updated_at: @article.updated_at,
+    published_at: @article.published_at&.iso8601(3),
+    created_at: @article.created_at.iso8601(3),
+    updated_at: @article.updated_at.iso8601(3),
     tags: @article.tags.map do |tag|
       {
         id: tag.id,
