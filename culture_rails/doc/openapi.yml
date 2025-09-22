@@ -432,6 +432,779 @@ paths:
                     example: "ログアウトしました"
                 required: [success, message]
 
+  # Articles CRUD API endpoints
+  /articles:
+    get:
+      summary: 記事一覧取得
+      description: 公開済み記事の一覧を取得（検索・フィルタリング対応）
+      tags: [記事管理]
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "デジタルアート"
+          description: タイトル・概要・本文での検索キーワード
+        - name: tags
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "デジタルアート,NFT"
+          description: タグ名での絞り込み（カンマ区切り）
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
+          description: 取得件数制限
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            example: 0
+          description: 取得開始位置
+      responses:
+        "200":
+          description: 記事一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  articles:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: false
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: "現代アートの新しい潮流：デジタルアートの可能性"
+                        summary:
+                          type: string
+                          example: "デジタル技術の進歩により、アートの表現方法も大きく変化しています。"
+                        author:
+                          type: string
+                          example: "田中美術"
+                        published_at:
+                          type: string
+                          format: date-time
+                          example: "2025-01-15T10:00:00Z"
+                        image_url:
+                          type: string
+                          example: "https://example.com/images/digital_art.jpg"
+                          nullable: true
+                        tags:
+                          type: array
+                          items:
+                            type: object
+                            additionalProperties: false
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              name:
+                                type: string
+                                example: "デジタルアート"
+                              category:
+                                type: string
+                                example: "art"
+                            required: [id, name, category]
+                        additional_tags_count:
+                          type: integer
+                          example: 0
+                          description: 表示されていないタグの数
+                      required: [id, title, summary, author, published_at, tags, additional_tags_count]
+                required: [articles]
+
+    post:
+      summary: 記事作成
+      description: 新しい記事を作成
+      tags: [記事管理]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                article:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    title:
+                      type: string
+                      example: "新しい記事のタイトル"
+                      maxLength: 255
+                    summary:
+                      type: string
+                      example: "記事の概要です。"
+                      maxLength: 500
+                    content:
+                      type: string
+                      example: "# 記事の本文\n\n詳細な内容を記載します。"
+                    author:
+                      type: string
+                      example: "著者名"
+                    content_format:
+                      type: string
+                      enum: [markdown, html, plain]
+                      example: "markdown"
+                      default: "markdown"
+                    source_url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/source"
+                      nullable: true
+                    image_url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/image.jpg"
+                      nullable: true
+                    published:
+                      type: boolean
+                      example: false
+                      default: false
+                    tag_names:
+                      type: array
+                      items:
+                        type: string
+                      example: ["デジタルアート", "NFT"]
+                      description: 関連付けるタグ名の配列
+                  required: [title, summary, content, author]
+              required: [article]
+      responses:
+        "201":
+          description: 記事作成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  article:
+                    $ref: "#/components/schemas/ArticleDetail"
+                required: [article]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
+  /articles/{id}:
+    get:
+      summary: 記事詳細取得
+      description: 指定した記事の詳細を取得（認証済みの場合は評価状態も含む）
+      tags: [記事管理]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: 記事詳細取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  article:
+                    $ref: "#/components/schemas/ArticleDetail"
+                required: [article]
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+    put:
+      summary: 記事更新
+      description: 指定した記事を更新
+      tags: [記事管理]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                article:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    title:
+                      type: string
+                      example: "更新されたタイトル"
+                      maxLength: 255
+                    summary:
+                      type: string
+                      example: "更新された概要です。"
+                      maxLength: 500
+                    content:
+                      type: string
+                      example: "# 更新された本文\n\n詳細な内容を記載します。"
+                    author:
+                      type: string
+                      example: "著者名"
+                    content_format:
+                      type: string
+                      enum: [markdown, html, plain]
+                      example: "markdown"
+                    source_url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/source"
+                      nullable: true
+                    image_url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/image.jpg"
+                      nullable: true
+                    published:
+                      type: boolean
+                      example: true
+                    tag_names:
+                      type: array
+                      items:
+                        type: string
+                      example: ["デジタルアート", "現代アート"]
+                      description: 関連付けるタグ名の配列
+              required: [article]
+      responses:
+        "200":
+          description: 記事更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  article:
+                    $ref: "#/components/schemas/ArticleDetail"
+                required: [article]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
+    delete:
+      summary: 記事削除
+      description: 指定した記事を削除
+      tags: [記事管理]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: 記事削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "記事を削除しました"
+                required: [success, message]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+  # Tags API endpoints
+  /tags:
+    get:
+      summary: タグ一覧取得
+      description: タグ一覧を人気順で取得（検索対応）
+      tags: [タグ管理]
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "アート"
+          description: タグ名での部分一致検索
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [tech, art, music, architecture, lifestyle, business]
+            example: "art"
+          description: カテゴリでの絞り込み
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+            example: 50
+          description: 取得件数制限
+      responses:
+        "200":
+          description: タグ一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: false
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "デジタルアート"
+                        category:
+                          type: string
+                          example: "art"
+                        articles_count:
+                          type: integer
+                          example: 5
+                          description: このタグが付いた公開記事数
+                      required: [id, name, category, articles_count]
+                required: [tags]
+
+  # Articles Activities API endpoints
+  /articles/{article_id}/good:
+    post:
+      summary: Good評価の追加
+      description: 記事にGood評価を追加（既存のBad評価は自動削除）
+      tags: [記事評価]
+      parameters:
+        - name: article_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "201":
+          description: Good評価追加成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  activity:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 456
+                      user_id:
+                        type: integer
+                        example: 1
+                      article_id:
+                        type: integer
+                        example: 1
+                      activity_type:
+                        type: string
+                        enum: [good, bad]
+                        example: "good"
+                      action:
+                        type: string
+                        enum: [add, remove]
+                        example: "add"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-01-15T10:00:00Z"
+                    required: [id, user_id, article_id, activity_type, action, created_at]
+                  user_activities:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      good:
+                        type: boolean
+                        example: true
+                      bad:
+                        type: boolean
+                        example: false
+                    required: [good, bad]
+                required: [activity, user_activities]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+    delete:
+      summary: Good評価の削除
+      description: 記事のGood評価を削除
+      tags: [記事評価]
+      parameters:
+        - name: article_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Good評価削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  activity:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 457
+                      user_id:
+                        type: integer
+                        example: 1
+                      article_id:
+                        type: integer
+                        example: 1
+                      activity_type:
+                        type: string
+                        enum: [good, bad]
+                        example: "good"
+                      action:
+                        type: string
+                        enum: [add, remove]
+                        example: "remove"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-01-15T10:05:00Z"
+                    required: [id, user_id, article_id, activity_type, action, created_at]
+                    nullable: true
+                  user_activities:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      good:
+                        type: boolean
+                        example: false
+                      bad:
+                        type: boolean
+                        example: false
+                    required: [good, bad]
+                required: [activity, user_activities]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+  /articles/{article_id}/bad:
+    post:
+      summary: Bad評価の追加
+      description: 記事にBad評価を追加（既存のGood評価は自動削除）
+      tags: [記事評価]
+      parameters:
+        - name: article_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "201":
+          description: Bad評価追加成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  activity:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 458
+                      user_id:
+                        type: integer
+                        example: 1
+                      article_id:
+                        type: integer
+                        example: 1
+                      activity_type:
+                        type: string
+                        enum: [good, bad]
+                        example: "bad"
+                      action:
+                        type: string
+                        enum: [add, remove]
+                        example: "add"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-01-15T10:00:00Z"
+                    required: [id, user_id, article_id, activity_type, action, created_at]
+                  user_activities:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      good:
+                        type: boolean
+                        example: false
+                      bad:
+                        type: boolean
+                        example: true
+                    required: [good, bad]
+                required: [activity, user_activities]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+    delete:
+      summary: Bad評価の削除
+      description: 記事のBad評価を削除
+      tags: [記事評価]
+      parameters:
+        - name: article_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Bad評価削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  activity:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 459
+                      user_id:
+                        type: integer
+                        example: 1
+                      article_id:
+                        type: integer
+                        example: 1
+                      activity_type:
+                        type: string
+                        enum: [good, bad]
+                        example: "bad"
+                      action:
+                        type: string
+                        enum: [add, remove]
+                        example: "remove"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-01-15T10:05:00Z"
+                    required: [id, user_id, article_id, activity_type, action, created_at]
+                    nullable: true
+                  user_activities:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      good:
+                        type: boolean
+                        example: false
+                      bad:
+                        type: boolean
+                        example: false
+                    required: [good, bad]
+                required: [activity, user_activities]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+  /activities:
+    get:
+      summary: ユーザーのアクティビティ一覧
+      description: 現在ログイン中のユーザーの評価履歴を取得
+      tags: [記事評価]
+      parameters:
+        - name: activity_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [good, bad]
+            example: "good"
+          description: 特定の評価タイプで絞り込み
+      responses:
+        "200":
+          description: アクティビティ一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  activities:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: false
+                      properties:
+                        id:
+                          type: integer
+                          example: 456
+                        activity_type:
+                          type: string
+                          enum: [good, bad]
+                          example: "good"
+                        action:
+                          type: string
+                          enum: [add, remove]
+                          example: "add"
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-01-15T10:00:00Z"
+                        article:
+                          type: object
+                          additionalProperties: false
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            title:
+                              type: string
+                              example: "現代アートの新しい潮流：デジタルアートの可能性"
+                            summary:
+                              type: string
+                              example: "デジタル技術の進歩により..."
+                            author:
+                              type: string
+                              example: "田中美術"
+                            published_at:
+                              type: string
+                              format: date-time
+                              example: "2025-01-15T10:00:00Z"
+                            image_url:
+                              type: string
+                              example: "https://example.com/images/digital_art.jpg"
+                              nullable: true
+                          required: [id, title, summary, author, published_at]
+                      required: [id, activity_type, action, created_at, article]
+                required: [activities]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+
 components:
   schemas:
     # Common Error Types
@@ -448,3 +1221,113 @@ components:
             type: string
           example: ["パスワードは6文字以上で入力してください"]
       required: [success, errors]
+
+    AuthError:
+      type: object
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "authentication_required"
+        message:
+          type: string
+          example: "ログインが必要です"
+      required: [success, error, message]
+
+    NotFoundError:
+      type: object
+      additionalProperties: false
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "not_found"
+        message:
+          type: string
+          example: "リソースが見つかりません"
+      required: [success, error, message]
+
+    ArticleDetail:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "現代アートの新しい潮流：デジタルアートの可能性"
+        summary:
+          type: string
+          example: "デジタル技術の進歩により、アートの表現方法も大きく変化しています。"
+        content:
+          type: string
+          example: "# デジタルアートとは\n\n現代のアート界では..."
+        content_format:
+          type: string
+          enum: [markdown, html, plain]
+          example: "markdown"
+        author:
+          type: string
+          example: "田中美術"
+        source_url:
+          type: string
+          format: uri
+          example: "https://example.com/source"
+          nullable: true
+        image_url:
+          type: string
+          format: uri
+          example: "https://example.com/images/digital_art.jpg"
+          nullable: true
+        published:
+          type: boolean
+          example: true
+        published_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:00:00Z"
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T09:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:00:00Z"
+        user_activities:
+          type: object
+          additionalProperties: false
+          properties:
+            good:
+              type: boolean
+              example: true
+            bad:
+              type: boolean
+              example: false
+          required: [good, bad]
+          nullable: true
+          description: "認証済みユーザーの評価状態（未認証時はnull）"
+        tags:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "デジタルアート"
+              category:
+                type: string
+                example: "art"
+            required: [id, name, category]
+      required: [id, title, summary, content, content_format, author, published, created_at, updated_at, tags]
