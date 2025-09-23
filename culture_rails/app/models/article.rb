@@ -103,5 +103,4 @@ class Article < ApplicationRecord
   def self.find_for_show(id)
     find_with_tags(id)
   end
-
 end

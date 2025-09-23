@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_23_101002) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_105709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,6 +78,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_101002) do
     t.index ["status"], name: "index_feeds_on_status", comment: "状態での絞り込み用"
   end
 
+  create_table "ingredients", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.json "llm_payload", default: {}, null: false
+    t.json "ui_data", default: {}, null: false
+    t.integer "total_interactions", default: 0, null: false
+    t.decimal "diversity_score", precision: 5, scale: 3, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["total_interactions"], name: "index_ingredients_on_total_interactions"
+    t.index ["updated_at"], name: "index_ingredients_on_updated_at"
+    t.index ["user_id"], name: "index_ingredients_on_user_id", unique: true
+    t.check_constraint "diversity_score >= 0.0 AND diversity_score <= 1.0", name: "check_diversity_score_range"
+    t.check_constraint "total_interactions >= 0", name: "check_total_interactions_positive"
+  end
+
   create_table "pings", force: :cascade do |t|
     t.string "message", null: false
     t.datetime "created_at", null: false
@@ -124,6 +139,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_101002) do
   add_foreign_key "article_taggings", "articles"
   add_foreign_key "article_taggings", "tags"
   add_foreign_key "articles", "feeds"
+  add_foreign_key "ingredients", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "user_credentials", "users"
 end

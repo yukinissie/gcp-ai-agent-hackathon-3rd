@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_one :user_credential, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :activities, dependent: :destroy
+  has_one :ingredient, dependent: :destroy
 
   validates :human_id, presence: true, uniqueness: true
   before_validation :generate_human_id, on: :create

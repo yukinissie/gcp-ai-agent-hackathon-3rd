@@ -520,6 +520,10 @@ paths:
                         author:
                           type: string
                           example: "田中美術"
+                        content_format:
+                          type: string
+                          enum: [markdown, html, plain]
+                          example: "markdown"
                         published_at:
                           type: string
                           format: date-time
@@ -549,7 +553,7 @@ paths:
                           type: integer
                           example: 0
                           description: 表示されていないタグの数
-                      required: [id, title, summary, author, published_at, tags, additional_tags_count]
+                      required: [id, title, summary, author, content_format, published_at, tags, additional_tags_count]
                 required: [articles]
 
     post:
