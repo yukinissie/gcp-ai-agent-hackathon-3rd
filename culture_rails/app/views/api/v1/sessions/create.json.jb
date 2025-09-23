@@ -1,4 +1,8 @@
 {
+  id: @user.id.to_s,
+  email: @user_credential.email_address,
+  human_id: @user.human_id,
+  authenticated: @user.authenticated?,
   success: true,
   data: {
     user: @user.as_json_for_api,
