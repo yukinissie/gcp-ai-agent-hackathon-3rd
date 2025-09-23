@@ -293,6 +293,27 @@ paths:
                   - success
                   - error
                   - message
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "validation_error"
+                  message:
+                    type: string
+                    example: "Message can't be blank"
+                required:
+                  - success
+                  - error
+                  - message
 
 
   /session:
@@ -503,6 +524,7 @@ paths:
                           type: string
                           format: date-time
                           example: "2025-01-15T10:00:00Z"
+                          nullable: true
                         image_url:
                           type: string
                           example: "https://example.com/images/digital_art.jpg"
@@ -585,6 +607,12 @@ paths:
                         type: string
                       example: ["デジタルアート", "NFT"]
                       description: 関連付けるタグ名の配列
+                    tag_ids:
+                      type: array
+                      items:
+                        type: integer
+                      example: [1, 2]
+                      description: 関連付けるタグIDの配列
                   required: [title, summary, content, author]
               required: [article]
       responses:
@@ -735,6 +763,95 @@ paths:
               schema:
                 $ref: "#/components/schemas/ValidationError"
 
+    patch:
+      summary: 記事部分更新
+      description: 指定した記事を部分的に更新
+      tags: [記事管理]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                article:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    title:
+                      type: string
+                      example: "更新されたタイトル"
+                    summary:
+                      type: string
+                      example: "更新された概要"
+                    content:
+                      type: string
+                      example: "更新されたコンテンツ"
+                    content_format:
+                      type: string
+                      enum: [markdown, html, plain]
+                      example: "markdown"
+                    author:
+                      type: string
+                      example: "更新された著者"
+                    source_url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/updated-source"
+                      nullable: true
+                    image_url:
+                      type: string
+                      format: uri
+                      example: "https://example.com/updated-image.jpg"
+                      nullable: true
+                    published:
+                      type: boolean
+                      example: true
+                    tag_names:
+                      type: array
+                      items:
+                        type: string
+                      example: ["テクノロジー", "AI"]
+              required: [article]
+      responses:
+        "200":
+          description: 記事更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  article:
+                    $ref: "#/components/schemas/ArticleDetail"
+                required: [article]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
     delete:
       summary: 記事削除
       description: 指定した記事を削除
@@ -837,6 +954,90 @@ paths:
                           description: このタグが付いた公開記事数
                       required: [id, name, category, articles_count]
                 required: [tags]
+
+  # Activities API endpoints
+  /articles/{article_id}/activities:
+    post:
+      summary: 記事評価の切り替え
+      description: |
+        記事に対する評価を設定・切り替え・削除します。
+        
+        動作仕様：
+        - good送信：badがあれば削除してgoodを設定、既にgoodがある場合は削除（none）
+        - bad送信：goodがあれば削除してbadを設定、既にbadがある場合は削除（none）
+      tags: [アクティビティ]
+      parameters:
+        - name: article_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                activity_type:
+                  type: string
+                  enum: [good, bad]
+                  example: "good"
+              required: [activity_type]
+      responses:
+        "201":
+          description: 評価設定成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  current_evaluation:
+                    type: string
+                    enum: [good, bad, none]
+                    example: "good"
+                    description: "ユーザーの現在の評価状態"
+                  article:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: "現代アートの新しい潮流"
+                      good_count:
+                        type: integer
+                        example: 15
+                        description: "Good評価の総数"
+                      bad_count:
+                        type: integer
+                        example: 3
+                        description: "Bad評価の総数"
+                    required: [id, title, good_count, bad_count]
+                required: [current_evaluation, article]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 記事が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
 
   # Articles Activities API endpoints
   /articles/{article_id}/good:
@@ -1127,83 +1328,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/NotFoundError"
 
-  /activities:
-    get:
-      summary: ユーザーのアクティビティ一覧
-      description: 現在ログイン中のユーザーの評価履歴を取得
-      tags: [記事評価]
-      parameters:
-        - name: activity_type
-          in: query
-          required: false
-          schema:
-            type: string
-            enum: [good, bad]
-            example: "good"
-          description: 特定の評価タイプで絞り込み
-      responses:
-        "200":
-          description: アクティビティ一覧取得成功
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: false
-                properties:
-                  activities:
-                    type: array
-                    items:
-                      type: object
-                      additionalProperties: false
-                      properties:
-                        id:
-                          type: integer
-                          example: 456
-                        activity_type:
-                          type: string
-                          enum: [good, bad]
-                          example: "good"
-                        action:
-                          type: string
-                          enum: [add, remove]
-                          example: "add"
-                        created_at:
-                          type: string
-                          format: date-time
-                          example: "2025-01-15T10:00:00Z"
-                        article:
-                          type: object
-                          additionalProperties: false
-                          properties:
-                            id:
-                              type: integer
-                              example: 1
-                            title:
-                              type: string
-                              example: "現代アートの新しい潮流：デジタルアートの可能性"
-                            summary:
-                              type: string
-                              example: "デジタル技術の進歩により..."
-                            author:
-                              type: string
-                              example: "田中美術"
-                            published_at:
-                              type: string
-                              format: date-time
-                              example: "2025-01-15T10:00:00Z"
-                            image_url:
-                              type: string
-                              example: "https://example.com/images/digital_art.jpg"
-                              nullable: true
-                          required: [id, title, summary, author, published_at]
-                      required: [id, activity_type, action, created_at, article]
-                required: [activities]
-        "401":
-          description: 認証が必要
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthError"
 
 components:
   schemas:

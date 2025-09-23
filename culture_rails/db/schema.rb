@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_21_141631) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_034756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "activities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "article_id", null: false
+    t.integer "activity_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_type"], name: "index_activities_on_activity_type"
+    t.index ["article_id", "activity_type", "created_at"], name: "idx_on_article_id_activity_type_created_at_2a8adb508a"
+    t.index ["article_id"], name: "index_activities_on_article_id"
+    t.index ["user_id", "article_id", "activity_type", "created_at"], name: "index_activities_on_user_article_type_time"
+    t.index ["user_id", "article_id"], name: "index_activities_on_user_id_and_article_id", unique: true
+    t.index ["user_id", "created_at"], name: "index_activities_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
 
   create_table "article_taggings", force: :cascade do |t|
     t.bigint "article_id", null: false
@@ -195,6 +210,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_21_141631) do
     t.index ["human_id"], name: "index_users_on_human_id", unique: true
   end
 
+  add_foreign_key "activities", "articles"
+  add_foreign_key "activities", "users"
   add_foreign_key "article_taggings", "articles"
   add_foreign_key "article_taggings", "tags"
   add_foreign_key "sessions", "users"
