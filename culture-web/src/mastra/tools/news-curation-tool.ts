@@ -157,6 +157,31 @@ async function fetchNewsByTags(tags: string[]) {
 	}));
 }
 
+async function saveNewsFetchHistory(
+	userId: number,
+	tags: string[],
+	news: {
+		id: string;
+		title: string;
+		url: string;
+		source: string;
+		publishedAt: Date;
+		tags: string[];
+	}[],
+) {
+	// ダミー実装: 実際にはAPIやDBに保存する
+	console.log(`Saving news fetch history for user ${userId}:`, {
+		tags,
+		news,
+	});
+	// 例: Rails APIにPOSTリクエストを送る場合
+	// await fetch(`${process.env.RAILS_API_URL}/api/news/fetch-history`, {
+	// 	method: "POST",
+	// 	headers: { "Content-Type": "application/json" },
+	// 	body: JSON.stringify({ userId, tags, news }),
+	// });
+}
+
 const getInfoForCuration = async (userId: number) => {
 	// userId を使ってユーザーの属性を取得する。
 	const userAttributes = await fetchUserAttributes(userId);
@@ -167,7 +192,7 @@ const getInfoForCuration = async (userId: number) => {
 	// タグに基づいてニュースを検索する。（Rails）
 	const news = await fetchNewsByTags(tags);
 	// 取得したニュースを履歴テーブルに保存する。（Rails）
-	// await saveNewsFetchHistory(userId, tags, news);
+	await saveNewsFetchHistory(userId, tags, news);
 	// その上で返却する。
 	return {
 		userAttributes,
