@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>テックブログサンプル</title>
+    <link>https://example.com/tech-blog</link>
+    <description>技術に関するブログのサンプルRSSフィード</description>
+    <language>ja</language>
+    <lastBuildDate>Mon, 23 Sep 2025 10:00:00 +0900</lastBuildDate>
+    
+    <item>
+      <title>Railsの最新機能について</title>
+      <link>https://example.com/tech-blog/rails-features</link>
+      <description>Rails 8.0の新機能について詳しく解説します。Solid Stack、Propshaft、Hotwireなどの最新技術を紹介。</description>
+      <pubDate>Mon, 23 Sep 2025 09:00:00 +0900</pubDate>
+      <guid>https://example.com/tech-blog/rails-features</guid>
+      <author>技術太郎</author>
+    </item>
+    
+    <item>
+      <title>Next.js 15の新機能</title>
+      <link>https://example.com/tech-blog/nextjs-15</link>
+      <description>Next.js 15で追加された新機能やTurbopackの改善について解説します。App Routerの最新機能も紹介。</description>
+      <pubDate>Sun, 22 Sep 2025 15:30:00 +0900</pubDate>
+      <guid>https://example.com/tech-blog/nextjs-15</guid>
+      <author>フロント花子</author>
+    </item>
+    
+    <item>
+      <title>Docker Composeでの開発環境構築</title>
+      <link>https://example.com/tech-blog/docker-compose</link>
+      <description>Docker Composeを使った効率的な開発環境の構築方法について説明します。PostgreSQL、Redis、Webサーバーの設定例も含みます。</description>
+      <pubDate>Sat, 21 Sep 2025 11:15:00 +0900</pubDate>
+      <guid>https://example.com/tech-blog/docker-compose</guid>
+      <author>インフラ次郎</author>
+    </item>
+  </channel>
+</rss>

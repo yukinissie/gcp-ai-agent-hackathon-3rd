@@ -333,8 +333,6 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.5)
-    rss (0.3.1)
-      rexml
     rubocop (1.80.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -468,13 +466,13 @@ DEPENDENCIES
   jbuilder
   jwt
   kamal
+  nokogiri
   pg (>= 1.1)
   propshaft
   puma (>= 5.0)
   rack-cors
   rails (~> 8.0.2, >= 8.0.2.1)
   rspec-rails
-  rss
   rubocop-rails-omakase
   ruby-lsp
   selenium-webdriver

@@ -6,6 +6,8 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# NokogiriはRailsの標準依存関係なので、特別な読み込みは不要
+
 module CultureRails
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.

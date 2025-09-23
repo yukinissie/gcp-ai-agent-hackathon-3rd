@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>デザインブログサンプル</title>
+  <link href="https://example.com/design-blog"/>
+  <updated>2025-09-23T10:00:00+09:00</updated>
+  <author>
+    <name>デザイン三郎</name>
+  </author>
+  <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+
+  <entry>
+    <title>UIデザインの基本原則</title>
+    <link href="https://example.com/design-blog/ui-principles"/>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6b</id>
+    <updated>2025-09-23T09:00:00+09:00</updated>
+    <published>2025-09-23T09:00:00+09:00</published>
+    <author>
+      <name>デザイン三郎</name>
+    </author>
+    <content type="html">
+      &lt;p&gt;優れたUIデザインを作るための基本原則について解説します。&lt;/p&gt;
+      &lt;p&gt;ユーザビリティ、アクセシビリティ、視覚的階層などの重要な概念を詳しく説明します。&lt;/p&gt;
+    </content>
+  </entry>
+
+  <entry>
+    <title>カラーパレットの選び方</title>
+    <link href="https://example.com/design-blog/color-palette"/>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6c</id>
+    <updated>2025-09-22T14:20:00+09:00</updated>
+    <published>2025-09-22T14:20:00+09:00</published>
+    <author>
+      <name>デザイン三郎</name>
+    </author>
+    <content type="html">
+      &lt;p&gt;効果的なカラーパレットの選び方とブランドに合った色の組み合わせについて説明します。&lt;/p&gt;
+      &lt;p&gt;色彩理論の基礎から実践的な応用まで幅広くカバーします。&lt;/p&gt;
+    </content>
+  </entry>
+</feed>
