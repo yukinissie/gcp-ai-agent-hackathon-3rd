@@ -1,0 +1,15 @@
+{
+  feeds: @feeds.map do |feed|
+    {
+      id: feed.id,
+      title: feed.title,
+      endpoint: feed.endpoint,
+      status: feed.status,
+      last_fetched_at: feed.last_fetched_at,
+      last_error: feed.last_error,
+      articles_count: feed.articles.count,
+      created_at: feed.created_at,
+      updated_at: feed.updated_at
+    }
+  end
+}

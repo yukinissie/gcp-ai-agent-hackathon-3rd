@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: tags
+#
+#  id         :bigint           not null, primary key
+#  category   :string           not null
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_tags_on_category           (category)
+#  index_tags_on_name_and_category  (name,category) UNIQUE
+#
 class Tag < ApplicationRecord
   has_many :article_taggings, dependent: :destroy
   has_many :articles, through: :article_taggings

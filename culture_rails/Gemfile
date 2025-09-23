@@ -48,6 +48,9 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+# RSS parser for feed functionality
+gem "rss"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ], require: "debug/prelude"
@@ -75,6 +78,9 @@ group :development do
 
   # Ruby Language Server Protocol for editor support
   gem "ruby-lsp", require: false
+
+  # Model annotation (maintained fork)
+  gem "annotaterb"
 end
 
 group :test do

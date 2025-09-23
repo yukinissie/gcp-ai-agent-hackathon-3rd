@@ -1,3 +1,4 @@
+# SolidQueue定期実行ジョブの設定
 # examples:
 #   periodic_cleanup:
 #     class: CleanSoftDeletedRecordsJob
@@ -9,7 +10,26 @@
 #     priority: 2
 #     schedule: at 5am every day
 
+development:
+  # RSS一括取得ジョブ（開発環境：15分ごと）
+  rss_batch_fetch:
+    class: RssFetchBatchJob
+    queue: default
+    schedule: every 15 minutes
+    description: "全てのアクティブなRSSフィードから記事を取得"
+
+test:
+  # テスト環境では定期実行を無効化
+
 production:
+  # RSS一括取得ジョブ（本番環境：30分ごと）
+  rss_batch_fetch:
+    class: RssFetchBatchJob
+    queue: default
+    schedule: every 30 minutes
+    description: "全てのアクティブなRSSフィードから記事を取得"
+    
+  # SolidQueueのメンテナンスジョブ
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12

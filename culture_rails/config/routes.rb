@@ -10,6 +10,17 @@ Rails.application.routes.draw do
 
       resources :ping, only: [ :index, :create ]
 
+      # RSS フィード関連
+      resources :feeds do
+        member do
+          post :fetch  # 手動フェッチ
+        end
+
+        collection do
+          post :batch_fetch  # 全フィード一括フェッチ
+        end
+      end
+
       # 記事関連
       resources :articles do
         resources :activities, only: [ :create ]
