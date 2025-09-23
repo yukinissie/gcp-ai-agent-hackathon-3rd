@@ -1,0 +1,9 @@
+{
+  current_evaluation: @current_evaluation,
+  article: {
+    id: @article.id,
+    title: @article.title,
+    good_count: @article_stats[:good_count],
+    bad_count: @article_stats[:bad_count]
+  }
+}
