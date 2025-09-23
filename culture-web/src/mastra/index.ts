@@ -9,6 +9,6 @@ export const mastra = new Mastra({
 	storage: await getStorage(),
 	logger: new PinoLogger({
 		name: "Mastra",
-		level: "debug",
+		level: process.env.NODE_ENV === "production" ? "info" : "debug",
 	}),
 });
