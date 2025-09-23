@@ -32,7 +32,7 @@ export async function signInUser(
 		}
 	}
 
-	credentials.redirectTo = "/myfeed";
+	credentials.redirectTo = "/home";
 
 	try {
 		await signIn("credentials", credentials);
