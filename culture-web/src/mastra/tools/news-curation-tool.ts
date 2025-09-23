@@ -166,6 +166,9 @@ const getInfoForCuration = async (userId: number) => {
 	const tags = await determineTags(userAttributes, allTags);
 	// タグに基づいてニュースを検索する。（Rails）
 	const news = await fetchNewsByTags(tags);
+	// 取得したニュースを履歴テーブルに保存する。（Rails）
+	// await saveNewsFetchHistory(userId, tags, news);
+	// その上で返却する。
 	return {
 		userAttributes,
 		tags,
