@@ -33,6 +33,35 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
         expect(json['data']['user']['email_address']).to eq('existing@example.com')
         expect(json['data']['user']['authenticated']).to be true
       end
+
+      it 'ログイン成功時にJWTトークンが返される' do
+        post '/api/v1/sessions', params: valid_params, as: :json
+
+        expect(response).to have_http_status(:created)
+
+        json = JSON.parse(response.body)
+        expect(json['success']).to be true
+        expect(json['data']['token']).to be_present
+
+        # トークンからuser_idを抽出して検証
+        token = json['data']['token']
+        decoded_user_id = JsonWebToken.user_id_from_token(token)
+        expect(decoded_user_id).to eq(user.id)
+      end
+
+      it 'JWTトークンに有効期限が設定されている' do
+        freeze_time = Time.current
+        allow(Time).to receive(:current).and_return(freeze_time)
+
+        post '/api/v1/sessions', params: valid_params, as: :json
+
+        json = JSON.parse(response.body)
+        token = json['data']['token']
+        decoded = JsonWebToken.decode(token)
+
+        expect(decoded[:iat]).to eq(freeze_time.to_i)
+        expect(decoded[:exp]).to eq((freeze_time + 24.hours).to_i)
+      end
     end
 
     context '間違ったパスワードでログイン' do

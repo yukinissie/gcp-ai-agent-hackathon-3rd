@@ -14,9 +14,38 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
+    # First try JWT token authentication
+    if jwt_authenticate
+      return
+    end
+
+    # Fallback to session-based authentication
     if session_record = Session.find_by_id(cookies.signed[:session_token])
       Current.session = session_record
     end
+  end
+
+  def jwt_authenticate
+    token = extract_token_from_header
+    return false unless token
+
+    user_id = JsonWebToken.user_id_from_token(token)
+    return false unless user_id
+
+    user = User.find_by(id: user_id)
+    if user&.authenticated?
+      Current.user = user
+      return true
+    end
+
+    false
+  end
+
+  def extract_token_from_header
+    auth_header = request.headers['Authorization']
+    return nil unless auth_header&.start_with?('Bearer ')
+
+    auth_header.split(' ').last
   end
 
   def current_user

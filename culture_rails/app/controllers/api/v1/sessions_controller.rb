@@ -11,6 +11,7 @@ class Api::V1::SessionsController < ApplicationController
       start_new_session_for user_credential.user
       @user = user_credential.user
       @user_credential = user_credential
+      @jwt_token = JsonWebToken.encode_for_user(@user)
 
       render :create, status: :created
     else

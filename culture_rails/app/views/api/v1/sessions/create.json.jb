@@ -1,6 +1,7 @@
 {
   success: true,
   data: {
-    user: @user.as_json_for_api
+    user: @user.as_json_for_api,
+    token: @jwt_token
   }
 }
