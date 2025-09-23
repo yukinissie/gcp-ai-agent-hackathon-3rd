@@ -1,5 +1,6 @@
 import { Box, Text, Flex } from '@radix-ui/themes';
 import { ChatMessageProps } from './chatTypes';
+import { chatMessageStyles } from '../_styles/chatMessage.styles';
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.sender === 'user';
@@ -17,7 +18,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       direction="column"
       align={isUser ? 'end' : 'start'}
       mb="3"
-      style={{ width: '100%' }}
+      style={chatMessageStyles.container}
     >
       <Flex
         align="center"
@@ -26,18 +27,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         direction={isUser ? 'row-reverse' : 'row'}
       >
         {!isUser && (
-          <Box
-            style={{
-              width: '24px',
-              height: '24px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--accent-9)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-            }}
-          >
+          <Box style={chatMessageStyles.avatarBox}>
             🤖
           </Box>
         )}
@@ -46,21 +36,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </Text>
       </Flex>
       
-      <Box
-        style={{
-          maxWidth: '80%',
-          padding: '8px 12px',
-          borderRadius: '12px',
-          backgroundColor: isUser 
-            ? 'var(--accent-9)' 
-            : 'var(--gray-3)',
-          color: isUser 
-            ? 'var(--accent-contrast)' 
-            : 'var(--gray-12)',
-          wordBreak: 'break-word',
-        }}
-      >
-        <Text size="2" style={{ lineHeight: '1.4' }}>
+      <Box style={chatMessageStyles.messageBox(isUser)}>
+        <Text size="2" style={chatMessageStyles.messageText}>
           {message.isTyping ? (
             <span>
               入力中

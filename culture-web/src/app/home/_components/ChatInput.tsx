@@ -1,5 +1,6 @@
 import { Flex, TextField, Button } from '@radix-ui/themes';
 import { ChatInputProps } from './chatTypes';
+import { chatInputStyles } from '../_styles/chatInput.styles';
 
 export function ChatInput({ onSendMessage, disabled = false, placeholder = "メッセージを入力..." }: ChatInputProps) {
   
@@ -16,13 +17,13 @@ export function ChatInput({ onSendMessage, disabled = false, placeholder = "メ�
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+    <form onSubmit={handleSubmit} style={chatInputStyles.form}>
       <Flex gap="2" align="center">
         <TextField.Root
           name="message"
           placeholder={placeholder}
           disabled={disabled}
-          style={{ flex: 1 }}
+          style={chatInputStyles.textField}
           size="2"
         />
         <Button

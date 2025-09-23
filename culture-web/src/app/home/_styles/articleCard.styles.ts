@@ -40,5 +40,8 @@ export const articleCardStyles = {
     },
     authorText: {
         flexShrink: 0
+    },
+    headingText: {
+        lineHeight: '1.4'
     }
 };
