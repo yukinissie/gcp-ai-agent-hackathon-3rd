@@ -7,10 +7,5 @@ type Props = {
 export default async function Layout(props: Props) {
 	const session = await auth();
 	if (!session) return <div>Not authenticated</div>;
-	return (
-		<div>
-			{JSON.stringify(session)}
-			{props.children}
-		</div>
-	);
+	return <div>{props.children}</div>;
 }
