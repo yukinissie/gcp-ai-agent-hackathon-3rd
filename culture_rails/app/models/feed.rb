@@ -28,7 +28,7 @@ class Feed < ApplicationRecord
   validates :endpoint, presence: true, format: { with: URI::DEFAULT_PARSER.make_regexp }
   validates :endpoint, uniqueness: true
 
-  enum status: {
+  enum :status, {
     active: "active",
     inactive: "inactive",
     error: "error"
@@ -72,5 +72,92 @@ class Feed < ApplicationRecord
       status: "error",
       last_error: error_message
     )
+  end
+
+  # RSSフィードから記事を取得・作成
+  def fetch_articles
+    Rails.logger.info "Starting RSS fetch for feed: #{title} (#{endpoint})"
+
+    rss = parsed_rss
+    return 0 unless rss
+
+    # フィードタイトルを更新（初回のみ）
+    update_title_from_rss if title.blank?
+
+    # 記事を作成
+    created_count = create_articles_from_rss(rss)
+
+    # 成功マーク
+    mark_as_fetched
+
+    Rails.logger.info "Created #{created_count} articles from feed #{id}"
+    created_count
+  rescue => e
+    mark_as_error(e.message)
+    Rails.logger.error "Failed to fetch RSS for feed #{id}: #{e.message}"
+    0
+  end
+
+  private
+
+  def create_articles_from_rss(rss)
+    return 0 unless rss.items
+
+    created_count = 0
+
+    rss.items.first(20).each do |item| # 最新20件まで処理
+      next if article_exists?(item.link)
+
+      article = create_article_from_item(item)
+      if article&.persisted?
+        created_count += 1
+        auto_tag_article(article)
+      end
+    end
+
+    created_count
+  end
+
+  def article_exists?(url)
+    return false if url.blank?
+    articles.exists?(source_url: url)
+  end
+
+  def create_article_from_item(item)
+    articles.create!(
+      source_type: "rss",
+      title: item.title&.strip || "Untitled",
+      summary: extract_summary(item),
+      content: extract_content(item),
+      content_format: "html",
+      author: extract_author(item),
+      source_url: item.link,
+      published: true,
+      published_at: item.pubDate || Time.current
+    )
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.warn "Failed to create article from RSS item: #{e.message}"
+    nil
+  end
+
+  def extract_summary(item)
+    description = item.description || item.content_encoded || ""
+    clean_description = ActionController::Base.helpers.strip_tags(description)
+    clean_description.truncate(500)
+  end
+
+  def extract_content(item)
+    item.content_encoded || item.description || item.title || ""
+  end
+
+  def extract_author(item)
+    item.author || item.dc_creator || title || "Unknown"
+  end
+
+  # 自動タグ付け
+  def auto_tag_article(article)
+    # フィード名をタグとして追加
+    tag = Tag.find_or_create_by(name: title, category: "source")
+    article.tags << tag unless article.tags.include?(tag)
   end
 end

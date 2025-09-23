@@ -51,122 +51,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_061748) do
     t.datetime "updated_at", null: false
     t.text "content", null: false
     t.string "content_format", default: "markdown", null: false
+    t.bigint "feed_id", comment: "RSS由来の記事の場合のフィード参照"
+    t.string "source_type", default: "manual", null: false, comment: "記事の作成元"
     t.index ["content_format"], name: "index_articles_on_content_format"
+    t.index ["feed_id", "created_at"], name: "index_articles_on_feed_id_and_created_at", comment: "フィード別記事一覧用"
+    t.index ["feed_id", "source_url"], name: "index_articles_on_feed_and_source_url_for_rss", unique: true, where: "(((source_type)::text = 'rss'::text) AND (source_url IS NOT NULL))", comment: "RSS記事の重複防止"
+    t.index ["feed_id"], name: "index_articles_on_feed_id"
     t.index ["published", "published_at"], name: "index_articles_on_published_and_published_at"
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["source_type"], name: "index_articles_on_source_type", comment: "ソース種別での絞り込み用"
   end
 
-  create_table "mastra_evals", id: false, force: :cascade do |t|
-    t.text "input", null: false
-    t.text "output", null: false
-    t.jsonb "result", null: false
-    t.text "agent_name", null: false
-    t.text "metric_name", null: false
-    t.text "instructions", null: false
-    t.jsonb "test_info"
-    t.text "global_run_id", null: false
-    t.text "run_id", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "createdAt", precision: nil
-    t.timestamptz "created_atZ", default: -> { "now()" }
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.index ["agent_name", "created_at"], name: "public_mastra_evals_agent_name_created_at_idx", order: { created_at: :desc }
-  end
-
-  create_table "mastra_messages", id: :text, force: :cascade do |t|
-    t.text "thread_id", null: false
-    t.text "content", null: false
-    t.text "role", null: false
-    t.text "type", null: false
-    t.datetime "createdAt", precision: nil, null: false
-    t.text "resourceId"
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.index ["thread_id", "createdAt"], name: "public_mastra_messages_thread_id_createdat_idx", order: { createdAt: :desc }
-  end
-
-  create_table "mastra_resources", id: :text, force: :cascade do |t|
-    t.text "workingMemory"
-    t.jsonb "metadata"
-    t.datetime "createdAt", precision: nil, null: false
-    t.datetime "updatedAt", precision: nil, null: false
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.timestamptz "updatedAtZ", default: -> { "now()" }
-  end
-
-  create_table "mastra_scorers", id: :text, force: :cascade do |t|
-    t.text "scorerId", null: false
-    t.text "traceId"
-    t.text "runId", null: false
-    t.jsonb "scorer", null: false
-    t.jsonb "preprocessStepResult"
-    t.jsonb "extractStepResult"
-    t.jsonb "analyzeStepResult"
-    t.float "score", null: false
-    t.text "reason"
-    t.jsonb "metadata"
-    t.text "preprocessPrompt"
-    t.text "extractPrompt"
-    t.text "generateScorePrompt"
-    t.text "generateReasonPrompt"
-    t.text "analyzePrompt"
-    t.text "reasonPrompt"
-    t.jsonb "input", null: false
-    t.jsonb "output", null: false
-    t.jsonb "additionalContext"
-    t.jsonb "runtimeContext"
-    t.text "entityType"
-    t.jsonb "entity"
-    t.text "entityId"
-    t.text "source", null: false
-    t.text "resourceId"
-    t.text "threadId"
-    t.datetime "createdAt", precision: nil, null: false
-    t.datetime "updatedAt", precision: nil, null: false
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.timestamptz "updatedAtZ", default: -> { "now()" }
-  end
-
-  create_table "mastra_threads", id: :text, force: :cascade do |t|
-    t.text "resourceId", null: false
-    t.text "title", null: false
-    t.text "metadata"
-    t.datetime "createdAt", precision: nil, null: false
-    t.datetime "updatedAt", precision: nil, null: false
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.timestamptz "updatedAtZ", default: -> { "now()" }
-    t.index ["resourceId", "createdAt"], name: "public_mastra_threads_resourceid_createdat_idx", order: { createdAt: :desc }
-  end
-
-  create_table "mastra_traces", id: :text, force: :cascade do |t|
-    t.text "parentSpanId"
-    t.text "name", null: false
-    t.text "traceId", null: false
-    t.text "scope", null: false
-    t.integer "kind", null: false
-    t.jsonb "attributes"
-    t.jsonb "status"
-    t.jsonb "events"
-    t.jsonb "links"
-    t.text "other"
-    t.bigint "startTime", null: false
-    t.bigint "endTime", null: false
-    t.datetime "createdAt", precision: nil, null: false
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.index ["name", "startTime"], name: "public_mastra_traces_name_starttime_idx", order: { startTime: :desc }
-  end
-
-  create_table "mastra_workflow_snapshot", id: false, force: :cascade do |t|
-    t.text "workflow_name", null: false
-    t.text "run_id", null: false
-    t.text "resourceId"
-    t.text "snapshot", null: false
-    t.datetime "createdAt", precision: nil, null: false
-    t.datetime "updatedAt", precision: nil, null: false
-    t.timestamptz "createdAtZ", default: -> { "now()" }
-    t.timestamptz "updatedAtZ", default: -> { "now()" }
-
-    t.unique_constraint ["workflow_name", "run_id"], name: "public_mastra_workflow_snapshot_workflow_name_run_id_key"
+  create_table "feeds", force: :cascade do |t|
+    t.string "title", null: false, comment: "フィードのタイトル"
+    t.string "endpoint", null: false, comment: "RSS/AtomフィードのURL"
+    t.string "status", default: "active", null: false, comment: "フィードの状態"
+    t.datetime "last_fetched_at", comment: "最後に取得した日時"
+    t.text "last_error", comment: "最後のエラーメッセージ"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_feeds_on_created_at", comment: "作成日時でのソート用"
+    t.index ["endpoint"], name: "index_feeds_on_endpoint", unique: true, comment: "エンドポイントの一意性"
+    t.index ["last_fetched_at"], name: "index_feeds_on_last_fetched_at", comment: "取得日時でのソート用"
+    t.index ["status"], name: "index_feeds_on_status", comment: "状態での絞り込み用"
   end
 
   create_table "pings", force: :cascade do |t|
@@ -214,6 +122,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_061748) do
   add_foreign_key "activities", "users"
   add_foreign_key "article_taggings", "articles"
   add_foreign_key "article_taggings", "tags"
+  add_foreign_key "articles", "feeds"
   add_foreign_key "sessions", "users"
   add_foreign_key "user_credentials", "users"
 end

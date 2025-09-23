@@ -36,6 +36,7 @@ class Article < ApplicationRecord
   has_many :article_taggings, dependent: :destroy
   has_many :tags, through: :article_taggings
   has_many :activities, dependent: :destroy
+  belongs_to :feed, optional: true
 
   validates :title, presence: true, length: { maximum: 255 }
   validates :summary, presence: true, length: { maximum: 500 }
@@ -45,14 +46,25 @@ class Article < ApplicationRecord
   validates :source_url, format: { with: URI::DEFAULT_PARSER.make_regexp }, allow_blank: true
   validates :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp }, allow_blank: true
 
+  enum :source_type, {
+    manual: "manual",
+    rss: "rss"
+  }
+
+  validates :source_url, uniqueness: { scope: :feed_id }, if: :rss?
+
   scope :published, -> { where(published: true) }
+  scope :manual, -> { where(source_type: "manual") }
+  scope :from_rss, -> { where(source_type: "rss") }
   scope :search_by_text, ->(query) {
+    return all if query.blank?
     pattern = "%#{query}%"
     where(arel_table[:title].matches(pattern))
       .or(where(arel_table[:summary].matches(pattern)))
       .or(where(arel_table[:content].matches(pattern)))
   }
   scope :with_tags, ->(tag_names) {
+    return all if tag_names.blank?
     joins(:tags).where(tags: { name: tag_names }).distinct
   }
   scope :recent, -> { order(published_at: :desc) }
@@ -71,6 +83,14 @@ class Article < ApplicationRecord
 
   def unpublish!
     update!(published: false, published_at: nil)
+  end
+
+  def from_rss?
+    source_type == "rss"
+  end
+
+  def manual?
+    source_type == "manual"
   end
 
   # 記事をIDで検索し、タグをpreloadする

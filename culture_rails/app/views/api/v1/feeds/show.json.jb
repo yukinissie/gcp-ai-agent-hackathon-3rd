@@ -1,0 +1,38 @@
+{
+  feed: {
+    id: @feed.id,
+    title: @feed.title,
+    endpoint: @feed.endpoint,
+    status: @feed.status,
+    last_fetched_at: @feed.last_fetched_at,
+    last_error: @feed.last_error,
+    articles_count: @feed.articles.count,
+    created_at: @feed.created_at,
+    updated_at: @feed.updated_at,
+
+    articles: if defined?(@articles)
+      @articles.map do |article|
+        {
+          id: article.id,
+          title: article.title,
+          summary: article.summary,
+          author: article.author,
+          published_at: article.published_at,
+          image_url: article.image_url,
+          source_type: article.source_type,
+          source_url: article.source_url,
+          tags: article.display_tags.map do |tag|
+            {
+              id: tag.id,
+              name: tag.name,
+              category: tag.category
+            }
+          end,
+          additional_tags_count: article.additional_tags_count
+        }
+      end
+              else
+      nil
+              end
+  }
+}

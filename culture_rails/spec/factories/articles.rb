@@ -57,5 +57,12 @@ FactoryBot.define do
         create(:article_tagging, article: article, tag: Tag.find_by(name: "NFT"))
       end
     end
+
+    trait :rss do
+      source_type { "rss" }
+      content_format { "html" }
+      feed { association :feed }
+      source_url { "https://example.com/rss-article-#{rand(1000)}" }
+    end
   end
 end
