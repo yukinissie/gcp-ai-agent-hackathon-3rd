@@ -1,6 +1,6 @@
 "use server";
 
-import { mastra } from "../../mastra";
+import { mastra } from "@/mastra";
 
 export async function getWeatherInfo(formData: FormData) {
 	const city = formData.get("city")?.toString();
@@ -9,7 +9,9 @@ export async function getWeatherInfo(formData: FormData) {
 	const mastraInstance = await mastra;
 	const agent = mastraInstance.getAgent("weatherAgent");
 
-	const result = await agent.generateVNext(`What's the weather like in ${city}?`);
+	const result = await agent.generateVNext(
+		`What's the weather like in ${city}?`,
+	);
 
 	return result.text;
 }
