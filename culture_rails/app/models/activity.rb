@@ -10,13 +10,13 @@ class Activity < ApplicationRecord
   # 記事に対する評価を設定・切り替え
   def self.set_evaluation(user, article, activity_type)
     record = find_or_initialize_by(user: user, article: article)
-    
+
     # 同じ評価を再度送信した場合は削除（none状態）
     if record.persisted? && record.activity_type == activity_type.to_s
       record.update!(activity_type: nil)
-      return 'none'
+      return "none"
     end
-    
+
     # 評価を設定
     record.update!(activity_type: activity_type)
     activity_type.to_s
@@ -25,8 +25,8 @@ class Activity < ApplicationRecord
   # ユーザーの現在の評価状態を取得
   def self.current_evaluation_for_user(user, article)
     record = find_by(user: user, article: article)
-    return 'none' unless record&.activity_type
-    
+    return "none" unless record&.activity_type
+
     record.activity_type
   end
 

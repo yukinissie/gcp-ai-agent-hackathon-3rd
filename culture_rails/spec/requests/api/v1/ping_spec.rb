@@ -65,7 +65,7 @@ RSpec.describe 'Api::V1::Ping', type: :request do
         post '/api/v1/ping', params: { message: '' }, as: :json
         expect(response).to have_http_status(:unprocessable_content)
         # Note: OpenAPIでバリデーションエラーのスキーマが定義されていれば追加
-        # assert_schema_conform(422)
+        assert_schema_conform(422)
 
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body[:success]).to eq(false)
