@@ -1,0 +1,8 @@
+{
+  id: @ingredient.id,
+  user_id: @user.id,
+  llm_payload: @ingredient.llm_payload,
+  total_interactions: @ingredient.total_interactions,
+  diversity_score: @ingredient.diversity_score.to_f,
+  updated_at: @ingredient.updated_at.iso8601(3)
+}

@@ -8,6 +8,9 @@ Rails.application.routes.draw do
       resource :sessions, only: [ :create, :show, :destroy ]
       resource :users, only: [ :create, :show ]
 
+      # ユーザー属性関連
+      resource :user_attributes, only: [ :show ]
+
       resources :ping, only: [ :index, :create ]
 
       # RSS フィード関連

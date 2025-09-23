@@ -453,6 +453,176 @@ paths:
                     example: "ログアウトしました"
                 required: [success, message]
 
+  # User Attributes API endpoints
+  /user_attributes:
+    get:
+      summary: ユーザー属性取得
+      description: 現在ログイン中のユーザーのLLM用属性データを取得
+      tags: [ユーザー属性]
+      responses:
+        "200":
+          description: ユーザー属性取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                    description: IngredientsテーブルのID
+                  user_id:
+                    type: integer
+                    example: 123
+                    description: 対象ユーザーのID
+                  llm_payload:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      user_profile:
+                        type: object
+                        additionalProperties: false
+                        properties:
+                          personality_type:
+                            type: string
+                            enum: [tech_enthusiast, active_user, casual_reader]
+                            example: "tech_enthusiast"
+                            description: "ユーザータイプ"
+                          total_interactions:
+                            type: integer
+                            example: 156
+                            description: "総評価数"
+                          diversity_score:
+                            type: number
+                            format: float
+                            minimum: 0.0
+                            maximum: 1.0
+                            example: 0.73
+                            description: "興味の多様性スコア（Shannon entropy）: 0.0=単一ジャンル専門, 0.3-0.5=特定分野重視, 0.6-0.8=バランス型, 0.9-1.0=超幅広興味"
+                          evaluation_tendency:
+                            type: string
+                            enum: [positive, negative, balanced, neutral]
+                            example: "positive"
+                            description: "評価傾向"
+                        required: [personality_type, total_interactions, diversity_score, evaluation_tendency]
+                      tag_preferences:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: false
+                          properties:
+                            tag:
+                              type: string
+                              example: "AI"
+                              description: "タグ名"
+                            good_count:
+                              type: integer
+                              example: 25
+                              description: "このタグでのGood評価数"
+                            bad_count:
+                              type: integer
+                              example: 2
+                              description: "このタグでのBad評価数"
+                            total_interactions:
+                              type: integer
+                              example: 27
+                              description: "このタグでの総評価数"
+                            preference_score:
+                              type: number
+                              format: float
+                              minimum: 0.0
+                              maximum: 1.0
+                              example: 0.85
+                              description: "好み度スコア: 0.0-0.3=嫌い傾向, 0.4-0.6=中立, 0.7-0.8=好み, 0.9-1.0=強い好み"
+                            weight:
+                              type: number
+                              format: float
+                              minimum: 0.0
+                              maximum: 1.0
+                              example: 0.17
+                              description: "全体に占める重み: そのタグの評価数/総評価数の比率 (0.1=10%, 0.5=50%など)"
+                          required: [tag, good_count, bad_count, total_interactions, preference_score, weight]
+                      activity_patterns:
+                        type: object
+                        additionalProperties: false
+                        properties:
+                          good_bad_ratio:
+                            type: number
+                            format: float
+                            example: 4.2
+                            description: "Good評価とBad評価の比率: 1.0=同数, 2.0=Good2倍, 5.0=Good5倍, 0.5=Bad2倍"
+                          most_active_period:
+                            type: string
+                            enum: [recent, historical, consistent]
+                            example: "recent"
+                            description: "最も活発な期間"
+                          strong_preferences:
+                            type: array
+                            items:
+                              type: string
+                            example: ["AI", "startup"]
+                            description: "強い好みタグ"
+                          strong_dislikes:
+                            type: array
+                            items:
+                              type: string
+                            example: ["politics"]
+                            description: "強い嫌いタグ"
+                          recent_interests:
+                            type: array
+                            items:
+                              type: string
+                            example: ["machine-learning"]
+                            description: "最近新しく興味を持ったタグ"
+                        required: [good_bad_ratio, most_active_period, strong_preferences, strong_dislikes, recent_interests]
+                      metadata:
+                        type: object
+                        additionalProperties: false
+                        properties:
+                          total_interactions:
+                            type: integer
+                            example: 156
+                            description: "総評価数"
+                          diversity_score:
+                            type: number
+                            format: float
+                            minimum: 0.0
+                            maximum: 1.0
+                            example: 0.73
+                            description: "多様性スコア（Shannon entropy）: 0.0=単一ジャンル専門, 0.3-0.5=特定分野重視, 0.6-0.8=バランス型, 0.9-1.0=超幅広興味"
+                          updated_at:
+                            type: string
+                            format: date-time
+                            example: "2025-01-15T10:00:00Z"
+                            description: "データ更新日時"
+                        required: [total_interactions, diversity_score, updated_at]
+                    required: [user_profile, tag_preferences, activity_patterns, metadata]
+                    description: "LLMに渡すメインデータ"
+                  total_interactions:
+                    type: integer
+                    example: 156
+                    description: "総評価数"
+                  diversity_score:
+                    type: number
+                    format: float
+                    minimum: 0.0
+                    maximum: 1.0
+                    example: 0.73
+                    description: "多様性スコア（Shannon entropy）: 0.0=単一ジャンル専門, 0.3-0.5=特定分野重視, 0.6-0.8=バランス型, 0.9-1.0=超幅広興味"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2025-01-15T10:00:00Z"
+                    description: "レコード更新日時"
+                required: [id, user_id, llm_payload, total_interactions, diversity_score, updated_at]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+
   # Articles CRUD API endpoints
   /articles:
     get:
