@@ -34,6 +34,14 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
     return content.replace(/\n/g, '<br>');
   };
 
+  const handleWantClick = () => {
+    console.log('ほしい ボタンがクリックされました - Article ID:', article.id);
+  };
+
+  const handleDontWantClick = () => {
+    console.log('いらない ボタンがクリックされました - Article ID:', article.id);
+  };
+
   return (
     <Container size="4">
       <Box py="6">
@@ -80,13 +88,34 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             </Text>
           </Flex>
 
-          <Flex gap="2" wrap="wrap">
+          <Flex gap="2" wrap="wrap" mb="6">
             {article.tags.map((tag) => (
               <Badge key={tag.id} color="blue" variant="soft">
                 {tag.name}
               </Badge>
             ))}
           </Flex>
+
+          {/* ほしい・いらないボタン */}
+          <Flex gap="3" align="center">
+            <Button 
+              onClick={handleWantClick}
+              variant="outline"
+              color="blue"
+              size="3"
+            >
+              ホシイ
+            </Button>
+            <Button 
+              onClick={handleDontWantClick}
+              variant="outline"
+              color="blue"
+              size="3"
+            >
+              イラナイ
+            </Button>
+          </Flex>
+
         </Box>
 
         {/* 記事本文 */}
