@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id         :bigint           not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  human_id   :string           not null
+#
+# Indexes
+#
+#  index_users_on_human_id  (human_id) UNIQUE
+#
 FactoryBot.define do
   factory :user do
     # human_idは自動生成されるので指定不要
