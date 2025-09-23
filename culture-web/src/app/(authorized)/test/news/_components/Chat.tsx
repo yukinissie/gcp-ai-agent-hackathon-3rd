@@ -1,7 +1,6 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { MessageList } from "@mastra/core/agent";
 import { DefaultChatTransport } from "ai";
 import { useState } from "react";
 
@@ -15,19 +14,15 @@ export function Chat(props: { userId: string }) {
 		}),
 		messages: [
 			{
-				role: "system" as "system" | "user" | "assistant",
-				content: `User ID: ${props.userId || 0}`,
+				id: "sys-0",
+				role: "system" as const,
+				parts: [
+					{
+						type: "text" as const,
+						text: `user ID is ${props.userId || "unknown"}. You are a helpful assistant specialized in curating news articles based on user preferences. Provide concise and relevant news summaries.`,
+					},
+				],
 			},
-			// {
-			// 	id: "system-init",
-			// 	role: "system" as "system" | "user" | "assistant",
-			// 	parts: [
-			// 		{
-			// 			type: "text" as const,
-			// 			text: `User ID: ${props.userId || 0}`,
-			// 		},
-			// 	],
-			// },
 		],
 	});
 	const [input, setInput] = useState("");
