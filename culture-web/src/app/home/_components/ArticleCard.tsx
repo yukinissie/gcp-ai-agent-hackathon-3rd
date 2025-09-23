@@ -34,10 +34,10 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
     >
       <Flex gap="4" align="start">
         {/* 画像部分 */}
-        {article.imageUrl && (
+        {article.image_url && (
           <Box style={articleCardStyles.imageContainer}>
             <img
-              src={article.imageUrl}
+              src={article.image_url}
               alt={article.title}
               style={articleCardStyles.image}
             />
@@ -47,15 +47,17 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
         {/* コンテンツ部分 */}
         <Flex direction="column" gap="2" style={articleCardStyles.contentContainer}>
           <Flex align="center" gap="2" wrap="wrap">
-            <Badge color="blue" variant="soft">
-              {article.category}
-            </Badge>
+            {article.tags.length > 0 && (
+              <Badge color="blue" variant="soft">
+                {article.tags[0].name}
+              </Badge>
+            )}
             <Text size="2" color="gray">
-              {formatDate(article.publishedAt)}
+              {formatDate(article.published_at)}
             </Text>
           </Flex>
           
-          <Heading size="4" weight="bold" style={{ lineHeight: '1.4' }}>
+          <Heading size="4" weight="bold" style={articleCardStyles.headingText}>
             {article.title}
           </Heading>
           
@@ -64,19 +66,19 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
             color="gray" 
             style={articleCardStyles.excerptText}
           >
-            {article.excerpt}
+            {article.summary}
           </Text>
           
           <Flex justify="between" align="end" mt="auto">
             <Flex gap="1" wrap="wrap">
               {article.tags.slice(0, 2).map((tag) => (
-                <Badge key={tag} color="gray" variant="soft" size="1">
-                  {tag}
+                <Badge key={tag.id} color="gray" variant="soft" size="1">
+                  {tag.name}
                 </Badge>
               ))}
-              {article.tags.length > 2 && (
+              {article.additional_tags_count > 0 && (
                 <Badge color="gray" variant="soft" size="1">
-                  +{article.tags.length - 2}
+                  +{article.additional_tags_count}
                 </Badge>
               )}
             </Flex>

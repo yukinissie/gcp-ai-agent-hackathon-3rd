@@ -1,28 +1,16 @@
-import { Heading, Text, Flex, Spinner, Box } from '@radix-ui/themes';
+import { Heading, Text, Flex, Box } from '@radix-ui/themes';
 import { ArticleCard } from './ArticleCard';
-import { ArticleListProps, Article } from './types';
+import { Article } from './types';
+import { articleListStyles } from '../_styles/articleList.styles';
 
-export function ArticleList({ articles, loading = false }: ArticleListProps) {
+interface ArticleListProps {
+  articles: Article[];
+}
+
+export function ArticleList({ articles }: ArticleListProps) {
   const handleArticleClick = (article: Article) => {
-    console.log('記事がクリックされました:');
+    console.log('記事がクリックされました:', article);
   };
-
-  if (loading) {
-    return (
-      <Flex 
-        direction="column" 
-        align="center" 
-        justify="center" 
-        style={{ minHeight: '400px' }}
-        gap="4"
-      >
-        <Spinner size="3" />
-        <Text size="3" color="gray">
-          記事を読み込んでいます...
-        </Text>
-      </Flex>
-    );
-  }
 
   if (articles.length === 0) {
     return (
@@ -30,7 +18,7 @@ export function ArticleList({ articles, loading = false }: ArticleListProps) {
         direction="column" 
         align="center" 
         justify="center" 
-        style={{ minHeight: '400px' }}
+        style={articleListStyles.emptyContainer}
         gap="3"
       >
         <Text size="4" weight="medium">

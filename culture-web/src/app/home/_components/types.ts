@@ -1,19 +1,18 @@
-export interface Article {
-    id: string;
-    title: string;
-    excerpt: string;
-    content: string;
-    author: string;
-    publishedAt: string;
-    updatedAt: string;
+export interface Tag {
+    id: number;
+    name: string;
     category: string;
-    tags: string[];
-    imageUrl?: string;
 }
 
-export interface ArticleListProps {
-    articles: Article[];
-    loading?: boolean;
+export interface Article {
+    id: number;
+    title: string;
+    summary: string;
+    author: string;
+    published_at: string;
+    image_url?: string;
+    tags: Tag[];
+    additional_tags_count: number;
 }
 
 export interface ArticleCardProps {
