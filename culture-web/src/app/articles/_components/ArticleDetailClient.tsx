@@ -101,7 +101,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             <Button 
               onClick={handleWantClick}
               variant="outline"
-              color="blue"
+              color="teal"
               size="3"
             >
               ホシイ
@@ -109,7 +109,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
             <Button 
               onClick={handleDontWantClick}
               variant="outline"
-              color="blue"
+              color="teal"
               size="3"
             >
               イラナイ
