@@ -35,6 +35,7 @@ module "culture_web" {
   rails_api_host_secret_name = "${var.service_name}-rails-api-host-production"
   auth_secret_name           = "${var.service_name}-auth-secret-production"
   google_generative_ai_api_key_secret_name = "${var.service_name}-google-generative-ai-api-key-production"
+  database_url_secret_name   = "${var.service_name}-database-url-production"
 
   # Artifact Registry dependency
   depends_on = [google_artifact_registry_repository.culture_web]

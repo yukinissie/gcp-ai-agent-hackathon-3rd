@@ -76,6 +76,16 @@ resource "google_cloud_run_service" "culture_web" {
           }
         }
 
+        env {
+          name = "DATABASE_URL"
+          value_from {
+            secret_key_ref {
+              name = var.database_url_secret_name
+              key = "latest"
+            }
+          }
+        }
+
         resources {
           limits = {
             cpu    = var.cpu_limit
@@ -166,6 +176,15 @@ resource "google_secret_manager_secret_iam_binding" "auth_secret_access" {
 resource "google_secret_manager_secret_iam_binding" "google_generative_ai_api_key_access" {
   project   = var.project_id
   secret_id = var.google_generative_ai_api_key_secret_name
+  role      = "roles/secretmanager.secretAccessor"
+  members = [
+    "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",
+  ]
+}
+
+resource "google_secret_manager_secret_iam_binding" "database_url_access" {
+  project   = var.project_id
+  secret_id = var.database_url_secret_name
   role      = "roles/secretmanager.secretAccessor"
   members = [
     "serviceAccount:${data.google_project.project.number}-compute@developer.gserviceaccount.com",
