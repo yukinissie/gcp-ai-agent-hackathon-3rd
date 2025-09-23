@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Theme, ThemePanel } from "@radix-ui/themes";
-import "@radix-ui/themes/styles.css";
+import { ThemeProvider } from 'next-themes'
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -19,10 +19,12 @@ export default function RootLayout({
 	return (
 		<html lang="ja" suppressHydrationWarning>
 			<body>
-				<Theme accentColor="teal" grayColor="sage" appearance="dark">
-					{children}
-					{useThemePanel && <ThemePanel />}
-				</Theme>
+				<ThemeProvider attribute="class">
+					<Theme accentColor="teal" grayColor="sage">
+						{children}
+						{useThemePanel && <ThemePanel />}
+					</Theme>
+				</ThemeProvider>
 			</body>
 		</html>
 	);
