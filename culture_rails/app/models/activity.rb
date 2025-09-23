@@ -33,6 +33,13 @@ class Activity < ApplicationRecord
   # ユーザー・記事の組み合わせで一意
   validates :user_id, uniqueness: { scope: :article_id }
 
+  # 記事読了を記録
+  def self.mark_as_read(user, article)
+    record = find_or_initialize_by(user: user, article: article)
+    record.update!(read_at: Time.current)
+    record
+  end
+
   # 記事に対する評価を設定・切り替え
   def self.set_evaluation(user, article, activity_type)
     record = find_or_initialize_by(user: user, article: article)
@@ -60,7 +67,13 @@ class Activity < ApplicationRecord
   def self.article_stats(article)
     {
       good_count: where(article: article, activity_type: :good).count,
-      bad_count: where(article: article, activity_type: :bad).count
+      bad_count: where(article: article, activity_type: :bad).count,
+      read_count: where(article: article).where.not(read_at: nil).count
     }
+  end
+
+  # ユーザーが記事を読んだかどうか
+  def read?
+    read_at.present?
   end
 end

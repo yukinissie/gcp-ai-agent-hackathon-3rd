@@ -11,7 +11,7 @@
 #     schedule: at 5am every day
 
 development:
-  # RSS一括取得ジョブ（開発環境：15分ごと）
+  # RSS一括取得ジョブ（開発環境：15分ごと - テスト用高頻度）
   rss_batch_fetch:
     class: RssFetchBatchJob
     queue: default
@@ -22,12 +22,24 @@ test:
   # テスト環境では定期実行を無効化
 
 production:
-  # RSS一括取得ジョブ（本番環境：30分ごと）
-  rss_batch_fetch:
+  # RSS一括取得ジョブ（本番環境：朝・昼・晩）
+  rss_batch_fetch_morning:
     class: RssFetchBatchJob
     queue: default
-    schedule: every 30 minutes
-    description: "全てのアクティブなRSSフィードから記事を取得"
+    schedule: at 7am every day
+    description: "朝のRSSフィード取得"
+    
+  rss_batch_fetch_afternoon:
+    class: RssFetchBatchJob
+    queue: default
+    schedule: at 1pm every day
+    description: "昼のRSSフィード取得"
+    
+  rss_batch_fetch_evening:
+    class: RssFetchBatchJob
+    queue: default
+    schedule: at 7pm every day
+    description: "夜のRSSフィード取得"
     
   # SolidQueueのメンテナンスジョブ
   clear_solid_queue_finished_jobs:

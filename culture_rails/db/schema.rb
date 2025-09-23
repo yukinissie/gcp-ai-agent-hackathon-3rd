@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_23_061748) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_101002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_061748) do
     t.integer "activity_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "read_at", precision: nil
     t.index ["activity_type"], name: "index_activities_on_activity_type"
     t.index ["article_id", "activity_type", "created_at"], name: "idx_on_article_id_activity_type_created_at_2a8adb508a"
     t.index ["article_id"], name: "index_activities_on_article_id"
