@@ -1,10 +1,17 @@
 import { Card, Text, Heading, Badge, Flex, Box } from '@radix-ui/themes';
 import { ArticleCardProps } from './types';
 import { articleCardStyles } from '../_styles/articleCard.styles';
+import { useRouter } from 'next/navigation';
 
 export function ArticleCard({ article, onClick }: ArticleCardProps) {
+  const router = useRouter();
+  
   const handleClick = () => {
-    onClick?.(article);
+    if (onClick) {
+      onClick(article);
+    } else {
+      router.push(`/articles/${article.id}`);
+    }
   };
 
   const formatDate = (dateString: string) => {

@@ -8,10 +8,6 @@ interface ArticleListProps {
 }
 
 export function ArticleList({ articles }: ArticleListProps) {
-  const handleArticleClick = (article: Article) => {
-    console.log('記事がクリックされました:', article);
-  };
-
   if (articles.length === 0) {
     return (
       <Flex 
@@ -49,7 +45,6 @@ export function ArticleList({ articles }: ArticleListProps) {
             <ArticleCard
               key={article.id}
               article={article}
-              onClick={handleArticleClick}
             />
           ))}
         </Flex>
