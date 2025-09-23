@@ -25,7 +25,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
       it '公開記事のみが返ること' do
         get '/api/v1/articles', headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         parsed_response = JSON.parse(response.body, symbolize_names: true)
         expect(parsed_response).to eq(expected_response)
@@ -43,7 +43,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
       it '空の配列が返ること' do
         get '/api/v1/articles', headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         expect(JSON.parse(response.body, symbolize_names: true)).to eq(expected_response)
       end
@@ -56,7 +56,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
       it 'マッチする記事のみが返ること' do
         get '/api/v1/articles', params: { q: "デジタル" }, headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         parsed_response = JSON.parse(response.body, symbolize_names: true)
         expect(parsed_response[:articles].size).to be >= 1
@@ -82,7 +82,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
       it '指定したタグを持つ記事のみが返ること' do
         get '/api/v1/articles', params: { tags: "デジタルアート" }, headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         parsed_response = JSON.parse(response.body, symbolize_names: true)
         expect(parsed_response[:articles].size).to eq(1)
@@ -117,7 +117,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
       it '記事の詳細が返ること' do
         get "/api/v1/articles/#{article.id}", headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         expect(JSON.parse(response.body, symbolize_names: true)).to eq(expected_response)
       end
@@ -159,11 +159,11 @@ RSpec.describe 'Api::V1::Articles', type: :request do
 
       it '記事が作成されて詳細が返ること' do
         expect {
-          post '/api/v1/articles', params: article_params, headers: { 'Accept' => 'application/json' }
+          post '/api/v1/articles', params: article_params, headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }, as: :json
         }.to change(Article, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        # assert_schema_conform(201)
+        assert_schema_conform(201)
 
         created_article = Article.last
         expect(created_article.title).to eq("新しい記事")
@@ -235,9 +235,9 @@ RSpec.describe 'Api::V1::Articles', type: :request do
       end
 
       it '記事が更新されて詳細が返ること' do
-        patch "/api/v1/articles/#{article.id}", params: update_params, headers: { 'Accept' => 'application/json' }
+        patch "/api/v1/articles/#{article.id}", params: update_params, headers: { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }, as: :json
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         article.reload
         expect(article.title).to eq("更新されたタイトル")

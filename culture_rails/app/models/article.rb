@@ -1,6 +1,7 @@
 class Article < ApplicationRecord
   has_many :article_taggings, dependent: :destroy
   has_many :tags, through: :article_taggings
+  has_many :activities, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: 255 }
   validates :summary, presence: true, length: { maximum: 500 }

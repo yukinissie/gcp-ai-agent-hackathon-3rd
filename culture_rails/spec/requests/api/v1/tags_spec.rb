@@ -18,7 +18,7 @@ RSpec.describe 'Api::V1::Tags', type: :request do
       it '人気順（使用記事数の多い順）でタグが返ること' do
         get '/api/v1/tags', headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         parsed_response = JSON.parse(response.body, symbolize_names: true)
         expect(parsed_response[:tags].size).to be >= 2
@@ -37,7 +37,7 @@ RSpec.describe 'Api::V1::Tags', type: :request do
       it '検索キーワードにマッチするタグのみが返ること' do
         get '/api/v1/tags', params: { q: "アート" }, headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         parsed_response = JSON.parse(response.body, symbolize_names: true)
         expect(parsed_response[:tags].size).to eq(1)
@@ -49,7 +49,7 @@ RSpec.describe 'Api::V1::Tags', type: :request do
       it '空の配列が返ること' do
         get '/api/v1/tags', headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
-        # assert_schema_conform(200)
+        assert_schema_conform(200)
 
         parsed_response = JSON.parse(response.body, symbolize_names: true)
         expect(parsed_response[:tags]).to eq([])

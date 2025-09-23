@@ -11,7 +11,9 @@ Rails.application.routes.draw do
       resources :ping, only: [ :index, :create ]
 
       # 記事関連
-      resources :articles
+      resources :articles do
+        resources :activities, only: [ :create ]
+      end
       resources :tags, only: [ :index ]
     end
   end

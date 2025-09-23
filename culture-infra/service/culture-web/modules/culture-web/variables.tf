@@ -84,3 +84,9 @@ variable "google_generative_ai_api_key_secret_name" {
   type        = string
   default     = ""
 }
+
+variable "database_url_secret_name" {
+  description = "The name of the Secret Manager secret that contains the Database URL"
+  type        = string
+  default     = ""
+}
