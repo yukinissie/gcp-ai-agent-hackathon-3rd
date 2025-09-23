@@ -200,16 +200,35 @@ class Feed < ApplicationRecord
   def extract_link_from_xml(item_node)
     # RSS2.0の場合
     link = item_node.xpath("link").text.strip
-    # Atomの場合（名前空間対応）
+    
+    # Atomの場合は複数のパターンを試す
     if link.blank?
+      # 1. rel="alternate"属性があるlink要素のhref属性
       link_node = item_node.xpath('atom:link[@rel="alternate"]', "atom" => "http://www.w3.org/2005/Atom").first
       link = link_node&.attr("href")
+      
+      # 2. 最初のlink要素のhref属性
+      if link.blank?
+        link_node = item_node.xpath('atom:link', "atom" => "http://www.w3.org/2005/Atom").first
+        link = link_node&.attr("href")
+      end
+      
+      # 3. link要素の内容（名前空間対応）
+      if link.blank?
+        link = item_node.xpath("atom:link", "atom" => "http://www.w3.org/2005/Atom").text.strip
+      end
     end
+    
     # 名前空間なしでも試す
     if link.blank?
-      link_node = item_node.xpath('link[@rel="alternate"]').first
+      # href属性
+      link_node = item_node.xpath('link').first
       link = link_node&.attr("href")
+      
+      # 要素の内容
+      link = item_node.xpath("link").text.strip if link.blank?
     end
+    
     link
   end
 
@@ -247,7 +266,8 @@ class Feed < ApplicationRecord
     description = item_node.xpath("summary").text if description.blank?
 
     clean_description = ActionController::Base.helpers.strip_tags(description.to_s)
-    clean_description.truncate(500)
+    result = clean_description.truncate(500)
+    result.present? ? result : "No description available"
   end
 
   # XMLからコンテンツを抽出
@@ -263,7 +283,7 @@ class Feed < ApplicationRecord
     # 名前空間なしでも試す
     content = item_node.xpath("content").text if content.blank?
 
-    content.presence || ""
+    content.presence || "No content available"
   end
 
   # XMLから著者を抽出
@@ -289,8 +309,8 @@ class Feed < ApplicationRecord
 
   # 自動タグ付け
   def auto_tag_article(article)
-    # フィード名をタグとして追加（techカテゴリとして）
-    tag = Tag.find_or_create_by(name: title, category: "tech")
+    # フィード名をタグとして追加（sourceカテゴリとして）
+    tag = Tag.find_or_create_by(name: title, category: "source")
     article.tags << tag unless article.tags.include?(tag)
   end
 end

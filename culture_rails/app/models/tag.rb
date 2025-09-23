@@ -26,7 +26,8 @@ class Tag < ApplicationRecord
     music: "music",
     architecture: "architecture",
     lifestyle: "lifestyle",
-    business: "business"
+    business: "business",
+    source: "source"
   }
 
   scope :search_by_name, ->(query) {

@@ -155,16 +155,21 @@ RSpec.describe Feed, type: :model do
     let(:rss_content) { File.read(Rails.root.join('spec/fixtures/rss/sample_rss.xml')) }
 
     before do
-      allow(Net::HTTP).to receive(:get).and_return(rss_content)
+      # Net::HTTPをモック - 特定のURIに対してモックを設定
+      allow(Net::HTTP).to receive(:get).with(URI.parse(feed.endpoint)).and_return(rss_content)
     end
 
     describe '#fetch_articles' do
       it '記事が正常に作成されること' do
+        # 独立したフィードを作成してテスト間の影響を避ける
+        test_feed = create(:feed, endpoint: 'https://example.com/article-test.xml', title: '記事作成テストフィード')
+        allow(Net::HTTP).to receive(:get).with(URI.parse('https://example.com/article-test.xml')).and_return(rss_content)
+
         expect {
-          feed.fetch_articles
+          test_feed.fetch_articles
         }.to change(Article, :count).by(3)
 
-        articles = feed.articles.order(:created_at)
+        articles = test_feed.articles.order(:created_at)
 
         # 最初の記事をチェック
         first_article = articles.first
@@ -176,55 +181,68 @@ RSpec.describe Feed, type: :model do
       end
 
       it 'フィードのステータスが正しく更新されること' do
+        # 独立したフィードを作成してテスト間の影響を避ける
+        status_test_feed = create(:feed, endpoint: 'https://example.com/status-test.xml', title: 'ステータステストフィード')
+        allow(Net::HTTP).to receive(:get).with(URI.parse('https://example.com/status-test.xml')).and_return(rss_content)
+
         freeze_time = Time.current
         travel_to(freeze_time) do
-          feed.fetch_articles
-          feed.reload
+          status_test_feed.fetch_articles
+          status_test_feed.reload
 
-          expect(feed.status).to eq('active')
-          expect(feed.last_fetched_at).to be_within(1.second).of(freeze_time)
-          expect(feed.last_error).to be_nil
+          expect(status_test_feed.status).to eq('active')
+          expect(status_test_feed.last_fetched_at).to be_within(1.second).of(freeze_time)
+          expect(status_test_feed.last_error).to be_nil
         end
       end
 
       it '自動タグが付与されること' do
-        feed.fetch_articles
+        # 独立したフィードを作成してテスト間の影響を避ける
+        tag_test_feed = create(:feed, endpoint: 'https://example.com/tag-test.xml', title: 'タグテストフィード')
+        allow(Net::HTTP).to receive(:get).with(URI.parse('https://example.com/tag-test.xml')).and_return(rss_content)
 
-        articles = feed.articles
+        tag_test_feed.fetch_articles
+
+        articles = tag_test_feed.articles
         expect(articles.count).to eq(3)
 
         # 各記事にフィード名のタグが付いていることを確認
         articles.each do |article|
           source_tag = article.tags.find_by(category: 'source')
           expect(source_tag).to be_present
-          expect(source_tag.name).to eq(feed.title)
+          expect(source_tag.name).to eq(tag_test_feed.title)
         end
       end
 
       it '重複した記事は作成されないこと' do
+        # 独立したフィードを作成してテスト間の影響を避ける
+        duplicate_test_feed = create(:feed, endpoint: 'https://example.com/duplicate-test.xml', title: '重複テストフィード')
+        allow(Net::HTTP).to receive(:get).with(URI.parse('https://example.com/duplicate-test.xml')).and_return(rss_content)
+
         # 最初に記事を作成
-        feed.fetch_articles
-        expect(Article.count).to eq(3)
+        expect {
+          duplicate_test_feed.fetch_articles
+        }.to change(Article, :count).by(3)
 
         # 再度実行しても記事数は増えない
         expect {
-          feed.fetch_articles
+          duplicate_test_feed.fetch_articles
         }.to change(Article, :count).by(0)
       end
 
       context 'Atomフィードの場合' do
         let(:atom_content) { File.read(Rails.root.join('spec/fixtures/rss/sample_atom.xml')) }
 
-        before do
-          allow(Net::HTTP).to receive(:get).and_return(atom_content)
-        end
-
         it 'Atomフィードからも記事が作成されること' do
+          # 独立したフィードを作成してテスト間の影響を避ける
+          atom_test_feed = create(:feed, endpoint: 'https://example.com/atom-test.xml', title: 'Atomテストフィード')
+          allow(Net::HTTP).to receive(:get).with(URI.parse('https://example.com/atom-test.xml')).and_return(atom_content)
+
           expect {
-            feed.fetch_articles
+            atom_test_feed.fetch_articles
           }.to change(Article, :count).by(2)
 
-          articles = feed.articles.order(:created_at)
+          articles = atom_test_feed.articles.order(:created_at)
 
           first_article = articles.first
           expect(first_article.title).to eq('UIデザインの基本原則')
