@@ -6,20 +6,13 @@ import type { UIMessage } from "ai"; // リクエスト/レスポンス型
 export const dynamic = "force-dynamic"; // Vercel等でストリーミングを確実に
 
 export async function POST(req: NextRequest) {
-	const { messages, userId }: { messages: UIMessage[]; userId?: number } =
-		await req.json();
+	const { messages }: { messages: UIMessage[] } = await req.json();
 
 	// MastraのAgentを取得
 	const agent = mastra.getAgent("newsCurationAgent");
 
 	// userIdをメッセージに含めてMastraAgentに渡す
-	const enrichedMessages = [
-		...messages,
-		{
-			role: "system" as const,
-			content: `User ID: ${userId || 0}`,
-		},
-	];
+	const enrichedMessages = [...messages];
 
 	// AI SDK v5 互換ストリームを取得
 	const stream = await agent.streamVNext(enrichedMessages, { format: "aisdk" });

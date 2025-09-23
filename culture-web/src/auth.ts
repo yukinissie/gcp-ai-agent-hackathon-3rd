@@ -55,7 +55,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 						throw new Error("Authentication failed");
 					}
 					const user = await response.json();
-					return user;
+					return {
+						id: user.id?.toString() || user.user?.id?.toString(),
+						humanId: user.human_id || user.user?.human_id,
+						email: user.email || user.user?.email,
+						...user,
+					};
 				} catch (error) {
 					console.error("Error during authentication:", error);
 					return null;
@@ -63,4 +68,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			},
 		}),
 	],
+	callbacks: {
+		jwt: async ({ token, user }) => {
+			if (user) {
+				token.userId = user.id;
+			}
+			return token;
+		},
+		session: async ({ session, token }) => {
+			if (token.userId) {
+				session.user.id = token.userId as string;
+			}
+			return session;
+		},
+	},
 });
