@@ -1,10 +1,12 @@
+import { Chat } from "./_components/Chat";
 import { Form } from "./form";
 
-export default async function Page() {
+export default function Page() {
 	return (
 		<>
 			<h1>Test</h1>
 			<Form />
+			<Chat />
 		</>
 	);
 }
