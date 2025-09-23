@@ -60,7 +60,7 @@ RSpec.describe Activity, type: :model do
 
     it '記事の統計情報に読了数を含む' do
       stats = Activity.article_stats(article)
-      
+
       expect(stats[:good_count]).to eq(2)
       expect(stats[:bad_count]).to eq(1)
       expect(stats[:read_count]).to eq(2)

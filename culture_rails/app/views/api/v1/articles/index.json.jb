@@ -7,6 +7,7 @@
       author: article.author,
       published_at: article.published_at&.iso8601(3),
       image_url: article.image_url,
+      content_format: article.content_format,
       tags: article.display_tags.map do |tag|
         {
           id: tag.id,

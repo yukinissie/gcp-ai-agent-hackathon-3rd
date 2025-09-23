@@ -24,7 +24,7 @@ RSpec.describe Feed, type: :model do
     it 'エンドポイントがユニークである必要があること' do
       existing_feed = create(:feed, endpoint: 'https://example.com/rss.xml')
       duplicate_feed = build(:feed, endpoint: 'https://example.com/rss.xml')
-      
+
       expect(duplicate_feed).to_not be_valid
       expect(duplicate_feed.errors[:endpoint]).to include("has already been taken")
     end
@@ -38,13 +38,13 @@ RSpec.describe Feed, type: :model do
 
     it '各ステータスが正しく設定できること' do
       feed = create(:feed)
-      
+
       feed.active!
       expect(feed.status).to eq('active')
-      
+
       feed.inactive!
       expect(feed.status).to eq('inactive')
-      
+
       feed.error!
       expect(feed.status).to eq('error')
     end
@@ -64,7 +64,7 @@ RSpec.describe Feed, type: :model do
       context 'RSSフィードの場合' do
         it 'XMLが正常にパースされること' do
           doc = feed.parsed_xml
-          
+
           expect(doc).to be_a(Nokogiri::XML::Document)
           expect(doc.xpath('//channel/title').text).to eq('テックブログサンプル')
           expect(doc.xpath('//item').size).to eq(3)
@@ -84,7 +84,7 @@ RSpec.describe Feed, type: :model do
 
         it 'Atomが正常にパースされること' do
           doc = feed.parsed_xml
-          
+
           expect(doc).to be_a(Nokogiri::XML::Document)
           expect(doc.xpath('//atom:feed/atom:title', 'atom' => 'http://www.w3.org/2005/Atom').text).to eq('デザインブログサンプル')
           expect(doc.xpath('//atom:entry', 'atom' => 'http://www.w3.org/2005/Atom').size).to eq(2)
@@ -165,7 +165,7 @@ RSpec.describe Feed, type: :model do
         }.to change(Article, :count).by(3)
 
         articles = feed.articles.order(:created_at)
-        
+
         # 最初の記事をチェック
         first_article = articles.first
         expect(first_article.title).to eq('Railsの最新機能について')
@@ -180,7 +180,7 @@ RSpec.describe Feed, type: :model do
         travel_to(freeze_time) do
           feed.fetch_articles
           feed.reload
-          
+
           expect(feed.status).to eq('active')
           expect(feed.last_fetched_at).to be_within(1.second).of(freeze_time)
           expect(feed.last_error).to be_nil
@@ -189,10 +189,10 @@ RSpec.describe Feed, type: :model do
 
       it '自動タグが付与されること' do
         feed.fetch_articles
-        
+
         articles = feed.articles
         expect(articles.count).to eq(3)
-        
+
         # 各記事にフィード名のタグが付いていることを確認
         articles.each do |article|
           source_tag = article.tags.find_by(category: 'source')
@@ -225,7 +225,7 @@ RSpec.describe Feed, type: :model do
           }.to change(Article, :count).by(2)
 
           articles = feed.articles.order(:created_at)
-          
+
           first_article = articles.first
           expect(first_article.title).to eq('UIデザインの基本原則')
           expect(first_article.source_url).to eq('https://example.com/design-blog/ui-principles')
@@ -256,7 +256,7 @@ RSpec.describe Feed, type: :model do
         travel_to(freeze_time) do
           feed.mark_as_fetched
           feed.reload
-          
+
           expect(feed.status).to eq('active')
           expect(feed.last_fetched_at).to be_within(1.second).of(freeze_time)
           expect(feed.last_error).to be_nil
@@ -269,7 +269,7 @@ RSpec.describe Feed, type: :model do
         error_message = 'Test error message'
         feed.mark_as_error(error_message)
         feed.reload
-        
+
         expect(feed.status).to eq('error')
         expect(feed.last_error).to eq(error_message)
       end
@@ -295,6 +295,35 @@ RSpec.describe Feed, type: :model do
       it '作成日時の降順で返すこと' do
         recent_feeds = Feed.recent
         expect(recent_feeds.first.created_at).to be > recent_feeds.last.created_at
+      end
+    end
+  end
+
+  describe "重複チェック機能" do
+    let(:feed) { create(:feed) }
+
+    before do
+      # 既存記事を作成
+      create(:article,
+        feed: feed,
+        title: "既存記事のタイトル",
+        content: "既存記事の内容です。",
+        source_url: "https://example.com/existing"
+      )
+    end
+
+    describe "#article_exists?" do
+      it "同じURLの記事は重複として検出されること" do
+        expect(feed.send(:article_exists?, "https://example.com/existing")).to be true
+      end
+
+      it "異なるURLの記事は重複として検出されないこと" do
+        expect(feed.send(:article_exists?, "https://example.com/new")).to be false
+      end
+
+      it "空のURLの場合はfalseを返すこと" do
+        expect(feed.send(:article_exists?, "")).to be false
+        expect(feed.send(:article_exists?, nil)).to be false
       end
     end
   end

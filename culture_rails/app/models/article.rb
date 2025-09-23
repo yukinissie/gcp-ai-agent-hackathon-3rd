@@ -77,6 +77,7 @@ class Article < ApplicationRecord
     [ tags.count - display_limit, 0 ].max
   end
 
+
   def publish!
     update!(published: true, published_at: Time.current)
   end
@@ -102,4 +103,5 @@ class Article < ApplicationRecord
   def self.find_for_show(id)
     find_with_tags(id)
   end
+
 end
