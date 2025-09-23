@@ -3,13 +3,14 @@ import { fetchArticleDetail } from '../../home/_actions/articles';
 import { ArticleDetailClient } from '../_components/ArticleDetailClient';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function ArticleDetailPage({ params }: PageProps) {
-  const articleId = parseInt(params.id);
+  const { id } = await params;
+  const articleId = parseInt(id);
   
   if (isNaN(articleId)) {
     notFound();
