@@ -29,6 +29,13 @@ Rails.application.routes.draw do
         resources :activities, only: [ :create ]
       end
       resources :tags, only: [ :index ]
+
+      # 検索履歴関連
+      resources :tag_search_histories, only: [ :create ] do
+        collection do
+          get :articles
+        end
+      end
     end
   end
 
