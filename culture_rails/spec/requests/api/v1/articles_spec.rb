@@ -92,7 +92,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
   end
 
   describe 'GET #show' do
-    context '公開された記事が存在する時' do
+    context '公開された記事が存在する時（未認証ユーザー）' do
       let!(:article) { create(:article, :published) }
       let(:expected_response) do
         {
@@ -101,6 +101,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
             title: article.title,
             summary: article.summary,
             content: article.content,
+            user_activity_type: nil,
             content_format: article.content_format,
             author: article.author,
             source_url: article.source_url,
@@ -114,7 +115,45 @@ RSpec.describe 'Api::V1::Articles', type: :request do
         }
       end
 
-      it '記事の詳細が返ること' do
+      it '記事の詳細が返り、user_activity_typeがnilであること' do
+        get "/api/v1/articles/#{article.id}", headers: { 'Accept' => 'application/json' }
+        expect(response).to have_http_status(:ok)
+        assert_schema_conform(200)
+
+        expect(JSON.parse(response.body, symbolize_names: true)).to eq(expected_response)
+      end
+    end
+
+    context '公開された記事が存在する時（認証済みユーザー）' do
+      let!(:user) { create(:user) }
+      let!(:article) { create(:article, :published) }
+      let!(:activity) { create(:activity, user: user, article: article, activity_type: :good) }
+      let(:expected_response) do
+        {
+          article: {
+            id: article.id,
+            title: article.title,
+            summary: article.summary,
+            content: article.content,
+            user_activity_type: 'good',
+            content_format: article.content_format,
+            author: article.author,
+            source_url: article.source_url,
+            image_url: article.image_url,
+            published: article.published,
+            published_at: article.published_at.iso8601(3),
+            created_at: article.created_at.iso8601(3),
+            updated_at: article.updated_at.iso8601(3),
+            tags: []
+          }
+        }
+      end
+
+      before do
+        allow_any_instance_of(Api::V1::ArticlesController).to receive(:current_user).and_return(user)
+      end
+
+      it '記事の詳細が返り、user_activity_typeが正しく設定されること' do
         get "/api/v1/articles/#{article.id}", headers: { 'Accept' => 'application/json' }
         expect(response).to have_http_status(:ok)
         assert_schema_conform(200)

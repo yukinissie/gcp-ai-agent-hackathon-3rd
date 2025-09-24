@@ -70,7 +70,18 @@ ArticleTagging.find_or_create_by!(article: article3, tag: tech_tag)
 
 puts "タグと記事の関連付けを作成しました: #{ArticleTagging.count}件"
 
+# ユーザー作成（既存のユーザーID=2を確認）
+user = User.find_by(id: 2)
+if user
+  # article_id=1の記事に「いいね」を押す
+  Activity.find_or_create_by!(user: user, article: article1, activity_type: :good)
+  puts "ユーザーID=2がarticle_id=1に「いいね」を追加しました"
+else
+  puts "ユーザーID=2が見つかりませんでした"
+end
+
 puts "\n=== シードデータ作成完了 ==="
 puts "タグ: #{Tag.count}件"
 puts "記事: #{Article.count}件（公開: #{Article.published.count}件、未公開: #{Article.where(published: false).count}件）"
 puts "関連付け: #{ArticleTagging.count}件"
+puts "評価: #{Activity.count}件"

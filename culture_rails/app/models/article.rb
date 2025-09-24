@@ -69,6 +69,10 @@ class Article < ApplicationRecord
   }
   scope :recent, -> { order(published_at: :desc) }
 
+  def activity_type_for_user(user_id)
+    activities.find_by(user_id: user_id)&.activity_type
+  end
+
   def display_tags(limit = 2)
     # includes(:tags)で既に読み込まれたタグをメモリ上で処理
     tags.loaded? ? tags.to_a.take(limit) : tags.limit(limit)

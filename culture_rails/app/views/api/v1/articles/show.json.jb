@@ -4,6 +4,7 @@
     title: @article.title,
     summary: @article.summary,
     content: @article.content,
+    user_activity_type: @article.activity_type_for_user(@current_user&.id),
     content_format: @article.content_format,
     author: @article.author,
     source_url: @article.source_url,

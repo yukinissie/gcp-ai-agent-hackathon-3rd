@@ -17,14 +17,19 @@ export async function apiRequest(
 ): Promise<Response> {
   const { requireAuth = true, headers = {}, ...restOptions } = options;
 
+  // Server Actionでは手動でCookieを取得して送信する必要がある
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+
   // 基本ヘッダーを設定
   const requestHeaders: HeadersInit = {
     "Content-Type": "application/json",
     Accept: "application/json",
+    ...(cookieHeader && { Cookie: cookieHeader }),
     ...headers,
   };
 
-  // 認証が必要な場合の確認とJWTトークン追加
+  // 認証が必要な場合の確認
   if (requireAuth) {
     const session = await auth();
 
@@ -33,26 +38,10 @@ export async function apiRequest(
     }
 
     console.log("API Client - Authenticated user:", session.user.id);
-    console.log(
-      "API Client - Session accessToken:",
-      session.accessToken ? "available" : "not available",
-    );
-
-    // Server ActionでJWTトークンが利用可能な場合は使用
-    if (session.accessToken) {
-      requestHeaders.Authorization = `Bearer ${session.accessToken}`;
-      console.log("API Client - Using JWT Authorization header");
-    } else {
-      console.log("API Client - No JWT token available, relying on cookie authentication");
-    }
+    console.log("API Client - Using cookie authentication");
   }
 
-  // Server Actionでは手動でCookieを取得して送信する必要がある
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
-  
   if (cookieHeader) {
-    requestHeaders.Cookie = cookieHeader;
     console.log("[API Client] Adding Cookie header:", cookieHeader.substring(0, 100) + "...");
   }
 
