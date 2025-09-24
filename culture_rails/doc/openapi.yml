@@ -1595,19 +1595,12 @@ components:
           type: string
           format: date-time
           example: "2025-01-15T10:00:00Z"
-        user_activities:
-          type: object
-          additionalProperties: false
-          properties:
-            good:
-              type: boolean
-              example: true
-            bad:
-              type: boolean
-              example: false
-          required: [good, bad]
+        user_activity_type:
+          type: string
+          enum: [good, bad]
+          example: "good"
           nullable: true
-          description: "認証済みユーザーの評価状態（未認証時はnull）"
+          description: "認証済みユーザーの評価タイプ（未認証時またはまだ評価していない場合はnull）"
         tags:
           type: array
           items:
