@@ -15,7 +15,7 @@ interface HomeClientProps {
 }
 
 export function HomeClient({ userId }: HomeClientProps) {
-  const [isChatOpen, setIsChatOpen] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
