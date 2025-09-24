@@ -49,10 +49,18 @@ export const homeStyles = {
         fontSize: '24px',
         zIndex: 1001,
     },
-    reopenImage: {
+    reopenImageWrapper: {
+        position: 'relative' as const,
         width: '100%',
         height: '100%',
+        overflow: 'hidden' as const,
+        borderRadius: '50%'
+    },
+    reopenImage: {
         objectFit: 'cover' as const,
+        background: 'transparent',
+        WebkitTapHighlightColor: 'transparent',
+        outline: 'none',
         display: 'block' as const,
     },
     reopenButtonHover: {

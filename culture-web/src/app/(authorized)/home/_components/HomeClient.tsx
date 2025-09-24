@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Container, Box, Flex, Text } from '@radix-ui/themes';
 import { LogoutSection } from '../../_components/Logout';
@@ -71,7 +72,9 @@ export function HomeClient({ userId }: HomeClientProps) {
           }}
           title="チャットを開く"
         >
-          <img src="/culture.png" alt="Open chat" style={homeStyles.reopenImage} />
+          <div style={homeStyles.reopenImageWrapper}>
+            <Image src="/culture.png" alt="Open chat" fill priority style={homeStyles.reopenImage} />
+          </div>
         </Box>
       )}
     </Flex>
