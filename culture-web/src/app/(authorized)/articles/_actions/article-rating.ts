@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export interface ArticleRatingResponse {
   current_evaluation: "good" | "bad" | "none";
@@ -17,15 +18,24 @@ export async function rateArticle(
   activityType: "good" | "bad",
 ): Promise<ArticleRatingResponse | null> {
   try {
+    const session = await auth();
+    
+    if (!session?.user?.id) {
+      console.error("[Server Action] 認証が必要です");
+      return null;
+    }
+
     console.log("[Server Action] rateArticle called:", {
       articleId,
       activityType,
+      userId: session.user.id,
     });
 
     const response = await fetch(`${process.env.RAILS_API_HOST}/api/v1/articles/${articleId}/activities`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.user.jwtToken}`,
       },
       body: JSON.stringify({ activity_type: activityType }),
     });
