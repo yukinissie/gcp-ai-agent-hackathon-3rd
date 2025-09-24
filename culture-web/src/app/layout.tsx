@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Theme, ThemePanel } from "@radix-ui/themes";
-import { ThemeProvider } from 'next-themes'
+import { ThemeProvider } from 'next-themes';
+import { SessionProvider } from "next-auth/react";
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -19,12 +20,14 @@ export default function RootLayout({
 	return (
 		<html lang="ja" suppressHydrationWarning>
 			<body>
-				<ThemeProvider attribute="class">
-					<Theme accentColor="teal" grayColor="sage">
-						{children}
-						{useThemePanel && <ThemePanel />}
-					</Theme>
-				</ThemeProvider>
+				<SessionProvider>
+					<ThemeProvider attribute="class">
+						<Theme accentColor="teal" grayColor="sage">
+							{children}
+							{useThemePanel && <ThemePanel />}
+						</Theme>
+					</ThemeProvider>
+				</SessionProvider>
 			</body>
 		</html>
 	);
