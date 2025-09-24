@@ -69,31 +69,115 @@ type UserAttributesResponse = {
 async function fetchUserAttributes(
 	userId: number,
 ): Promise<UserAttributesResponse> {
-	// ダミー実装: 実際にはAPIやDBから取得する
+	try {
+		console.log('🚀 fetchUserAttributes: Starting API call for userId:', userId);
+		
+		const data = await apiClient.get('/api/v1/user_attributes');
+		console.log('✅ fetchUserAttributes: API call successful');
+		console.log('📊 fetchUserAttributes: Raw API response:', JSON.stringify(data, null, 2));
+		
+		// Rails APIレスポンスをMastra形式に変換
+		console.log('🔄 fetchUserAttributes: Starting transformation...');
+		const transformedData = transformUserAttributesResponse(data);
+		console.log('✅ fetchUserAttributes: Transformation complete:', JSON.stringify(transformedData, null, 2));
+		
+		return transformedData;
+	} catch (error) {
+		console.error('❌ fetchUserAttributes: Error occurred:', error);
+		console.error('❌ fetchUserAttributes: Error type:', error?.constructor?.name);
+		console.error('❌ fetchUserAttributes: Error message:', error instanceof Error ? error.message : 'Unknown error');
+		console.log('⚠️ fetchUserAttributes: Using fallback data');
+		// フォールバック: ダミーデータを返す
+		return {
+			userProfile: {
+				personalityType: "tech_enthusiast",
+				totalInteractions: 342,
+				diversityScore: 0.73,
+			},
+			tagPreferences: [
+				{
+					tag: "AI",
+					score: 850,
+					weight: 0.25,
+					interactions: 45,
+				},
+				{
+					tag: "startup",
+					score: 620,
+					weight: 0.18,
+					interactions: 32,
+				},
+			],
+			readingBehavior: {
+				totalArticlesRead: 342,
+				avgEngagementRate: 0.68,
+				readingFrequency: "daily",
+			},
+		};
+	}
+}
+
+// Rails APIレスポンスをMastra形式に変換する関数
+function transformUserAttributesResponse(data: any): UserAttributesResponse {
+	console.log('🔍 Transform: Analyzing API response structure...');
+	console.log('🔍 Transform: Root keys:', Object.keys(data));
+	console.log('🔍 Transform: Has llm_payload:', !!data.llm_payload);
+	console.log('🔍 Transform: Total interactions:', data.total_interactions);
+	console.log('🔍 Transform: Diversity score:', data.diversity_score);
+	
+	const llmPayload = data.llm_payload || {};
+	console.log('🔍 Transform: LLM payload keys:', Object.keys(llmPayload));
+	
+	const userProfile = llmPayload.user_profile || {};
+	console.log('🔍 Transform: User profile keys:', Object.keys(userProfile));
+	console.log('🔍 Transform: Personality type:', userProfile.personality_type);
+	
+	const tagPreferences = llmPayload.tag_preferences || [];
+	console.log('🔍 Transform: Tag preferences count:', tagPreferences.length);
+	if (tagPreferences.length > 0) {
+		console.log('🔍 Transform: First tag preference:', tagPreferences[0]);
+	}
+	
+	const activityPatterns = llmPayload.activity_patterns || {};
+	console.log('🔍 Transform: Activity patterns keys:', Object.keys(activityPatterns));
+	console.log('🔍 Transform: Good bad ratio:', activityPatterns.good_bad_ratio);
+
+	// タグ嗜好の変換とスコア計算
+	const convertedTagPreferences = tagPreferences.map((pref: any, index: number) => {
+		const totalInteractions = (pref.good_count || 0) + (pref.bad_count || 0);
+		const score = Math.round(pref.preference_score * 1000); // 0-1を0-1000スケールに変換
+		const weight = Math.max(0.1, 1 / (index + 1)); // 順位に基づく重み（最低0.1）
+		
+		return {
+			tag: pref.tag,
+			score: score,
+			weight: weight,
+			interactions: totalInteractions,
+		};
+	});
+
+	// 読書行動の推定
+	const totalInteractions = data.total_interactions || 0;
+	const goodBadRatio = activityPatterns.good_bad_ratio || 1.0;
+	const avgEngagementRate = Math.min(0.95, Math.max(0.1, goodBadRatio / (goodBadRatio + 1))); // 0.1-0.95の範囲
+	
+	// 読書頻度の推定（総インタラクション数から推定）
+	let readingFrequency = "casual";
+	if (totalInteractions >= 100) readingFrequency = "daily";
+	else if (totalInteractions >= 50) readingFrequency = "weekly";
+	else if (totalInteractions >= 10) readingFrequency = "monthly";
+
 	return {
 		userProfile: {
-			personalityType: "tech_enthusiast",
-			totalInteractions: 342,
-			diversityScore: 0.73,
+			personalityType: userProfile.personality_type || "casual_reader",
+			totalInteractions: totalInteractions,
+			diversityScore: data.diversity_score || 0.0,
 		},
-		tagPreferences: [
-			{
-				tag: "AI",
-				score: 850,
-				weight: 0.25,
-				interactions: 45,
-			},
-			{
-				tag: "startup",
-				score: 620,
-				weight: 0.18,
-				interactions: 32,
-			},
-		],
+		tagPreferences: convertedTagPreferences,
 		readingBehavior: {
-			totalArticlesRead: 342,
-			avgEngagementRate: 0.68,
-			readingFrequency: "daily",
+			totalArticlesRead: totalInteractions, // 評価数を読了数の代用とする
+			avgEngagementRate: avgEngagementRate,
+			readingFrequency: readingFrequency,
 		},
 	};
 }
