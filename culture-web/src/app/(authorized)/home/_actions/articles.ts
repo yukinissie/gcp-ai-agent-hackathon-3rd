@@ -14,7 +14,7 @@ export interface ArticleDetail extends Article {
 
 export async function fetchArticles(): Promise<Article[]> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+        const baseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000';
         const response = await fetch(`${baseUrl}/api/v1/articles`, {
             method: 'GET',
             headers: {
@@ -45,7 +45,7 @@ export async function fetchArticleDetail(id: number): Promise<ArticleDetail | nu
     try {
         const session = await auth();
         const baseUrl = process.env.RAILS_API_HOST;
-        
+
         const headers: Record<string, string> = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
