@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :activities, dependent: :destroy
   has_one :ingredient, dependent: :destroy
+  has_many :tag_search_histories, dependent: :destroy
 
   validates :human_id, presence: true, uniqueness: true
   before_validation :generate_human_id, on: :create

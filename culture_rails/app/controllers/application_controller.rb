@@ -68,6 +68,10 @@ class ApplicationController < ActionController::API
     true
   end
 
+  def authenticate_user!
+    require_authentication
+  end
+
   def start_new_session_for(user)
     user.sessions.create!(ip_address: request.remote_ip, user_agent: request.user_agent).tap do |session|
       Current.session = session
