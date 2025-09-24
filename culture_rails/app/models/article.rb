@@ -38,13 +38,14 @@ class Article < ApplicationRecord
   has_many :activities, dependent: :destroy
   belongs_to :feed, optional: true
 
-  validates :title, presence: true, length: { maximum: 255 }
-  validates :summary, presence: true, length: { maximum: 500 }
+  validates :title, presence: true, length: { maximum: 1000 }  # RSS記事タイトル用に拡張
+  validates :summary, presence: true, length: { maximum: 2000 }  # RSS記事サマリー用に拡張
   validates :content, presence: true
   validates :author, presence: true
   validates :content_format, inclusion: { in: %w[markdown html plain] }
-  validates :source_url, format: { with: URI::DEFAULT_PARSER.make_regexp }, allow_blank: true
-  validates :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp }, allow_blank: true
+  # RSS記事のURL形式チェックを緩和（不正なURLでも登録可能に）
+  # validates :source_url, format: { with: URI::DEFAULT_PARSER.make_regexp }, allow_blank: true
+  # validates :image_url, format: { with: URI::DEFAULT_PARSER.make_regexp }, allow_blank: true
 
   enum :source_type, {
     manual: "manual",
