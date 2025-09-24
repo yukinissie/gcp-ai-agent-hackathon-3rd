@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_23_142350) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_24_032954) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,6 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_142350) do
     t.string "content_format", default: "markdown", null: false
     t.bigint "feed_id", comment: "RSS由来の記事の場合のフィード参照"
     t.string "source_type", default: "manual", null: false, comment: "記事の作成元"
+    t.integer "tags_count"
     t.index ["content_format"], name: "index_articles_on_content_format"
     t.index ["feed_id", "created_at"], name: "index_articles_on_feed_id_and_created_at", comment: "フィード別記事一覧用"
     t.index ["feed_id", "source_url"], name: "index_articles_on_feed_and_source_url_for_rss", unique: true, where: "(((source_type)::text = 'rss'::text) AND (source_url IS NOT NULL))", comment: "RSS記事の重複防止"

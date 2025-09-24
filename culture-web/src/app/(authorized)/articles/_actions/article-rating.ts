@@ -1,6 +1,5 @@
 "use server";
 
-import { rateArticle as rateArticleApi } from "@/lib/api-client";
 import { revalidatePath } from "next/cache";
 
 export interface ArticleRatingResponse {
@@ -23,7 +22,19 @@ export async function rateArticle(
       activityType,
     });
 
-    const data = await rateArticleApi(articleId, activityType);
+    const response = await fetch(`${process.env.RAILS_API_HOST}/api/v1/articles/${articleId}/activities`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ activity_type: activityType }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
 
     console.log("[Server Action] API response received:", data);
 
