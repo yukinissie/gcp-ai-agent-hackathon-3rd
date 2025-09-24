@@ -1,6 +1,6 @@
 class Api::V1::FeedsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :require_authentication
+  before_action :require_authentication, except: [:create]
   before_action :set_feed, only: [ :show, :update, :destroy, :fetch ]
 
   # GET /api/v1/feeds
