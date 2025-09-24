@@ -163,15 +163,43 @@ async function determineTags(
 }
 
 async function fetchNewsByTags(tags: string[]) {
-	// ダミー実装: 実際にはAPIやDBから取得する
-	return tags.map((tag, idx) => ({
-		id: `news-${tag}-${idx}`,
-		title: `Latest updates in ${tag}`,
-		url: `https://news.example.com/${tag}/${idx}`,
-		source: "Example News",
-		publishedAt: new Date(),
-		tags: [tag],
-	}));
+	try {
+		if (tags.length === 0) {
+			return [];
+		}
+
+		const tagsParam = tags.join(',');
+		const response = await fetch(`http://localhost:3000/api/v1/articles?tags=${encodeURIComponent(tagsParam)}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`API Error: ${response.status} ${response.statusText}`);
+		}
+
+		const data = await response.json();
+		return data.articles.map((article: any) => ({
+			id: article.id.toString(),
+			title: article.title,
+			url: article.source_url || `http://localhost:3000/articles/${article.id}`,
+			source: article.author || "Unknown",
+			publishedAt: new Date(article.published_at),
+			tags: article.tags.map((tag: any) => tag.name),
+		}));
+	} catch (error) {
+		console.error('Error fetching news by tags:', error);
+		return tags.map((tag, idx) => ({
+			id: `news-${tag}-${idx}`,
+			title: `Latest updates in ${tag}`,
+			url: `https://news.example.com/${tag}/${idx}`,
+			source: "Example News",
+			publishedAt: new Date(),
+			tags: [tag],
+		}));
+	}
 }
 
 async function saveNewsFetchHistory(
