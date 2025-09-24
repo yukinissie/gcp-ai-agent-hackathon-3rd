@@ -3,7 +3,8 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState, useEffect } from "react";
-import { Box, Flex, ScrollArea, IconButton, Text, TextField, Button } from '@radix-ui/themes';
+import { Box, Flex, ScrollArea, IconButton, Text, Button } from '@radix-ui/themes';
+import { marked } from 'marked';
 import { chatSidebarStyles } from '../_styles/chatSidebar.styles';
 import { chatInputStyles } from '../_styles/chatInput.styles';
 
@@ -39,7 +40,7 @@ export function ChatSidebar({
         parts: [
           {
             type: "text" as const,
-            text: `user ID is ${userId}.この会話の対象ユーザーは匿名化されています。個人情報（ユーザーIDなど）は表示しないでください。`,
+            text: `user ID is ${userId || "unknown"}. You are a helpful assistant specialized in curating news articles based on user preferences. Provide concise and relevant news summaries. Do not display, print, or reveal the user's ID; anonymize any identifiers and never expose personal identifiers in responses.`,
           },
         ],
       },
@@ -84,8 +85,10 @@ export function ChatSidebar({
             {messages.map((message) => {
               if (message.role === "system") return null;
 
+              const isUser = message.role === "user";
+
               return (
-                <Flex key={message.id} direction="column" align={message.role === "user" ? "end" : "start"} mb="3">
+                <Flex key={message.id} direction="column" align={isUser ? "end" : "start"} mb="3">
                   <Flex align="center" gap="2" mb="1">
                     <Box style={chatSidebarStyles.avatarBox}>
                       {message.role === "user" ? (
@@ -104,18 +107,22 @@ export function ChatSidebar({
                       }) : '--:--'}
                     </Text>
                   </Flex>
-                  <Box style={message.role === "user" ? chatSidebarStyles.messageBoxUser : chatSidebarStyles.messageBox}>
-                    <Text size="2" style={chatSidebarStyles.messageTextTeal}>
-                      {message.parts.map((part) =>
-                        part.type === "text" ? (
-                          <span
-                            key={`${message.id}-${part.type}-${typeof part.text === "string" ? part.text.slice(0, 32) : ""}`}
-                          >
+                  <Box style={isUser ? chatSidebarStyles.messageBoxUser : chatSidebarStyles.messageBox}>
+                    {message.parts.map((part, idx) =>
+                      part.type === "text" ? (
+                        isUser ? (
+                          <Text key={`${message.id}-${idx}`} size="2" style={chatSidebarStyles.messageTextTeal}>
                             {part.text}
-                          </span>
-                        ) : null,
-                      )}
-                    </Text>
+                          </Text>
+                        ) : (
+                          <div
+                            key={`${message.id}-${idx}`}
+                            dangerouslySetInnerHTML={{ __html: marked.parse(typeof part.text === 'string' ? part.text : '') }}
+                            style={chatSidebarStyles.messageTextTeal}
+                          />
+                        )
+                      ) : null,
+                    )}
                   </Box>
                 </Flex>
               );
@@ -130,20 +137,19 @@ export function ChatSidebar({
           onSubmit={(e) => {
             e.preventDefault();
             if (input.trim()) {
-              console.log("Sending message"); // デバッグログ（ユーザーIDは表示しない）
+              console.log("Sending message");
               sendMessage({ text: input });
               setInput("");
             }
           }}
         >
-            <Flex gap="2" align="center">
-            <TextField.Root
+          <Flex gap="2" align="center">
+            <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={status !== "ready"}
               placeholder="メッセージを入力..."
               style={chatInputStyles.textField}
-              size="2"
             />
             <Button
               type="submit"
