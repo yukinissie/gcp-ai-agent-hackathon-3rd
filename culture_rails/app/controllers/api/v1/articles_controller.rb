@@ -8,12 +8,17 @@ class Api::V1::ArticlesController < ApplicationController
   # GET /api/v1/articles?tags=タグ1,タグ2
   def index
     @articles = build_articles_scope
-                  .preload(:tags)
+                  .includes(:tags)
                   .recent
   end
 
   def show
     @article = Article.find_for_show(params[:id])
+
+    # 認証済みユーザーの場合のみ読了記録を保存
+    if current_user
+      Activity.mark_as_read(current_user, @article)
+    end
   end
 
   def create
