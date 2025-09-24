@@ -33,18 +33,7 @@ export async function apiRequest(
     }
 
     console.log("API Client - Authenticated user:", session.user.id);
-    console.log(
-      "API Client - Session accessToken:",
-      session.accessToken ? "available" : "not available",
-    );
-
-    // Server ActionでJWTトークンが利用可能な場合は使用
-    if (session.accessToken) {
-      requestHeaders.Authorization = `Bearer ${session.accessToken}`;
-      console.log("API Client - Using JWT Authorization header");
-    } else {
-      console.log("API Client - No JWT token available, relying on cookie authentication");
-    }
+    console.log("API Client - Using cookie authentication");
   }
 
   // Server Actionでは手動でCookieを取得して送信する必要がある
