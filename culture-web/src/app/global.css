@@ -35,3 +35,14 @@
 body {
   margin: 0;
 }
+
+input, textarea, select {
+  font-size: 16px !important; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+[data-radix-scroll-area-viewport] input {
+  font-size: 16px !important;
+}

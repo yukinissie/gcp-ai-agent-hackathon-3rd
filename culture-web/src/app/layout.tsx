@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 	title: "Culture Web",
 	description: "A web application for culture-related content",
 	robots: "noindex, nofollow",
+	viewport: {
+		width: "device-width",
+		initialScale: 1,
+		maximumScale: 1,
+		userScalable: false,
+	},
 };
 
 export default function RootLayout({

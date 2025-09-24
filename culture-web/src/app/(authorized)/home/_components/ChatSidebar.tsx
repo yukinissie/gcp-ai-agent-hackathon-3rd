@@ -56,7 +56,6 @@ export function ChatSidebar({
     ],
   });
 
-  // スマホ用のコンテナスタイル（クライアント側のみ）
   const containerStyle = !isClient ? chatSidebarStyles.container : 
     (isMobile ? {
       ...chatSidebarStyles.container,
@@ -89,6 +88,7 @@ export function ChatSidebar({
               size="1"
               onClick={onClose}
               style={chatSidebarStyles.closeButton}
+              tabIndex={-1}
             >
               ✕
             </IconButton>
@@ -98,7 +98,10 @@ export function ChatSidebar({
       
       {/* メッセージエリア */}
       <Box style={chatSidebarStyles.messagesContainer}>
-        <ScrollArea style={chatSidebarStyles.scrollArea}>
+        <ScrollArea 
+          style={chatSidebarStyles.scrollArea}
+          scrollbars="vertical"
+        >
           <Box p="3" pb="6">
             {messages.map((message) => {
               if (message.role === "system") return null;
@@ -168,6 +171,7 @@ export function ChatSidebar({
               disabled={status !== "ready"}
               placeholder="メッセージを入力..."
               style={chatInputStyles.textField}
+              autoFocus={false}
             />
             <Button
               type="submit"

@@ -90,7 +90,11 @@ export function HomeClient({ userId }: HomeClientProps) {
 
   return (
     <Flex style={homeStyles.mainContainer}>
-      <Box style={mainContentStyle}>
+      <Box 
+        style={mainContentStyle}
+        data-main-content
+        tabIndex={isMobile ? -1 : 0}
+      >
         <Box style={homeStyles.logoutBox}>
           <LogoutSection />
         </Box>
