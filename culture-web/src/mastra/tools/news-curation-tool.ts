@@ -1,6 +1,7 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import { determineNewsTagsAgent } from "../agents/determine-tags-agent";
+import { apiClient } from "../../lib/api-client";
 
 export const newsCurationTool = createTool({
 	id: "news-curation",
@@ -99,18 +100,7 @@ async function fetchUserAttributes(
 
 async function fetchAllTags(): Promise<string[]> {
 	try {
-		const response = await fetch('http://localhost:3000/api/v1/tags', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-
-		if (!response.ok) {
-			throw new Error(`API Error: ${response.status} ${response.statusText}`);
-		}
-
-		const data = await response.json();
+		const data = await apiClient.get('/api/v1/tags');
 		return data.tags.map((tag: { name: string }) => tag.name);
 	} catch (error) {
 		console.error('Error fetching tags:', error);
@@ -163,15 +153,33 @@ async function determineTags(
 }
 
 async function fetchNewsByTags(tags: string[]) {
-	// ダミー実装: 実際にはAPIやDBから取得する
-	return tags.map((tag, idx) => ({
-		id: `news-${tag}-${idx}`,
-		title: `Latest updates in ${tag}`,
-		url: `https://news.example.com/${tag}/${idx}`,
-		source: "Example News",
-		publishedAt: new Date(),
-		tags: [tag],
-	}));
+	try {
+		if (tags.length === 0) {
+			return [];
+		}
+
+		const tagsParam = tags.join(',');
+		const data = await apiClient.get(`/api/v1/articles?tags=${encodeURIComponent(tagsParam)}`);
+		
+		return data.articles.map((article: any) => ({
+			id: article.id.toString(),
+			title: article.title,
+			url: article.source_url || `http://localhost:3000/articles/${article.id}`,
+			source: article.author || "Unknown",
+			publishedAt: new Date(article.published_at),
+			tags: article.tags.map((tag: any) => tag.name),
+		}));
+	} catch (error) {
+		console.error('Error fetching news by tags:', error);
+		return tags.map((tag, idx) => ({
+			id: `news-${tag}-${idx}`,
+			title: `Latest updates in ${tag}`,
+			url: `https://news.example.com/${tag}/${idx}`,
+			source: "Example News",
+			publishedAt: new Date(),
+			tags: [tag],
+		}));
+	}
 }
 
 async function saveNewsFetchHistory(
@@ -186,17 +194,31 @@ async function saveNewsFetchHistory(
 		tags: string[];
 	}[],
 ) {
-	// ダミー実装: 実際にはAPIやDBに保存する
-	console.log(`Saving news fetch history for user ${userId}:`, {
-		tags,
-		news,
-	});
-	// 例: Rails APIにPOSTリクエストを送る場合
-	// await fetch(`${process.env.RAILS_API_URL}/api/news/fetch-history`, {
-	// 	method: "POST",
-	// 	headers: { "Content-Type": "application/json" },
-	// 	body: JSON.stringify({ userId, tags, news }),
-	// });
+	try {
+		// 記事IDの配列を抽出
+		const articleIds = news.map(article => parseInt(article.id, 10)).filter(id => !isNaN(id));
+		
+		if (articleIds.length === 0) {
+			console.log('No valid article IDs found, skipping history save');
+			return;
+		}
+
+		// apiClientを使用（認証ヘッダー自動追加）
+		const result = await apiClient.post('/api/v1/tag_search_histories', {
+			tag_search_history: {
+				article_ids: articleIds
+			}
+		});
+
+		console.log('News fetch history saved successfully:', result);
+	} catch (error) {
+		console.error('Error saving news fetch history:', error);
+		// フォールバック: ログ出力のみ
+		console.log(`Fallback: Saving news fetch history for user ${userId}:`, {
+			tags,
+			news: news.map(n => ({ id: n.id, title: n.title })),
+		});
+	}
 }
 
 const getInfoForCuration = async (userId: number) => {
