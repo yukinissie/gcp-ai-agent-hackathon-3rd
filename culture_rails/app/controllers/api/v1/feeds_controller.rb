@@ -22,8 +22,8 @@ class Api::V1::FeedsController < ApplicationController
     @feed = Feed.new(feed_params)
 
     if @feed.save
-      # 作成後に非同期で初回フェッチを実行
-      RssFetchSingleJob.perform_later(@feed.id)
+      # 作成後に即座に初回フェッチを実行
+      @feed.fetch_articles
       render :show, status: :created
     else
       render json: { errors: @feed.errors.full_messages }, status: :unprocessable_entity
