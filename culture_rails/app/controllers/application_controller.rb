@@ -34,12 +34,8 @@ class ApplicationController < ActionController::API
     ].compact
 
     if nextauth_cookies.any?
-      # 暫定的に認証済みユーザー（ID: 2）として扱う
-      # TODO: NextAuth.jsのセッションCookieを適切にデコードして実際のユーザーIDを取得
-      if user = User.find_by(id: 2)
-        Current.user = user
-        return true
-      end
+      Current.user = user
+      return true
     end
   end
 

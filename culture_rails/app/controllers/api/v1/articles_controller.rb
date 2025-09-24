@@ -1,5 +1,5 @@
 class Api::V1::ArticlesController < ApplicationController
-  skip_before_action :authenticate, only: [ :index, :show ]
+  # 認証はオプション（認証済みならuser_activity_typeを返す、未認証ならnullを返す）
   skip_before_action :verify_authenticity_token
   before_action :require_authentication, only: [ :create, :update, :destroy ]
 
@@ -14,6 +14,7 @@ class Api::V1::ArticlesController < ApplicationController
 
   def show
     @article = Article.find_for_show(params[:id])
+    @current_user = current_user
 
     # 認証済みユーザーの場合のみ読了記録を保存
     if current_user
