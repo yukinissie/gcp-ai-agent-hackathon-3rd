@@ -25,10 +25,14 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
     end
 
     article_ids = latest_history.article_ids_array.map(&:to_i)
-    array_sql = ActiveRecord::Base.sanitize_sql_array(["ARRAY[?]::int[]", article_ids])
-    articles = Article.includes(:tags)
-                     .where(id: article_ids, published: true)
-                     .order(Arel.sql("ARRAY_POSITION(#{array_sql}, id)"))
+    
+    # より効率的な実装: 記事をハッシュで取得してメモリ内でソート
+    articles_hash = Article.includes(:tags)
+                          .where(id: article_ids, published: true)
+                          .index_by(&:id)
+    
+    # 元の順序を保持しつつ存在する記事のみを取得
+    articles = article_ids.filter_map { |id| articles_hash[id] }
 
     articles_data = articles.map do |article|
       {
