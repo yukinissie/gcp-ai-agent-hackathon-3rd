@@ -23,10 +23,13 @@ export const chatSidebarStyles = {
     messagesContainer: {
         flex: 1,
         position: 'relative' as const,
-        minHeight: 0
+        minHeight: 0,
+        // スマホでのスクロール改善
+        overflowY: 'auto' as const,
     },
     scrollArea: {
-        height: '100%'
+        height: '100%',
+        width: '100%',
     },
     avatarBox: {
         width: '24px',
@@ -52,6 +55,8 @@ export const chatSidebarStyles = {
         backgroundColor: 'var(--gray-3)',
         color: 'var(--gray-12)',
         wordBreak: 'break-word' as const,
+        fontSize: '14px',
+        lineHeight: '1.4',
     },
     messageBoxUser: {
         maxWidth: '80%',
@@ -60,6 +65,8 @@ export const chatSidebarStyles = {
         backgroundColor: '#e3f2fd',
         color: 'var(--gray-12)',
         wordBreak: 'break-word' as const,
+        fontSize: '14px',
+        lineHeight: '1.4',
     },
     messageText: {
         lineHeight: '1.4'
@@ -75,5 +82,11 @@ export const chatSidebarStyles = {
         borderTop: '1px solid var(--gray-6)',
         backgroundColor: 'var(--gray-2)',
         minHeight: '70px',
+        // スマホでの入力エリア固定表示
+        position: 'sticky' as const,
+        bottom: 0,
+        zIndex: 10,
+        // スマホでのキーボード対応
+        paddingBottom: 'env(safe-area-inset-bottom)',
     }
 };

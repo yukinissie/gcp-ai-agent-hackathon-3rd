@@ -9,21 +9,30 @@ import { chatSidebarStyles } from '../_styles/chatSidebar.styles';
 import { chatInputStyles } from '../_styles/chatInput.styles';
 
 export function ChatSidebar({ 
-  onSendMessage,
   className,
   onClose,
   userId
 }: {
-  onSendMessage?: (message: string) => Promise<string>;
   className?: string;
   onClose?: () => void;
   userId: string;
 }) {
   const [isClient, setIsClient] = useState(false);
   const [input, setInput] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
     setIsClient(true);
+    
+    // スマホ判定
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
   const { messages, sendMessage, status } = useChat({
@@ -47,10 +56,19 @@ export function ChatSidebar({
     ],
   });
 
+  // スマホ用のコンテナスタイル（クライアント側のみ）
+  const containerStyle = !isClient ? chatSidebarStyles.container : 
+    (isMobile ? {
+      ...chatSidebarStyles.container,
+      width: '100vw',
+      minWidth: 'unset',
+      borderLeft: 'none',
+    } : chatSidebarStyles.container);
+
   return (
     <Box
       className={className}
-      style={chatSidebarStyles.container}
+      style={containerStyle}
     >
       <Flex
         justify="between"
@@ -81,7 +99,7 @@ export function ChatSidebar({
       {/* メッセージエリア */}
       <Box style={chatSidebarStyles.messagesContainer}>
         <ScrollArea style={chatSidebarStyles.scrollArea}>
-          <Box p="3">
+          <Box p="3" pb="6">
             {messages.map((message) => {
               if (message.role === "system") return null;
 

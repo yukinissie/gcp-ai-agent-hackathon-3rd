@@ -10,11 +10,19 @@ export const homeStyles = {
     },
     // helper to compute mainContent when chat is open/closed
     getMainContent: (isChatOpen: boolean) => ({
-        flex: 1,
-        marginRight: isChatOpen ? '400px' : '0',
-        overflow: 'auto' as const,
-        transition: 'margin-right 0.3s ease',
+        flex: '1',
+        marginRight: isChatOpen ? '400px' : '0px',
+        overflowX: 'auto' as const,
+        overflowY: 'auto' as const,
+        transitionProperty: 'margin-right',
+        transitionDuration: '0.3s',
+        transitionTimingFunction: 'ease',
+        transitionDelay: '0s',
+        transitionBehavior: 'normal',
         position: 'relative' as const,
+        flexGrow: '1',
+        flexShrink: '1',
+        flexBasis: '0%',
     }),
     // logout box position inside mainContent to avoid overlap with chat
     logoutBox: {
@@ -30,6 +38,7 @@ export const homeStyles = {
         height: '100vh',
         width: '400px',
         transition: 'transform 0.3s ease',
+        zIndex: 1000,
     },
     reopenChatButton: {
         position: 'fixed' as const,

@@ -17,6 +17,8 @@ interface HomeClientProps {
 export function HomeClient({ userId }: HomeClientProps) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const loadArticles = async () => {
@@ -24,6 +26,19 @@ export function HomeClient({ userId }: HomeClientProps) {
       setArticles(fetchedArticles);
     };
     loadArticles();
+
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const handleCloseChat = () => {
@@ -34,9 +49,48 @@ export function HomeClient({ userId }: HomeClientProps) {
     setIsChatOpen(true);
   };
 
+  // マウント前は基本スタイルのみ表示
+  if (!mounted) {
+    return (
+      <Flex style={homeStyles.mainContainer}>
+        <Box style={homeStyles.getMainContent(false)}>
+          <Box style={homeStyles.logoutBox}>
+            <LogoutSection />
+          </Box>
+          <Container size="4">
+            <Box py="6">
+              <ArticleList articles={articles} />
+            </Box>
+          </Container>
+        </Box>
+        
+        {!isChatOpen && (
+          <Box
+            onClick={() => setIsChatOpen(true)}
+            style={homeStyles.reopenChatButton}
+            title="チャットを開く"
+          >
+            <div style={homeStyles.reopenImageWrapper}>
+              <Image src="/culture.png" alt="Open chat" fill priority style={homeStyles.reopenImage} />
+            </div>
+          </Box>
+        )}
+      </Flex>
+    );
+  }
+
+  // レスポンシブスタイル
+  const mainContentStyle = isMobile && isChatOpen ? 
+    { ...homeStyles.getMainContent(isChatOpen), display: 'none' } :
+    homeStyles.getMainContent(isChatOpen);
+
+  const chatSidebarStyle = isMobile ? 
+    { ...homeStyles.chatSidebar, width: '100vw', left: 0 } :
+    homeStyles.chatSidebar;
+
   return (
     <Flex style={homeStyles.mainContainer}>
-      <Box style={homeStyles.getMainContent(isChatOpen)}>
+      <Box style={mainContentStyle}>
         <Box style={homeStyles.logoutBox}>
           <LogoutSection />
         </Box>
@@ -49,9 +103,7 @@ export function HomeClient({ userId }: HomeClientProps) {
       
       {/* AIチャットサイドパネル */}
       {isChatOpen && (
-        <Box
-          style={homeStyles.chatSidebar}
-        >
+        <Box style={chatSidebarStyle}>
           <ChatSidebar 
             onClose={handleCloseChat}
             userId={userId}
