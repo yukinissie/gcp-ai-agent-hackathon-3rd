@@ -83,9 +83,9 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
                   {tag.name}
                 </Badge>
               ))}
-              {article.additional_tags_count > 0 && (
+              {article.tags.length > 2 && (
                 <Badge color="gray" variant="soft" size="1">
-                  +{article.additional_tags_count}
+                  +{article.tags.length - 2}
                 </Badge>
               )}
             </Flex>

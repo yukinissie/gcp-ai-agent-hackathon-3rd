@@ -12,7 +12,6 @@ export interface Article {
     published_at: string;
     image_url?: string;
     tags: Tag[];
-    additional_tags_count: number;
 }
 
 export interface ArticleCardProps {
