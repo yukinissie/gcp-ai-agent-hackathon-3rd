@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Container, Box, Flex, Text } from '@radix-ui/themes';
 import { LogoutSection } from '../../_components/Logout';
+import { ThemeToggle } from '../../../_components/ThemeToggle';
 import { ArticleList } from './ArticleList';
 import { ChatSidebar } from './ChatSidebar';
 import { fetchArticles } from '../_actions/articles';
@@ -90,6 +91,11 @@ export function HomeClient({ userId }: HomeClientProps) {
 
   return (
     <Flex style={homeStyles.mainContainer}>
+      {!(isMobile && isChatOpen) && (
+        <Box style={{ position: 'fixed', top: 12, left: 12, zIndex: 1100 }}>
+          <ThemeToggle />
+        </Box>
+      )}
       <Box 
         style={mainContentStyle}
         data-main-content
