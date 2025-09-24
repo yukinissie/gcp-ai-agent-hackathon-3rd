@@ -39,7 +39,7 @@ export function ChatSidebar({
         parts: [
           {
             type: "text" as const,
-            text: `user ID is ${userId}. You are a helpful assistant specialized in curating news articles based on user preferences. Provide concise and relevant news summaries in Japanese.`,
+            text: `user ID is ${userId}.この会話の対象ユーザーは匿名化されています。個人情報（ユーザーIDなど）は表示しないでください。`,
           },
         ],
       },
@@ -130,7 +130,7 @@ export function ChatSidebar({
           onSubmit={(e) => {
             e.preventDefault();
             if (input.trim()) {
-              console.log("Sending message with userId:", userId); // デバッグログ
+              console.log("Sending message"); // デバッグログ（ユーザーIDは表示しない）
               sendMessage({ text: input });
               setInput("");
             }
