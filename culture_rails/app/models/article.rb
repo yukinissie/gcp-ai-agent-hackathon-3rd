@@ -70,11 +70,14 @@ class Article < ApplicationRecord
   scope :recent, -> { order(published_at: :desc) }
 
   def display_tags(limit = 2)
-    tags.limit(limit)
+    # includes(:tags)で既に読み込まれたタグをメモリ上で処理
+    tags.loaded? ? tags.to_a.take(limit) : tags.limit(limit)
   end
 
   def additional_tags_count(display_limit = 2)
-    [ tags.count - display_limit, 0 ].max
+    # includes(:tags)で既に読み込まれたタグをメモリ上で処理
+    total_count = tags.loaded? ? tags.size : tags.count
+    [ total_count - display_limit, 0 ].max
   end
 
 
