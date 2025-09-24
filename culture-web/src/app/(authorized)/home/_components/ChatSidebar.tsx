@@ -78,7 +78,7 @@ export function ChatSidebar({
       >
         <Flex align="center" gap="2">
           <Text size="2" weight="medium" color="gray">
-            犬の気持ち
+            チャット
           </Text>
         </Flex>
         <Flex align="center" gap="1">
