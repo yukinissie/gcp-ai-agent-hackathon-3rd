@@ -34,13 +34,10 @@ class ApplicationController < ActionController::API
     ].compact
 
     if nextauth_cookies.any?
-      puts "[DEBUG] NextAuth.js Cookie found"
-      
-      # 暫定的に認証済みユーザー（ID: 5）として扱う
+      # 暫定的に認証済みユーザー（ID: 2）として扱う
       # TODO: NextAuth.jsのセッションCookieを適切にデコードして実際のユーザーIDを取得
-      if user = User.find_by(id: 5)
+      if user = User.find_by(id: 2)
         Current.user = user
-        puts "[DEBUG] NextAuth user authenticated: #{user.id}"
         return true
       end
     end

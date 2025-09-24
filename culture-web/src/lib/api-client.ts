@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { cookies } from "next/headers";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_RAILS_API_HOST || "http://localhost:3000"; // Rails は 3000 ポートで動作中
@@ -44,6 +45,15 @@ export async function apiRequest(
     } else {
       console.log("API Client - No JWT token available, relying on cookie authentication");
     }
+  }
+
+  // Server Actionでは手動でCookieを取得して送信する必要がある
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  
+  if (cookieHeader) {
+    requestHeaders.Cookie = cookieHeader;
+    console.log("[API Client] Adding Cookie header:", cookieHeader.substring(0, 100) + "...");
   }
 
   const fullUrl = `${API_BASE_URL}${endpoint}`;

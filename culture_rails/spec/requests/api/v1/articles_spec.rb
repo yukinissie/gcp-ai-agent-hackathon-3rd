@@ -16,8 +16,7 @@ RSpec.describe 'Api::V1::Articles', type: :request do
               content_format: published_article.content_format,
               published_at: published_article.published_at.iso8601(3),
               image_url: published_article.image_url,
-              tags: [],
-              additional_tags_count: 0
+              tags: []
             }
           ]
         }

@@ -3,13 +3,27 @@
 import { Container, Box, Heading, Text, Badge, Flex, Button } from '@radix-ui/themes';
 import Link from 'next/link';
 import { marked } from 'marked';
+import { useState, useTransition } from 'react';
 import { ArticleDetail } from '../../home/_actions/articles';
+import {
+  rateArticleGood,
+  rateArticleBad,
+  ArticleRatingResponse,
+} from '../_actions/article-rating';
 
 interface ArticleDetailClientProps {
   article: ArticleDetail;
 }
 
 export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
+  const [currentEvaluation, setCurrentEvaluation] = useState<
+    "good" | "bad" | "none"
+  >("none");
+  const [ratingStats, setRatingStats] = useState<ArticleRatingResponse | null>(
+    null,
+  );
+  const [isPending, startTransition] = useTransition();
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('ja-JP', {
@@ -35,11 +49,31 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
   };
 
   const handleWantClick = () => {
-    console.log('ほしい ボタンがクリックされました - Article ID:', article.id);
+    startTransition(async () => {
+      try {
+        const result = await rateArticleGood(article.id);
+        if (result) {
+          setRatingStats(result);
+          setCurrentEvaluation(result.current_evaluation);
+        }
+      } catch (error) {
+        console.error('評価の送信に失敗しました:', error);
+      }
+    });
   };
 
   const handleDontWantClick = () => {
-    console.log('いらない ボタンがクリックされました - Article ID:', article.id);
+    startTransition(async () => {
+      try {
+        const result = await rateArticleBad(article.id);
+        if (result) {
+          setRatingStats(result);
+          setCurrentEvaluation(result.current_evaluation);
+        }
+      } catch (error) {
+        console.error('評価の送信に失敗しました:', error);
+      }
+    });
   };
 
   return (
@@ -98,22 +132,29 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
 
           {/* ほしい・いらないボタン */}
           <Flex gap="3" align="center">
-            <Button 
+            <Button
               onClick={handleWantClick}
-              variant="outline"
+              variant={currentEvaluation === "good" ? "solid" : "outline"}
               color="teal"
               size="3"
+              disabled={isPending}
             >
               ホシイ
             </Button>
-            <Button 
+            <Button
               onClick={handleDontWantClick}
-              variant="outline"
+              variant={currentEvaluation === "bad" ? "solid" : "outline"}
               color="teal"
               size="3"
+              disabled={isPending}
             >
               イラナイ
             </Button>
+            {isPending && (
+              <Text size="2" color="gray">
+                送信中...
+              </Text>
+            )}
           </Flex>
 
         </Box>

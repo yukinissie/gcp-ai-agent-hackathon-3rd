@@ -719,11 +719,7 @@ paths:
                                 type: string
                                 example: "art"
                             required: [id, name, category]
-                        additional_tags_count:
-                          type: integer
-                          example: 0
-                          description: 表示されていないタグの数
-                      required: [id, title, summary, author, content_format, published_at, tags, additional_tags_count]
+                      required: [id, title, summary, author, content_format, published_at, tags]
                 required: [articles]
 
     post:

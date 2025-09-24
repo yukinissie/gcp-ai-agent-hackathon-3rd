@@ -19,14 +19,5 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       credentials: true # Cookieベース認証のため必要
   end
 
-  # 開発環境での追加許可（認証情報なし）
-  if Rails.env.development?
-    allow do
-      origins '*'
-      resource '*',
-        headers: :any,
-        methods: [:get, :post, :put, :patch, :delete, :options, :head],
-        credentials: false
-    end
-  end
+  # 開発環境での追加許可は上記の設定で十分
 end

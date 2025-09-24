@@ -1,4 +1,5 @@
 class Api::V1::ActivitiesController < ApplicationController
+  skip_before_action :verify_authenticity_token  # API用: CSRF保護を無効化
   before_action :require_authentication
 
   # POST /api/v1/articles/:article_id/activities
