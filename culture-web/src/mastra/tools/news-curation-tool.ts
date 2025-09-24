@@ -97,9 +97,26 @@ async function fetchUserAttributes(
 	};
 }
 
-async function fetchAllTags() {
-	// ダミー実装: 実際にはAPIやDBから取得する
-	return ["AI", "startup", "health", "sports", "entertainment"];
+async function fetchAllTags(): Promise<string[]> {
+	try {
+		const response = await fetch('http://localhost:3000/api/v1/tags', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error(`API Error: ${response.status} ${response.statusText}`);
+		}
+
+		const data = await response.json();
+		return data.tags.map((tag: { name: string }) => tag.name);
+	} catch (error) {
+		console.error('Error fetching tags:', error);
+		// フォールバック
+		return ["AI", "startup", "health", "sports", "entertainment"];
+	}
 }
 
 export const DetermineTagList = z.array(z.string());
