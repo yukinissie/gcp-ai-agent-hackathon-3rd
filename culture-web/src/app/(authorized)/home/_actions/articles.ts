@@ -1,5 +1,6 @@
 'use server';
 
+import { auth } from "@/auth";
 import { Article } from '../_components/types';
 
 export interface ArticleDetail extends Article {
@@ -42,13 +43,22 @@ export async function fetchArticles(): Promise<Article[]> {
 
 export async function fetchArticleDetail(id: number): Promise<ArticleDetail | null> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const session = await auth();
+        const baseUrl = process.env.RAILS_API_HOST;
+        
+        const headers: Record<string, string> = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        };
+
+        // JWT認証がある場合はヘッダーに追加
+        if (session?.user?.jwtToken) {
+            headers['Authorization'] = `Bearer ${session.user.jwtToken}`;
+        }
+
         const response = await fetch(`${baseUrl}/api/v1/articles/${id}`, {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
+            headers,
             next: { revalidate: 60 },
         });
 
