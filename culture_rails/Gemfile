@@ -81,6 +81,9 @@ group :development do
 
   # Model annotation (maintained fork)
   gem "annotaterb"
+
+  # N+1 query detection [https://github.com/charkost/prosopite]
+  gem "prosopite"
 end
 
 group :test do

@@ -257,6 +257,7 @@ GEM
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
+    prosopite (2.1.2)
     psych (5.2.6)
       date
       stringio
@@ -469,6 +470,7 @@ DEPENDENCIES
   nokogiri
   pg (>= 1.1)
   propshaft
+  prosopite
   puma (>= 5.0)
   rack-cors
   rails (~> 8.0.2, >= 8.0.2.1)
