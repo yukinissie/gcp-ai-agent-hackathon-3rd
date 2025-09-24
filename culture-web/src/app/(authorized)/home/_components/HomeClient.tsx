@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Container, Box, Flex, Text } from '@radix-ui/themes';
+import { LogoutSection } from '../../_components/Logout';
 import { ArticleList } from './ArticleList';
 import { ChatSidebar } from './ChatSidebar';
 import { fetchArticles } from '../_actions/articles';
@@ -34,12 +35,10 @@ export function HomeClient({ userId }: HomeClientProps) {
 
   return (
     <Flex style={homeStyles.mainContainer}>
-      <Box 
-        style={{
-          ...homeStyles.mainContent,
-          marginRight: isChatOpen ? '400px' : '0',
-        }}
-      >
+      <Box style={homeStyles.getMainContent(isChatOpen)}>
+        <Box style={homeStyles.logoutBox}>
+          <LogoutSection />
+        </Box>
         <Container size="4">
           <Box py="6">
             <ArticleList articles={articles} />
