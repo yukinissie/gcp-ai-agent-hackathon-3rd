@@ -14,8 +14,7 @@
           name: tag.name,
           category: tag.category
         }
-      end,
-      additional_tags_count: article.additional_tags_count
+      end
     }
   end
 }
