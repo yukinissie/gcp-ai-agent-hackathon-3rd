@@ -37,6 +37,13 @@ export const chatSidebarStyles = {
         alignItems: 'center' as const,
         justifyContent: 'center' as const,
         fontSize: '12px',
+        overflow: 'hidden' as const,
+    },
+    avatarImage: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover' as const,
+        display: 'block' as const,
     },
     messageBox: {
         maxWidth: '80%',
@@ -46,8 +53,23 @@ export const chatSidebarStyles = {
         color: 'var(--gray-12)',
         wordBreak: 'break-word' as const,
     },
+    messageBoxUser: {
+        maxWidth: '80%',
+        padding: '8px 12px',
+        borderRadius: '12px',
+        backgroundColor: '#e3f2fd',
+        color: 'var(--gray-12)',
+        wordBreak: 'break-word' as const,
+    },
     messageText: {
         lineHeight: '1.4'
+    },
+    messageTextTeal: {
+        lineHeight: '1.4',
+        color: 'var(--teal-9)'
+    },
+    timestamp: {
+        color: 'var(--teal-9)'
     },
     inputArea: {
         borderTop: '1px solid var(--gray-6)',

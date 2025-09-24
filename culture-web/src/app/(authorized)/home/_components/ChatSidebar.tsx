@@ -5,6 +5,7 @@ import { DefaultChatTransport } from "ai";
 import { useState, useEffect } from "react";
 import { Box, Flex, ScrollArea, IconButton, Text, TextField, Button } from '@radix-ui/themes';
 import { chatSidebarStyles } from '../_styles/chatSidebar.styles';
+import { chatInputStyles } from '../_styles/chatInput.styles';
 
 export function ChatSidebar({ 
   onSendMessage,
@@ -23,8 +24,6 @@ export function ChatSidebar({
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
-  console.log("ChatSidebar - User ID:", userId);
   
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
@@ -61,7 +60,7 @@ export function ChatSidebar({
       >
         <Flex align="center" gap="2">
           <Text size="2" weight="medium" color="gray">
-            チャット
+            犬の気持ち
           </Text>
         </Flex>
         <Flex align="center" gap="1">
@@ -89,11 +88,15 @@ export function ChatSidebar({
                 <Flex key={message.id} direction="column" align={message.role === "user" ? "end" : "start"} mb="3">
                   <Flex align="center" gap="2" mb="1">
                     <Box style={chatSidebarStyles.avatarBox}>
-                      {message.role === "user" ? "👤" : "🤖"}
+                      {message.role === "user" ? (
+                        <img src="/user.png" alt="User avatar" style={chatSidebarStyles.avatarImage} />
+                      ) : (
+                        <img src="/culture.png" alt="Culture logo" style={chatSidebarStyles.avatarImage} />
+                      )}
                     </Box>
                     <Text 
                       size="1" 
-                      style={{ color: 'var(--teal-9)' }}
+                      style={chatSidebarStyles.timestamp}
                     >
                       {isClient ? new Date().toLocaleTimeString('ja-JP', {
                         hour: '2-digit',
@@ -101,19 +104,8 @@ export function ChatSidebar({
                       }) : '--:--'}
                     </Text>
                   </Flex>
-                  <Box
-                    style={{
-                      ...chatSidebarStyles.messageBox,
-                      backgroundColor: message.role === "user" ? "#e3f2fd" : "#f5f5f5",
-                    }}
-                  >
-                    <Text 
-                      size="2" 
-                      style={{
-                        ...chatSidebarStyles.messageText,
-                        color: 'var(--teal-9)'
-                      }}
-                    >
+                  <Box style={message.role === "user" ? chatSidebarStyles.messageBoxUser : chatSidebarStyles.messageBox}>
+                    <Text size="2" style={chatSidebarStyles.messageTextTeal}>
                       {message.parts.map((part) =>
                         part.type === "text" ? (
                           <span
@@ -144,13 +136,13 @@ export function ChatSidebar({
             }
           }}
         >
-          <Flex gap="2" align="center">
+            <Flex gap="2" align="center">
             <TextField.Root
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={status !== "ready"}
               placeholder="メッセージを入力..."
-              style={{ flex: 1 }}
+              style={chatInputStyles.textField}
               size="2"
             />
             <Button
@@ -163,12 +155,6 @@ export function ChatSidebar({
             </Button>
           </Flex>
         </form>
-        {/* デバッグ情報 */}
-        {isClient && (
-          <Text size="1" style={{ color: 'var(--teal-9)' }}>
-            User ID: {userId || "未設定"}
-          </Text>
-        )}
       </Box>
     </Box>
   );

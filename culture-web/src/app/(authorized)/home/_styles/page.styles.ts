@@ -23,6 +23,7 @@ export const homeStyles = {
         width: '60px',
         height: '60px',
         borderRadius: '50%',
+        overflow: 'hidden' as const,
         background: 'linear-gradient(135deg, #ff6b6b, #ffd93d)',
         display: 'flex' as const,
         alignItems: 'center' as const,
@@ -32,6 +33,12 @@ export const homeStyles = {
         transition: 'transform 0.2s, box-shadow 0.2s',
         fontSize: '24px',
         zIndex: 1001,
+    },
+    reopenImage: {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover' as const,
+        display: 'block' as const,
     },
     reopenButtonHover: {
         transform: 'scale(1.1)',

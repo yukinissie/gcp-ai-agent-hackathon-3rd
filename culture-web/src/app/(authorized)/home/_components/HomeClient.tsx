@@ -72,9 +72,7 @@ export function HomeClient({ userId }: HomeClientProps) {
           }}
           title="チャットを開く"
         >
-          <Text size="6" weight="bold">
-            💬
-          </Text>
+          <img src="/culture.png" alt="Open chat" style={homeStyles.reopenImage} />
         </Box>
       )}
     </Flex>
