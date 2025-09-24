@@ -1498,6 +1498,131 @@ paths:
               schema:
                 $ref: "#/components/schemas/NotFoundError"
 
+  # Tag Search History API endpoints
+  /tag_search_histories:
+    post:
+      summary: 検索履歴を保存
+      description: |
+        Mastra（AI）とのAPI疎通に利用される検索履歴保存エンドポイント。
+        article_idsの配列を受け取り、現在のユーザーの検索履歴として保存。
+      tags: [検索履歴]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                tag_search_history:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    article_ids:
+                      type: array
+                      items:
+                        type: integer
+                      example: [1, 2, 3, 4, 5]
+                      description: 検索結果記事のID配列
+                  required: [article_ids]
+              required: [tag_search_history]
+      responses:
+        "201":
+          description: 検索履歴保存成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                required: [success]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "422":
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
+  /tag_search_histories/articles:
+    get:
+      summary: 最新の検索履歴から記事一覧を取得
+      description: |
+        現在のユーザーの最新の検索履歴から記事一覧を取得します。
+        保存されているarticle_idsに基づいて記事データを返します。
+      tags: [検索履歴]
+      responses:
+        "200":
+          description: 記事一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      articles:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: false
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            title:
+                              type: string
+                              example: "AIスタートアップの最新動向"
+                            summary:
+                              type: string
+                              example: "2025年のAIスタートアップシーンを分析"
+                            author:
+                              type: string
+                              example: "Tech Editor"
+                            content:
+                              type: string
+                              example: "今回の記事では"
+                            published_at:
+                              type: string
+                              format: date-time
+                              example: "2025-09-22T10:00:00Z"
+                              nullable: true
+                            tags:
+                              type: array
+                              items:
+                                type: string
+                              example: ["AI", "startup"]
+                              description: タグ名の配列
+                          required: [id, title, summary, author, content, published_at, tags]
+                    required: [articles]
+                required: [success, data]
+        "401":
+          description: 認証が必要
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthError"
+        "404":
+          description: 検索履歴が見つからない
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
 
 components:
   schemas:
