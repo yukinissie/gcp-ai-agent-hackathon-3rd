@@ -1,117 +1,52 @@
-import {
-  Card,
-  Text,
-  Heading,
-  Badge,
-  Flex,
-  Box,
-} from "@radix-ui/themes";
-import { ArticleCardProps } from "./types";
-import { articleCardStyles } from "../_styles/articleCard.styles";
-import { useRouter } from "next/navigation";
+import { Card, Text, Heading, Badge, Flex, Box } from '@radix-ui/themes'
+import { ArticleCardProps } from './types'
+import { articleCardStyles } from '../_styles/articleCard.styles'
+import { useRouter } from 'next/navigation'
 
-export function ArticleCard({
-  article,
-  onClick,
-}: ArticleCardProps) {
-  const router =
-    useRouter();
+export function ArticleCard({ article, onClick }: ArticleCardProps) {
+  const router = useRouter()
 
-  const handleClick =
-    () => {
-      if (
-        onClick
-      ) {
-        onClick(
-          article,
-        );
-      } else {
-        router.push(
-          `/articles/${article.id}`,
-        );
-      }
-    };
+  const handleClick = () => {
+    if (onClick) {
+      onClick(article)
+    } else {
+      router.push(`/articles/${article.id}`)
+    }
+  }
 
-  const formatDate =
-    (
-      dateString: string,
-    ) => {
-      const date =
-        new Date(
-          dateString,
-        );
-      return date.toLocaleDateString(
-        "ja-JP",
-        {
-          year: "numeric",
-          month:
-            "long",
-          day: "numeric",
-        },
-      );
-    };
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
 
   return (
     <Card
       variant="surface"
-      style={
-        onClick
-          ? articleCardStyles.card
-          : articleCardStyles.cardDefault
-      }
-      onMouseEnter={(
-        e,
-      ) => {
-        if (
-          onClick
-        ) {
-          Object.assign(
-            e
-              .currentTarget
-              .style,
-            articleCardStyles.cardHover,
-          );
+      style={onClick ? articleCardStyles.card : articleCardStyles.cardDefault}
+      onMouseEnter={(e) => {
+        if (onClick) {
+          Object.assign(e.currentTarget.style, articleCardStyles.cardHover)
         }
       }}
-      onMouseLeave={(
-        e,
-      ) => {
-        if (
-          onClick
-        ) {
-          Object.assign(
-            e
-              .currentTarget
-              .style,
-            articleCardStyles.cardLeave,
-          );
+      onMouseLeave={(e) => {
+        if (onClick) {
+          Object.assign(e.currentTarget.style, articleCardStyles.cardLeave)
         }
       }}
-      onClick={
-        handleClick
-      }
+      onClick={handleClick}
     >
-      <Flex
-        gap="4"
-        align="start"
-      >
+      <Flex gap="4" align="start">
         {/* 画像部分 */}
         {article.image_url && (
-          <Box
-            style={
-              articleCardStyles.imageContainer
-            }
-          >
+          <Box style={articleCardStyles.imageContainer}>
             <img
-              src={
-                article.image_url
-              }
-              alt={
-                article.title
-              }
-              style={
-                articleCardStyles.image
-              }
+              src={article.image_url}
+              alt={article.title}
+              style={articleCardStyles.image}
             />
           </Box>
         )}
@@ -120,110 +55,37 @@ export function ArticleCard({
         <Flex
           direction="column"
           gap="2"
-          style={
-            articleCardStyles.contentContainer
-          }
+          style={articleCardStyles.contentContainer}
         >
-          <Flex
-            align="center"
-            gap="2"
-            wrap="wrap"
-          >
-            {article
-              .tags
-              .length >
-              0 && (
-              <Badge
-                color="blue"
-                variant="soft"
-              >
-                {
-                  article
-                    .tags[0]
-                    .name
-                }
+          <Flex align="center" gap="2" wrap="wrap">
+            {article.tags.length > 0 && (
+              <Badge color="blue" variant="soft">
+                {article.tags[0].name}
               </Badge>
             )}
-            <Text
-              size="2"
-              color="gray"
-            >
-              {formatDate(
-                article.published_at,
-              )}
+            <Text size="2" color="gray">
+              {formatDate(article.published_at)}
             </Text>
           </Flex>
 
-          <Heading
-            size="4"
-            weight="bold"
-            style={
-              articleCardStyles.headingText
-            }
-          >
-            {
-              article.title
-            }
+          <Heading size="4" weight="bold" style={articleCardStyles.headingText}>
+            {article.title}
           </Heading>
 
-          <Text
-            size="2"
-            color="gray"
-            style={
-              articleCardStyles.excerptText
-            }
-          >
-            {
-              article.summary
-            }
+          <Text size="2" color="gray" style={articleCardStyles.excerptText}>
+            {article.summary}
           </Text>
 
-          <Flex
-            justify="between"
-            align="end"
-            mt="auto"
-          >
-            <Flex
-              gap="1"
-              wrap="wrap"
-            >
-              {article.tags
-                .slice(
-                  0,
-                  2,
-                )
-                .map(
-                  (
-                    tag,
-                  ) => (
-                    <Badge
-                      key={
-                        tag.id
-                      }
-                      color="gray"
-                      variant="soft"
-                      size="1"
-                    >
-                      {
-                        tag.name
-                      }
-                    </Badge>
-                  ),
-                )}
-              {article
-                .tags
-                .length >
-                2 && (
-                <Badge
-                  color="gray"
-                  variant="soft"
-                  size="1"
-                >
-                  +
-                  {article
-                    .tags
-                    .length -
-                    2}
+          <Flex justify="between" align="end" mt="auto">
+            <Flex gap="1" wrap="wrap">
+              {article.tags.slice(0, 2).map((tag) => (
+                <Badge key={tag.id} color="gray" variant="soft" size="1">
+                  {tag.name}
+                </Badge>
+              ))}
+              {article.tags.length > 2 && (
+                <Badge color="gray" variant="soft" size="1">
+                  +{article.tags.length - 2}
                 </Badge>
               )}
             </Flex>
@@ -232,17 +94,13 @@ export function ArticleCard({
               size="2"
               weight="medium"
               color="gray"
-              style={
-                articleCardStyles.authorText
-              }
+              style={articleCardStyles.authorText}
             >
-              {
-                article.author
-              }
+              {article.author}
             </Text>
           </Flex>
         </Flex>
       </Flex>
     </Card>
-  );
+  )
 }

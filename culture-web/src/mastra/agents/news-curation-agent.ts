@@ -1,15 +1,13 @@
-import { google } from "@ai-sdk/google";
-import { Agent } from "@mastra/core/agent";
-import { Memory } from "@mastra/memory";
-import { getStorage } from "../lib/storage";
-import { newsCurationTool } from "../tools/news-curation-tool";
-import { determineNewsTagsAgent } from "./determine-tags-agent";
+import { google } from '@ai-sdk/google'
+import { Agent } from '@mastra/core/agent'
+import { Memory } from '@mastra/memory'
+import { getStorage } from '../lib/storage'
+import { newsCurationTool } from '../tools/news-curation-tool'
+import { determineNewsTagsAgent } from './determine-tags-agent'
 
-export const newsCurationAgent =
-  new Agent(
-    {
-      name: "News Curation Agent",
-      instructions: `
+export const newsCurationAgent = new Agent({
+  name: 'News Curation Agent',
+  instructions: `
       You are an intelligent news curation agent that personalizes news content based on user preferences and behavior patterns.
 
       Your primary function is to analyze user attributes and news consumption patterns to select and recommend relevant news articles. When responding:
@@ -37,24 +35,14 @@ export const newsCurationAgent =
 
       Use the newsCurationTool to fetch current news data and apply intelligent filtering based on user attributes.
 `,
-      model:
-        google(
-          "gemini-2.5-flash",
-        ),
-      tools:
-        {
-          newsCurationTool,
-        },
-      memory:
-        new Memory(
-          {
-            storage:
-              await getStorage(),
-          },
-        ),
-      agents:
-        {
-          determineNewsTagsAgent,
-        },
-    },
-  );
+  model: google('gemini-2.5-flash'),
+  tools: {
+    newsCurationTool,
+  },
+  memory: new Memory({
+    storage: await getStorage(),
+  }),
+  agents: {
+    determineNewsTagsAgent,
+  },
+})

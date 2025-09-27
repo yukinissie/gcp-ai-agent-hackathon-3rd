@@ -1,29 +1,11 @@
-import { auth } from "@/auth";
+import { auth } from '@/auth'
 
-type Props =
-  {
-    children: React.ReactNode;
-  };
+type Props = {
+  children: React.ReactNode
+}
 
-export default async function Layout(
-  props: Props,
-) {
-  const session =
-    await auth();
-  if (
-    !session
-  )
-    return (
-      <div>
-        Not
-        authenticated
-      </div>
-    );
-  return (
-    <div>
-      {
-        props.children
-      }
-    </div>
-  );
+export default async function Layout(props: Props) {
+  const session = await auth()
+  if (!session) return <div>Not authenticated</div>
+  return <div>{props.children}</div>
 }

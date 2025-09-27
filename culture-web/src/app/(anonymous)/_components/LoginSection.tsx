@@ -1,101 +1,48 @@
-"use client";
+'use client'
 
-import {
-  Button,
-  Dialog,
-  Flex,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
-import { signInUser } from "../_actions/signInUser";
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import Form from "next/form";
+import { Button, Dialog, Flex, Text, TextField } from '@radix-ui/themes'
+import { signInUser } from '../_actions/signInUser'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
+import Form from 'next/form'
 
 function SubmitButton() {
-  const {
-    pending,
-  } =
-    useFormStatus();
+  const { pending } = useFormStatus()
 
   return (
-    <Button
-      type="submit"
-      disabled={
-        pending
-      }
-    >
-      {pending
-        ? "送信中..."
-        : "ログイン"}
+    <Button type="submit" disabled={pending}>
+      {pending ? '送信中...' : 'ログイン'}
     </Button>
-  );
+  )
 }
 
 export function LoginSection() {
-  const [
-    state,
-    formAction,
-  ] =
-    useActionState(
-      signInUser,
-      {
-        errorMessage:
-          null as
-            | string
-            | null,
-      },
-    );
+  const [state, formAction] = useActionState(signInUser, {
+    errorMessage: null as string | null,
+  })
 
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button>
-          ログイン
-        </Button>
+        <Button>ログイン</Button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
-        <Dialog.Title>
-          ログイン
-        </Dialog.Title>
-        <Flex
-          direction="column"
-          gap="4"
-        >
+        <Dialog.Title>ログイン</Dialog.Title>
+        <Flex direction="column" gap="4">
           <Dialog.Description size="2">
             自分だけのニュース体験を始めましょう！
           </Dialog.Description>
-          <Form
-            action={
-              formAction
-            }
-          >
-            <Flex
-              direction="column"
-              gap="4"
-            >
+          <Form action={formAction}>
+            <Flex direction="column" gap="4">
               <label>
-                <Text
-                  as="div"
-                  size="2"
-                  mb="1"
-                  weight="bold"
-                >
+                <Text as="div" size="2" mb="1" weight="bold">
                   メールアドレス
                 </Text>
-                <TextField.Root
-                  name="email"
-                  placeholder="email@example.com"
-                />
+                <TextField.Root name="email" placeholder="email@example.com" />
               </label>
               <label>
-                <Text
-                  as="div"
-                  size="2"
-                  mb="1"
-                  weight="bold"
-                >
+                <Text as="div" size="2" mb="1" weight="bold">
                   パスワード
                 </Text>
                 <TextField.Root
@@ -106,24 +53,13 @@ export function LoginSection() {
               </label>
             </Flex>
             {state.errorMessage && (
-              <Text
-                color="red"
-                size="2"
-              >
-                {
-                  state.errorMessage
-                }
+              <Text color="red" size="2">
+                {state.errorMessage}
               </Text>
             )}
-            <Flex
-              gap="3"
-              justify="end"
-            >
+            <Flex gap="3" justify="end">
               <Dialog.Close>
-                <Button
-                  variant="soft"
-                  color="gray"
-                >
+                <Button variant="soft" color="gray">
                   キャンセル
                 </Button>
               </Dialog.Close>
@@ -133,5 +69,5 @@ export function LoginSection() {
         </Flex>
       </Dialog.Content>
     </Dialog.Root>
-  );
+  )
 }

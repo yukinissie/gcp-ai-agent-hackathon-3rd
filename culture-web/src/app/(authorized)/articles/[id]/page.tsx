@@ -1,49 +1,26 @@
-import { notFound } from "next/navigation";
-import { fetchArticleDetail } from "../../home/_actions/articles";
-import { ArticleDetailClient } from "../_components/ArticleDetailClient";
+import { notFound } from 'next/navigation'
+import { fetchArticleDetail } from '../../home/_actions/articles'
+import { ArticleDetailClient } from '../_components/ArticleDetailClient'
 
 interface PageProps {
   params: Promise<{
-    id: string;
-  }>;
+    id: string
+  }>
 }
 
-export default async function ArticleDetailPage({
-  params,
-}: PageProps) {
-  const {
-    id,
-  } =
-    await params;
-  const articleId =
-    parseInt(
-      id,
-    );
+export default async function ArticleDetailPage({ params }: PageProps) {
+  const { id } = await params
+  const articleId = parseInt(id)
 
-  if (
-    isNaN(
-      articleId,
-    )
-  ) {
-    notFound();
+  if (isNaN(articleId)) {
+    notFound()
   }
 
-  const article =
-    await fetchArticleDetail(
-      articleId,
-    );
+  const article = await fetchArticleDetail(articleId)
 
-  if (
-    !article
-  ) {
-    notFound();
+  if (!article) {
+    notFound()
   }
 
-  return (
-    <ArticleDetailClient
-      article={
-        article
-      }
-    />
-  );
+  return <ArticleDetailClient article={article} />
 }
