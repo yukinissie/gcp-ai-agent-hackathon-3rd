@@ -1,6 +1,6 @@
-import { notFound } from 'next/navigation';
-import { fetchArticleDetail } from '../../home/_actions/articles';
-import { ArticleDetailClient } from '../_components/ArticleDetailClient';
+import { notFound } from "next/navigation";
+import { fetchArticleDetail } from "../../home/_actions/articles";
+import { ArticleDetailClient } from "../_components/ArticleDetailClient";
 
 interface PageProps {
   params: Promise<{
@@ -8,21 +8,42 @@ interface PageProps {
   }>;
 }
 
-export default async function ArticleDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const articleId = parseInt(id);
-  
-  if (isNaN(articleId)) {
+export default async function ArticleDetailPage({
+  params,
+}: PageProps) {
+  const {
+    id,
+  } =
+    await params;
+  const articleId =
+    parseInt(
+      id,
+    );
+
+  if (
+    isNaN(
+      articleId,
+    )
+  ) {
     notFound();
   }
 
-  const article = await fetchArticleDetail(articleId);
+  const article =
+    await fetchArticleDetail(
+      articleId,
+    );
 
-  if (!article) {
+  if (
+    !article
+  ) {
     notFound();
   }
 
   return (
-    <ArticleDetailClient article={article} />
+    <ArticleDetailClient
+      article={
+        article
+      }
+    />
   );
 }

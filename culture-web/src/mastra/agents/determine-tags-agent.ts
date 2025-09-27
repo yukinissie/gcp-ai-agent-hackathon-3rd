@@ -4,9 +4,11 @@ import { Memory } from "@mastra/memory";
 import { getStorage } from "../lib/storage";
 import { determineTagsTool } from "../tools/determine-tags-tool";
 
-export const determineNewsTagsAgent = new Agent({
-	name: "Determine News Tags Agent",
-	instructions: `
+export const determineNewsTagsAgent =
+  new Agent(
+    {
+      name: "Determine News Tags Agent",
+      instructions: `
       You are an intelligent news tag analysis agent that determines optimal news tags for personalized content curation.
 
       Your primary function is to analyze system-wide news tags and user preferences to generate the most relevant tag combinations for news filtering. When processing requests:
@@ -40,9 +42,20 @@ export const determineNewsTagsAgent = new Agent({
 
       Use the determineTagsTool to analyze system tags and generate personalized tag recommendations.
 `,
-	model: google("gemini-2.5-flash"),
-	tools: { determineTagsTool },
-	memory: new Memory({
-		storage: await getStorage(),
-	}),
-});
+      model:
+        google(
+          "gemini-2.5-flash",
+        ),
+      tools:
+        {
+          determineTagsTool,
+        },
+      memory:
+        new Memory(
+          {
+            storage:
+              await getStorage(),
+          },
+        ),
+    },
+  );

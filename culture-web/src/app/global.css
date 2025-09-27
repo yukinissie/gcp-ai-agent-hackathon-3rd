@@ -7,42 +7,81 @@
 @import "@radix-ui/themes/styles.css";
 
 :root {
-  --accent-1: var(--teal-1);
-  --accent-2: var(--teal-2);
-  --accent-3: var(--teal-3);
-  --accent-4: var(--teal-4);
-  --accent-5: var(--teal-5);
-  --accent-6: var(--teal-6);
-  --accent-7: var(--teal-7);
-  --accent-8: var(--teal-8);
-  --accent-9: var(--teal-9);
-  --accent-10: var(--teal-10);
-  --accent-11: var(--teal-11);
-  --accent-12: var(--teal-12);
+  --accent-1: var(
+    --teal-1
+  );
+  --accent-2: var(
+    --teal-2
+  );
+  --accent-3: var(
+    --teal-3
+  );
+  --accent-4: var(
+    --teal-4
+  );
+  --accent-5: var(
+    --teal-5
+  );
+  --accent-6: var(
+    --teal-6
+  );
+  --accent-7: var(
+    --teal-7
+  );
+  --accent-8: var(
+    --teal-8
+  );
+  --accent-9: var(
+    --teal-9
+  );
+  --accent-10: var(
+    --teal-10
+  );
+  --accent-11: var(
+    --teal-11
+  );
+  --accent-12: var(
+    --teal-12
+  );
 
-  --success-1: var(--green-1);
-  --success-2: var(--green-2);
+  --success-1: var(
+    --green-1
+  );
+  --success-2: var(
+    --green-2
+  );
   /* repeat for all steps */
 
-  --warning-1: var(--yellow-1);
-  --warning-2: var(--yellow-2);
+  --warning-1: var(
+    --yellow-1
+  );
+  --warning-2: var(
+    --yellow-2
+  );
   /* repeat for all steps */
 
-  --danger-1: var(--red-1);
-  --danger-2: var(--red-2);
+  --danger-1: var(
+    --red-1
+  );
+  --danger-2: var(
+    --red-2
+  );
 }
 
 body {
   margin: 0;
 }
 
-input, textarea, select {
-  font-size: 16px !important; 
+input,
+textarea,
+select {
+  font-size: 16px !important;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-[data-radix-scroll-area-viewport] input {
+[data-radix-scroll-area-viewport]
+  input {
   font-size: 16px !important;
 }

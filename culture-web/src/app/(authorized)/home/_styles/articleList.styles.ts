@@ -1,5 +1,8 @@
-export const articleListStyles = {
-    emptyContainer: {
-        minHeight: '400px',
-    },
-} as const;
+export const articleListStyles =
+  {
+    emptyContainer:
+      {
+        minHeight:
+          "400px",
+      },
+  } as const;
