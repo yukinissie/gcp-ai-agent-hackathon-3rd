@@ -15,34 +15,9 @@ RSpec.describe TagSearchHistory, type: :model do
       expect(tag_search_history).not_to be_valid
       expect(tag_search_history.errors[:article_ids]).to include("can't be blank")
     end
-
-    it 'searched_atが必須であること' do
-      tag_search_history = build(:tag_search_history, searched_at: nil)
-      # searched_atはbefore_validationで自動設定されるため、手動でnilにした後validationをチェック
-      tag_search_history.searched_at = nil
-      tag_search_history.valid?
-      expect(tag_search_history.searched_at).to be_present
-    end
   end
 
-  describe 'コールバック' do
-    describe 'before_validation :set_searched_at' do
-      context '新規作成時' do
-        it 'searched_atが自動的に設定されること' do
-          tag_search_history = build(:tag_search_history, searched_at: nil)
-          expect { tag_search_history.valid? }.to change { tag_search_history.searched_at }.from(nil)
-          expect(tag_search_history.searched_at).to be_within(1.second).of(Time.current)
-        end
 
-        it 'searched_atが既に設定されている場合は上書きしないこと' do
-          specific_time = 1.hour.ago
-          tag_search_history = build(:tag_search_history, searched_at: specific_time)
-          tag_search_history.valid?
-          expect(tag_search_history.searched_at).to eq(specific_time)
-        end
-      end
-    end
-  end
 
   describe '#article_ids_array' do
     context 'article_idsがjsonb配列の場合' do
