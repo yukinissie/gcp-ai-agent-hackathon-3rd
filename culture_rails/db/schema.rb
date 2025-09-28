@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_24_032954) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_105709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,7 +54,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_24_032954) do
     t.string "content_format", default: "markdown", null: false
     t.bigint "feed_id", comment: "RSS由来の記事の場合のフィード参照"
     t.string "source_type", default: "manual", null: false, comment: "記事の作成元"
-    t.integer "tags_count"
     t.index ["content_format"], name: "index_articles_on_content_format"
     t.index ["feed_id", "created_at"], name: "index_articles_on_feed_id_and_created_at", comment: "フィード別記事一覧用"
     t.index ["feed_id", "source_url"], name: "index_articles_on_feed_and_source_url_for_rss", unique: true, where: "(((source_type)::text = 'rss'::text) AND (source_url IS NOT NULL))", comment: "RSS記事の重複防止"
@@ -94,6 +93,118 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_24_032954) do
     t.check_constraint "total_interactions >= 0", name: "check_total_interactions_positive"
   end
 
+  create_table "mastra_evals", id: false, force: :cascade do |t|
+    t.text "input", null: false
+    t.text "output", null: false
+    t.jsonb "result", null: false
+    t.text "agent_name", null: false
+    t.text "metric_name", null: false
+    t.text "instructions", null: false
+    t.jsonb "test_info"
+    t.text "global_run_id", null: false
+    t.text "run_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "createdAt", precision: nil
+    t.timestamptz "created_atZ", default: -> { "now()" }
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.index ["agent_name", "created_at"], name: "public_mastra_evals_agent_name_created_at_idx", order: { created_at: :desc }
+  end
+
+  create_table "mastra_messages", id: :text, force: :cascade do |t|
+    t.text "thread_id", null: false
+    t.text "content", null: false
+    t.text "role", null: false
+    t.text "type", null: false
+    t.datetime "createdAt", precision: nil, null: false
+    t.text "resourceId"
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.index ["thread_id", "createdAt"], name: "public_mastra_messages_thread_id_createdat_idx", order: { createdAt: :desc }
+  end
+
+  create_table "mastra_resources", id: :text, force: :cascade do |t|
+    t.text "workingMemory"
+    t.jsonb "metadata"
+    t.datetime "createdAt", precision: nil, null: false
+    t.datetime "updatedAt", precision: nil, null: false
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.timestamptz "updatedAtZ", default: -> { "now()" }
+  end
+
+  create_table "mastra_scorers", id: :text, force: :cascade do |t|
+    t.text "scorerId", null: false
+    t.text "traceId"
+    t.text "runId", null: false
+    t.jsonb "scorer", null: false
+    t.jsonb "preprocessStepResult"
+    t.jsonb "extractStepResult"
+    t.jsonb "analyzeStepResult"
+    t.float "score", null: false
+    t.text "reason"
+    t.jsonb "metadata"
+    t.text "preprocessPrompt"
+    t.text "extractPrompt"
+    t.text "generateScorePrompt"
+    t.text "generateReasonPrompt"
+    t.text "analyzePrompt"
+    t.text "reasonPrompt"
+    t.jsonb "input", null: false
+    t.jsonb "output", null: false
+    t.jsonb "additionalContext"
+    t.jsonb "runtimeContext"
+    t.text "entityType"
+    t.jsonb "entity"
+    t.text "entityId"
+    t.text "source", null: false
+    t.text "resourceId"
+    t.text "threadId"
+    t.datetime "createdAt", precision: nil, null: false
+    t.datetime "updatedAt", precision: nil, null: false
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.timestamptz "updatedAtZ", default: -> { "now()" }
+  end
+
+  create_table "mastra_threads", id: :text, force: :cascade do |t|
+    t.text "resourceId", null: false
+    t.text "title", null: false
+    t.text "metadata"
+    t.datetime "createdAt", precision: nil, null: false
+    t.datetime "updatedAt", precision: nil, null: false
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.timestamptz "updatedAtZ", default: -> { "now()" }
+    t.index ["resourceId", "createdAt"], name: "public_mastra_threads_resourceid_createdat_idx", order: { createdAt: :desc }
+  end
+
+  create_table "mastra_traces", id: :text, force: :cascade do |t|
+    t.text "parentSpanId"
+    t.text "name", null: false
+    t.text "traceId", null: false
+    t.text "scope", null: false
+    t.integer "kind", null: false
+    t.jsonb "attributes"
+    t.jsonb "status"
+    t.jsonb "events"
+    t.jsonb "links"
+    t.text "other"
+    t.bigint "startTime", null: false
+    t.bigint "endTime", null: false
+    t.datetime "createdAt", precision: nil, null: false
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.index ["name", "startTime"], name: "public_mastra_traces_name_starttime_idx", order: { startTime: :desc }
+  end
+
+  create_table "mastra_workflow_snapshot", id: false, force: :cascade do |t|
+    t.text "workflow_name", null: false
+    t.text "run_id", null: false
+    t.text "resourceId"
+    t.text "snapshot", null: false
+    t.datetime "createdAt", precision: nil, null: false
+    t.datetime "updatedAt", precision: nil, null: false
+    t.timestamptz "createdAtZ", default: -> { "now()" }
+    t.timestamptz "updatedAtZ", default: -> { "now()" }
+
+    t.unique_constraint ["workflow_name", "run_id"], name: "public_mastra_workflow_snapshot_workflow_name_run_id_key"
+  end
+
   create_table "pings", force: :cascade do |t|
     t.string "message", null: false
     t.datetime "created_at", null: false
@@ -107,138 +218,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_24_032954) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
-  end
-
-  create_table "solid_queue_blocked_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "queue_name", null: false
-    t.integer "priority", default: 0, null: false
-    t.string "concurrency_key", null: false
-    t.datetime "expires_at", null: false
-    t.datetime "created_at", null: false
-    t.index ["concurrency_key", "priority", "job_id"], name: "index_solid_queue_blocked_executions_for_release"
-    t.index ["expires_at", "concurrency_key"], name: "index_solid_queue_blocked_executions_for_maintenance"
-    t.index ["job_id"], name: "index_solid_queue_blocked_executions_on_job_id", unique: true
-  end
-
-  create_table "solid_queue_claimed_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.bigint "process_id"
-    t.datetime "created_at", null: false
-    t.index ["job_id"], name: "index_solid_queue_claimed_executions_on_job_id", unique: true
-    t.index ["process_id", "job_id"], name: "index_solid_queue_claimed_executions_on_process_id_and_job_id"
-  end
-
-  create_table "solid_queue_failed_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.text "error"
-    t.datetime "created_at", null: false
-    t.index ["job_id"], name: "index_solid_queue_failed_executions_on_job_id", unique: true
-  end
-
-  create_table "solid_queue_jobs", force: :cascade do |t|
-    t.string "queue_name", null: false
-    t.string "class_name", null: false
-    t.text "arguments"
-    t.integer "priority", default: 0, null: false
-    t.string "active_job_id"
-    t.datetime "scheduled_at"
-    t.datetime "finished_at"
-    t.string "concurrency_key"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["active_job_id"], name: "index_solid_queue_jobs_on_active_job_id"
-    t.index ["class_name"], name: "index_solid_queue_jobs_on_class_name"
-    t.index ["finished_at"], name: "index_solid_queue_jobs_on_finished_at"
-    t.index ["queue_name", "finished_at"], name: "index_solid_queue_jobs_for_filtering"
-    t.index ["scheduled_at", "finished_at"], name: "index_solid_queue_jobs_for_alerting"
-  end
-
-  create_table "solid_queue_pauses", force: :cascade do |t|
-    t.string "queue_name", null: false
-    t.datetime "created_at", null: false
-    t.index ["queue_name"], name: "index_solid_queue_pauses_on_queue_name", unique: true
-  end
-
-  create_table "solid_queue_processes", force: :cascade do |t|
-    t.string "kind", null: false
-    t.datetime "last_heartbeat_at", null: false
-    t.bigint "supervisor_id"
-    t.integer "pid", null: false
-    t.string "hostname"
-    t.text "metadata"
-    t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.index ["last_heartbeat_at"], name: "index_solid_queue_processes_on_last_heartbeat_at"
-    t.index ["name", "supervisor_id"], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
-    t.index ["supervisor_id"], name: "index_solid_queue_processes_on_supervisor_id"
-  end
-
-  create_table "solid_queue_ready_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "queue_name", null: false
-    t.integer "priority", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.index ["job_id"], name: "index_solid_queue_ready_executions_on_job_id", unique: true
-    t.index ["priority", "job_id"], name: "index_solid_queue_poll_all"
-    t.index ["queue_name", "priority", "job_id"], name: "index_solid_queue_poll_by_queue"
-  end
-
-  create_table "solid_queue_recurring_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "task_key", null: false
-    t.datetime "run_at", null: false
-    t.datetime "created_at", null: false
-    t.index ["job_id"], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
-    t.index ["task_key", "run_at"], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
-  end
-
-  create_table "solid_queue_recurring_tasks", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "schedule", null: false
-    t.string "command", limit: 2048
-    t.string "class_name"
-    t.text "arguments"
-    t.string "queue_name"
-    t.integer "priority", default: 0
-    t.boolean "static", default: true, null: false
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["key"], name: "index_solid_queue_recurring_tasks_on_key", unique: true
-    t.index ["static"], name: "index_solid_queue_recurring_tasks_on_static"
-  end
-
-  create_table "solid_queue_scheduled_executions", force: :cascade do |t|
-    t.bigint "job_id", null: false
-    t.string "queue_name", null: false
-    t.integer "priority", default: 0, null: false
-    t.datetime "scheduled_at", null: false
-    t.datetime "created_at", null: false
-    t.index ["job_id"], name: "index_solid_queue_scheduled_executions_on_job_id", unique: true
-    t.index ["scheduled_at", "priority", "job_id"], name: "index_solid_queue_dispatch_all"
-  end
-
-  create_table "solid_queue_semaphores", force: :cascade do |t|
-    t.string "key", null: false
-    t.integer "value", default: 1, null: false
-    t.datetime "expires_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["expires_at"], name: "index_solid_queue_semaphores_on_expires_at"
-    t.index ["key", "value"], name: "index_solid_queue_semaphores_on_key_and_value"
-    t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
-  end
-
-  create_table "tag_search_histories", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.jsonb "article_ids", default: [], null: false
-    t.datetime "searched_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["article_ids"], name: "index_tag_search_histories_on_article_ids", using: :gin
-    t.index ["searched_at"], name: "index_tag_search_histories_on_searched_at"
-    t.index ["user_id"], name: "index_tag_search_histories_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -274,12 +253,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_24_032954) do
   add_foreign_key "articles", "feeds"
   add_foreign_key "ingredients", "users"
   add_foreign_key "sessions", "users"
-  add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
-  add_foreign_key "tag_search_histories", "users"
   add_foreign_key "user_credentials", "users"
 end
