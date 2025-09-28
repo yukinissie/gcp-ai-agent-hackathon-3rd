@@ -1,5 +1,6 @@
 'use client'
 
+import { apiClient } from '@/lib/apiClient'
 import { useState } from 'react'
 
 export default function TestMastraPage() {
@@ -14,17 +15,9 @@ export default function TestMastraPage() {
       console.log('🧪 Starting fetchUserAttributes test from client...')
 
       // Next.js Server Actionを使ってテスト実行
-      const response = await fetch('/api/test-user-attributes', {
-        method: 'POST',
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log('📊 Test result:', data)
-      setResult(data)
+      const result = await apiClient.post('/api/test-user-attributes', {})
+      console.log('📊 Test result:', result)
+      setResult(result)
     } catch (error) {
       console.error('❌ Test failed:', error)
       setResult({

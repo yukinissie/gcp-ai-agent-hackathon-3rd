@@ -1,3 +1,5 @@
+import { apiClient } from '@/lib/apiClient'
+
 type FetchPingResult = {
   data: {
     id: number
@@ -8,24 +10,15 @@ type FetchPingResult = {
 
 export async function fetchPing(): Promise<FetchPingResult> {
   try {
-    const res = await fetch(`${process.env.RAILS_API_HOST}/api/v1/ping`, {
-      cache: 'no-store',
-    })
-    if (!res.ok) {
-      if (res.status === 404) {
-        return {
-          data: null,
-          error: 'No data found',
-        }
-      }
-      return {
-        data: null,
-        error: 'Failed to fetch data',
-      }
-    }
-    const data = await res.json()
+    const result = await apiClient.get(
+      `${process.env.RAILS_API_HOST}/api/v1/ping`,
+      {
+        cache: 'no-store',
+      },
+    )
+
     return {
-      data: data.data,
+      data: result.data,
       error: null,
     }
   } catch (error) {

@@ -511,45 +511,49 @@ curl -X GET http://localhost:3000/api/v1/users \
 
 ### NextJS連携例
 
+**注意**: 本プロジェクトでは専用の `apiClient` を使用してAPI通信を行います。直接 `fetch` を使用せず、以下の方法で実装してください。
+
 ```typescript
-// api/auth.ts
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// lib/auth.ts
+import { apiClient } from '@/lib/apiClient'
 
 export async function login(email: string, password: string) {
-  const response = await fetch(`${API_BASE}/api/v1/sessions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include', // Cookie自動送信
-    body: JSON.stringify({
+  try {
+    const result = await apiClient.post('/api/v1/sessions', {
       email_address: email,
       password: password
-    })
-  });
-  
-  return response.json();
+    });
+    return result;
+  } catch (error) {
+    throw new Error(`ログインに失敗しました: ${error.message}`);
+  }
 }
 
 export async function getUser() {
-  // CSRFトークンを取得
-  const csrfToken = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('csrf_token='))
-    ?.split('=')[1];
+  try {
+    const result = await apiClient.get('/api/v1/users');
+    return result;
+  } catch (error) {
+    throw new Error(`ユーザー情報の取得に失敗しました: ${error.message}`);
+  }
+}
 
-  const response = await fetch(`${API_BASE}/api/v1/users`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken || ''
-    },
-    credentials: 'include'
-  });
-  
-  return response.json();
+export async function logout() {
+  try {
+    const result = await apiClient.delete('/api/v1/sessions');
+    return result;
+  } catch (error) {
+    throw new Error(`ログアウトに失敗しました: ${error.message}`);
+  }
 }
 ```
+
+#### apiClientの特徴
+
+- **自動認証**: セッション情報を自動的に処理
+- **JWT対応**: Bearer トークン認証に対応
+- **エラーハンドリング**: 統一されたエラー処理
+- **TypeScript**: 型安全なAPI通信
 
 ## 🛡️ セキュリティ設定
 

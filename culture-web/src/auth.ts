@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { signInSchema } from './lib/zod'
+import { apiClient } from './lib/apiClient'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -44,20 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
 
         try {
-          const response = await fetch(
-            `${process.env.RAILS_API_HOST}${endpoint}`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-            },
-          )
-          if (!response.ok) {
-            throw new Error('Authentication failed')
-          }
-          const result = await response.json()
+          const result = await apiClient.post(endpoint, payload)
           return {
             id: result.id?.toString() || result.data?.user?.id?.toString(),
             humanId: result.human_id || result.data?.user?.human_id,

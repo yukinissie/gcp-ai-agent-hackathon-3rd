@@ -198,6 +198,7 @@ terraform output     # View outputs (service URLs, etc.)
 - **Database changes**: Rails migrations in `culture_rails/db/migrate/`
 - **Infrastructure changes**: Modify Terraform in `culture-infra/`
 - **Dependencies**: Update `Gemfile` or `package.json` respectively
+- **API integration**: Use `culture-web/src/lib/apiClient.ts` for all API communications instead of direct fetch calls
 
 ### Testing Strategy
 
