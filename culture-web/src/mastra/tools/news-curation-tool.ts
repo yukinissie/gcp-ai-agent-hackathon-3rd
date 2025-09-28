@@ -159,7 +159,8 @@ async function determineTags(
 
 					Please strictly follow the JSON Schema below and return **JSON only**. No explanatory text before or after.
 					Schema:
-						["tag1", "tag2", ...]`,
+						- ["tag1", "tag2", ...]
+            - [] if no relevant tags can be determined.`,
         },
       ],
       {
