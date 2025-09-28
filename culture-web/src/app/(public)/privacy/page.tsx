@@ -89,11 +89,8 @@ export default function PrivacyPolicyPage() {
         <Heading size="5" mb="3">
           第5条（利用者の権利）
         </Heading>
-        <Text as="div" size="3" mb="2">
-          利用者は本サービス内でアカウント削除を行うことで、登録情報を削除することができます。
-        </Text>
         <Text as="div" size="3">
-          提供者に連絡することで、データ削除を依頼することができます。
+          提供者に連絡することで、登録情報のデータ削除を依頼することができます。
         </Text>
       </Box>
 

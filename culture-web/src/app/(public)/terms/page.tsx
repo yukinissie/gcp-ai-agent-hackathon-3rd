@@ -61,7 +61,7 @@ export default function TermsPage() {
           取得する情報は、認証に必要な最低限の範囲（メールアドレス、パスワード）に限ります。
         </Text>
         <Text as="div" size="3">
-          利用者は、本サービス内でアカウント削除を行うことで、いつでも利用を停止することができます。
+          利用者は、提供者に対して連絡をする、またはサービス提供終了日まで待つことで利用を停止することができます。
         </Text>
       </Box>
 
@@ -127,7 +127,7 @@ export default function TermsPage() {
       </Box>
 
       <Box style={{ textAlign: 'center', color: 'gray' }} mb="4">
-        <Text size="2">提供者：にっしー（個人）</Text>
+        <Text size="2">提供者：カルチャーズ（個人）</Text>
       </Box>
 
       <Box
