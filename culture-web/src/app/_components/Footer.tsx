@@ -19,6 +19,14 @@ export function Footer() {
         style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}
       >
         <Flex gap="4" align="center" wrap="wrap" justify="center">
+          <Link href="/about" style={{ textDecoration: 'none' }}>
+            <Text size="2" color="gray" style={{ cursor: 'pointer' }}>
+              About
+            </Text>
+          </Link>
+          <Text size="2" color="gray">
+            |
+          </Text>
           <Link href="/terms" style={{ textDecoration: 'none' }}>
             <Text size="2" color="gray" style={{ cursor: 'pointer' }}>
               利用規約
