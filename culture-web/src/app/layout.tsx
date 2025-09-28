@@ -2,12 +2,13 @@ import type { Metadata } from 'next'
 import { Theme, ThemePanel } from '@radix-ui/themes'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
+import { Footer } from './_components/Footer'
 import './global.css'
 
 export const metadata: Metadata = {
-  // TODO: change title and description
-  title: 'Culture Web',
-  description: 'A web application for culture-related content',
+  title: 'Culture - AI Agent によるパーソナライズドニュースメディア',
+  description:
+    'AI Agent があなたのためのニュースフィードを提供します。 - 提供者：カルチャーズ（個人）',
   robots: 'noindex, nofollow',
 }
 
@@ -25,11 +26,23 @@ export default function RootLayout({
   const useThemePanel = process.env.NODE_ENV !== 'production' && false
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body>
+      <body
+        style={{
+          margin: 0,
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <SessionProvider>
           <ThemeProvider attribute="class">
             <Theme accentColor="teal" grayColor="sage">
-              {children}
+              <div
+                style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+              >
+                {children}
+              </div>
+              <Footer />
               {useThemePanel && <ThemePanel />}
             </Theme>
           </ThemeProvider>

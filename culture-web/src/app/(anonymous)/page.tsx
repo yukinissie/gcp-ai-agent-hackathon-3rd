@@ -6,14 +6,17 @@ import Image from 'next/image'
 
 export default function PocPage() {
   return (
-    <Box position="relative" height="100vh">
+    <Box
+      position="relative"
+      style={{ flex: 1, minHeight: 'calc(100vh - 120px)' }}
+    >
       <Box position="absolute" top="4" right="4">
         <ThemeToggle />
       </Box>
       <Flex
         justify="center"
         align="center"
-        height="100vh"
+        style={{ minHeight: 'calc(100vh - 120px)' }}
         direction="column"
         gap="6"
       >
