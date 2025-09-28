@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { HomeClient } from './_components/HomeClient'
+import { fetchArticles } from './_actions/articles'
 
 export default async function Home() {
   const session = await auth()
@@ -13,5 +14,6 @@ export default async function Home() {
     )
   }
 
-  return <HomeClient userId={session.user.id} />
+  const articles = await fetchArticles()
+  return <HomeClient userId={session.user.id} articles={articles} />
 }
