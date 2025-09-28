@@ -45,7 +45,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
 
         try {
-          const result = await apiClient.post(endpoint, payload)
+          const result = await fetch(process.env.RAILS_API_HOST + endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          })
+            .then((res) => res.json())
+            .catch((err) => {
+              throw new Error(`Network response was not ok: ${err.message}`)
+            })
+
           return {
             id: result.id?.toString() || result.data?.user?.id?.toString(),
             humanId: result.human_id || result.data?.user?.human_id,
