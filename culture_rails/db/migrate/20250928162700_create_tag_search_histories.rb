@@ -6,7 +6,6 @@ class CreateTagSearchHistories < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :tag_search_histories, :searched_at
     add_index :tag_search_histories, [:user_id, :created_at]
     add_index :tag_search_histories, :article_ids, using: :gin
   end
