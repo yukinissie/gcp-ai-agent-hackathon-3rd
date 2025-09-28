@@ -75,6 +75,8 @@ export const determineTagsTool = createTool({
       (a, b) => b.relevanceScore - a.relevanceScore,
     )
 
+    console.log('タグ分析結果:', sortedTags)
+
     // 上位タグを選択（プライマリ80%、ディスカバリー20%）
     const primaryTags = sortedTags
       .filter((t) => t.category === 'primary')
