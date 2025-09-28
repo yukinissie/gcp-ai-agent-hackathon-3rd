@@ -239,6 +239,18 @@ bundle exec rspec spec/requests/
   - `docs: API仕様書を更新`
   - `refactor: 未使用ファイルを削除`
 
+## アーキテクチャ制約
+
+### Serviceクラスの禁止
+- **Serviceクラスは使用しない**: ロジックはすべてapp/models/配下のModelクラスとして実装する
+- **app/services/配下にファイルを作成しない**: 代わりにapp/models/配下にクラスを配置する
+- **理由**: Railsの標準的なMVCパターンに準拠し、複雑性を避けるため
+
+### 推奨パターン
+- ビジネスロジック → Modelクラス（app/models/配下）
+- データ処理 → Modelクラス（app/models/配下）
+- 外部API連携 → Modelクラス（app/models/配下）
+
 ## 参考資料
 - [RSpecスタイルガイド](https://github.com/willnet/rspec-style-guide)
 - [ログミーTech - RSpecベストプラクティス](https://logmi.jp/main/technology/327449)

@@ -34,47 +34,32 @@ class Feed < ApplicationRecord
   scope :active, -> { where(status: "active") }
   scope :recent, -> { order(created_at: :desc) }
 
-  # XMLを取得してNokogiriでパースする
-  def parsed_xml
-    begin
-      require "net/http"
-      require "nokogiri"
-
-      xml = Net::HTTP.get(URI.parse(endpoint))
-
-      doc = Nokogiri::XML(xml) { |config| config.strict }
-
-      # XMLの構造をチェック
-      if doc.errors.any?
-        raise "XML parsing errors: #{doc.errors.map(&:message).join(', ')}"
-      end
-
-      doc
-    rescue => e
-      update!(status: "error", last_error: e.message)
-      nil
-    end
+  # RSSフィードから記事を取得・作成（リファクタリング後）
+  def fetch_articles
+    fetcher = RssFetcher.new(self)
+    fetcher.fetch_articles
   end
 
-  # フィードのタイトルを自動更新
+  # 互換性メソッド（テスト用）
+  def parsed_xml
+    xml_fetcher = XmlFetcher.new(endpoint)
+    xml_fetcher.fetch
+  rescue XmlFetcher::FetchError, XmlFetcher::ParseError => e
+    update!(status: "error", last_error: e.message)
+    nil
+  end
+
   def update_title_from_xml
     doc = parsed_xml
     return unless doc
 
-    # RSS2.0の場合
-    feed_title = doc.xpath("//channel/title").text
-    # Atomの場合（名前空間を考慮）
-    if feed_title.blank?
-      feed_title = doc.xpath("//atom:feed/atom:title", "atom" => "http://www.w3.org/2005/Atom").text
-    end
-    # 名前空間なしでも試す
-    feed_title = doc.xpath("//feed/title").text if feed_title.blank?
+    analyzer = FeedAnalyzer.new(doc)
+    feed_info = analyzer.analyze
 
-    return if feed_title.blank?
-    update!(title: feed_title)
+    return if feed_info[:title].blank?
+    update!(title: feed_info[:title])
   end
 
-  # 最後の取得成功時刻を更新
   def mark_as_fetched
     update!(
       status: "active",
@@ -83,7 +68,6 @@ class Feed < ApplicationRecord
     )
   end
 
-  # エラーマーク
   def mark_as_error(error_message)
     update!(
       status: "error",
@@ -91,223 +75,10 @@ class Feed < ApplicationRecord
     )
   end
 
-  # RSSフィードから記事を取得・作成
-  def fetch_articles
-    Rails.logger.info "=== Starting RSS fetch for feed: #{title} (#{endpoint}) ==="
-
-    doc = parsed_xml
-    Rails.logger.info "=== XML parsed result: #{doc&.root&.name} =="
-    return 0 unless doc
-
-    # フィードタイトルを更新（初回のみ）
-    update_title_from_xml if title.blank?
-
-    # 記事を作成
-    created_count = create_articles_from_xml(doc)
-
-    # 成功マーク
-    mark_as_fetched
-
-    Rails.logger.info "=== Created #{created_count} articles from feed #{id} =="
-    created_count
-  rescue => e
-    Rails.logger.error "=== Error in fetch_articles: #{e.message} =="
-    mark_as_error(e.message)
-    0
-  end
-
   private
-
-  def create_articles_from_xml(doc)
-    Rails.logger.info "create_articles_from_xml called with doc: #{doc.class}"
-    return 0 unless doc
-
-    # RSS2.0の場合は//item、Atomの場合は//entry（名前空間対応）
-    items = doc.xpath("//item | //entry | //atom:entry", "atom" => "http://www.w3.org/2005/Atom")
-    Rails.logger.info "XML items/entries count: #{items.size}"
-    return 0 if items.empty?
-
-    created_count = 0
-
-    items.first(20).each_with_index do |item, index|
-      title = extract_title_from_xml(item)
-      link = extract_link_from_xml(item)
-
-      Rails.logger.info "Processing item #{index}: title=#{title}, link=#{link}"
-
-      # URL重複チェック（データベースの複合ユニーク制約に依存）
-      if article_exists?(link)
-        Rails.logger.info "Article already exists (duplicate URL): title=#{title}"
-        next
-      end
-
-      article = create_article_from_xml(item)
-      Rails.logger.info "Article created: #{article&.persisted?}, id=#{article&.id}"
-      if article&.persisted?
-        created_count += 1
-        auto_tag_article(article)
-      end
-    end
-
-    Rails.logger.info "Created articles count: #{created_count}"
-    created_count
-  end
 
   def article_exists?(url)
     return false if url.blank?
     articles.exists?(source_url: url)
-  end
-
-  def create_article_from_xml(item_node)
-    title = extract_title_from_xml(item_node)
-    link = extract_link_from_xml(item_node)
-    pub_date = extract_pubdate_from_xml(item_node)
-
-    Rails.logger.info "Creating article: title=#{title}, link=#{link}, pub_date=#{pub_date}"
-
-    articles.create!(
-      source_type: "rss",
-      title: title || "Untitled",
-      summary: extract_summary_from_xml(item_node),
-      content: extract_content_from_xml(item_node),
-      content_format: "html",
-      author: extract_author_from_xml(item_node),
-      source_url: link,
-      published: true,
-      published_at: pub_date
-    )
-  rescue ActiveRecord::RecordInvalid => e
-    Rails.logger.warn "Failed to create article from XML item: #{e.message}"
-    Rails.logger.warn "Errors: #{e.record.errors.full_messages}"
-    nil
-  end
-
-  # XMLからタイトルを抽出
-  def extract_title_from_xml(item_node)
-    # RSS2.0とAtomの両方に対応
-    title = item_node.xpath("title").text.strip
-    # Atomの名前空間対応（念のため）
-    if title.blank?
-      title = item_node.xpath("atom:title", "atom" => "http://www.w3.org/2005/Atom").text.strip
-    end
-    title
-  end
-
-  # XMLからリンクを抽出
-  def extract_link_from_xml(item_node)
-    # RSS2.0の場合
-    link = item_node.xpath("link").text.strip
-
-    # Atomの場合は複数のパターンを試す
-    if link.blank?
-      # 1. rel="alternate"属性があるlink要素のhref属性
-      link_node = item_node.xpath('atom:link[@rel="alternate"]', "atom" => "http://www.w3.org/2005/Atom").first
-      link = link_node&.attr("href")
-      
-      # 2. 最初のlink要素のhref属性
-      if link.blank?
-        link_node = item_node.xpath('atom:link', "atom" => "http://www.w3.org/2005/Atom").first
-        link = link_node&.attr("href")
-      end
-      
-      # 3. link要素の内容（名前空間対応）
-      if link.blank?
-        link = item_node.xpath("atom:link", "atom" => "http://www.w3.org/2005/Atom").text.strip
-      end
-    end
-    
-    # 名前空間なしでも試す
-    if link.blank?
-      # href属性
-      link_node = item_node.xpath('link').first
-      link = link_node&.attr("href")
-      
-      # 要素の内容
-      link = item_node.xpath("link").text.strip if link.blank?
-    end
-    
-    link
-  end
-
-  # XMLから公開日を抽出
-  def extract_pubdate_from_xml(item_node)
-    # RSS2.0の場合
-    pub_date = item_node.xpath("pubDate").text
-    # Atomの場合（名前空間対応）
-    if pub_date.blank?
-      pub_date = item_node.xpath("atom:published", "atom" => "http://www.w3.org/2005/Atom").text
-    end
-    # 名前空間なしでも試す
-    pub_date = item_node.xpath("published").text if pub_date.blank?
-
-    begin
-      Time.parse(pub_date) if pub_date.present?
-    rescue
-      Time.current
-    end || Time.current
-  end
-
-  # XMLからサマリーを抽出
-  def extract_summary_from_xml(item_node)
-    # RSS2.0の場合
-    description = item_node.xpath("description").text
-    # Atomの場合（名前空間対応）
-    if description.blank?
-      description = item_node.xpath("atom:content", "atom" => "http://www.w3.org/2005/Atom").text
-    end
-    if description.blank?
-      description = item_node.xpath("atom:summary", "atom" => "http://www.w3.org/2005/Atom").text
-    end
-    # 名前空間なしでも試す
-    description = item_node.xpath("content").text if description.blank?
-    description = item_node.xpath("summary").text if description.blank?
-
-    clean_description = ActionController::Base.helpers.strip_tags(description.to_s)
-    result = clean_description.truncate(500)
-    result.present? ? result : "No description available"
-  end
-
-  # XMLからコンテンツを抽出
-  def extract_content_from_xml(item_node)
-    # RSS2.0のcontent:encoded
-    content = item_node.xpath("content:encoded", "content" => "http://purl.org/rss/1.0/modules/content/").text
-    # 通常のdescription
-    content = item_node.xpath("description").text if content.blank?
-    # Atomのcontent（名前空間対応）
-    if content.blank?
-      content = item_node.xpath("atom:content", "atom" => "http://www.w3.org/2005/Atom").text
-    end
-    # 名前空間なしでも試す
-    content = item_node.xpath("content").text if content.blank?
-
-    content.presence || "No content available"
-  end
-
-  # XMLから著者を抽出
-  def extract_author_from_xml(item_node)
-    # RSS2.0の場合
-    author = item_node.xpath("author").text
-    # Atomの場合（名前空間対応）
-    if author.blank?
-      author_node = item_node.xpath("atom:author/atom:name", "atom" => "http://www.w3.org/2005/Atom").first
-      author = author_node&.text
-    end
-    # 名前空間なしでも試す
-    if author.blank?
-      author_node = item_node.xpath("author/name").first
-      author = author_node&.text
-    end
-    # dc:creator
-    author = item_node.xpath("dc:creator", "dc" => "http://purl.org/dc/elements/1.1/").text if author.blank?
-
-    author.presence || title || "Unknown"
-  end
-
-
-  # 自動タグ付け
-  def auto_tag_article(article)
-    # フィード名をタグとして追加（sourceカテゴリとして）
-    tag = Tag.find_or_create_by(name: title, category: "source")
-    article.tags << tag unless article.tags.include?(tag)
   end
 end
