@@ -1,7 +1,5 @@
 // Use PostgreSQL for production, memory storage for development
 export async function getStorage() {
-  // Dynamic import to avoid initialization issues
-  const { LibSQLStore } = await import('@mastra/libsql')
   if (process.env.NODE_ENV === 'production') {
     try {
       // Dynamic import to avoid initialization issues
@@ -12,7 +10,7 @@ export async function getStorage() {
         `postgresql://${process.env.DATABASE_USER || 'postgres'}:${process.env.DATABASE_PASSWORD || 'password'}@${process.env.DATABASE_HOST || 'localhost'}:5432/${process.env.DATABASE_NAME || 'culture_rails_development'}`
 
       return new PostgresStore({
-        connectionString,
+        host: connectionString,
       })
     } catch (error) {
       console.error(
@@ -23,6 +21,8 @@ export async function getStorage() {
     }
   }
 
+  // Dynamic import to avoid initialization issues
+  const { LibSQLStore } = await import('@mastra/libsql')
   return new LibSQLStore({
     url: ':memory:',
   })
