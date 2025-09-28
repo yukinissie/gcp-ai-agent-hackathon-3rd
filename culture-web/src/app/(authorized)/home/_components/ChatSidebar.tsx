@@ -3,6 +3,7 @@
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Box,
   Flex,
@@ -27,6 +28,7 @@ export function ChatSidebar({
   const [isClient, setIsClient] = useState(false)
   const [input, setInput] = useState('')
   const [isMobile, setIsMobile] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     setIsClient(true)
@@ -62,6 +64,12 @@ export function ChatSidebar({
       },
     ],
   })
+
+  useEffect(() => {
+    if (status === 'ready') {
+      router.refresh()
+    }
+  }, [status, router])
 
   const containerStyle = !isClient
     ? chatSidebarStyles.container
