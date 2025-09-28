@@ -1,5 +1,3 @@
-'use server'
-
 import type { Article } from '../_components/types'
 import { apiClient } from '@/lib/apiClient'
 

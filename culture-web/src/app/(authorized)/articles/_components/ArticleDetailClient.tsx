@@ -12,7 +12,7 @@ import {
 import Link from 'next/link'
 import { marked } from 'marked'
 import { useState, useTransition } from 'react'
-import { ArticleDetail } from '../../home/_actions/articles'
+import { ArticleDetail } from '../../home/_drivers/articles'
 import {
   rateArticleGood,
   rateArticleBad,
