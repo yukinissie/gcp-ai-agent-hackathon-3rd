@@ -14,14 +14,8 @@ export interface ArticleDetail extends Article {
 
 export async function fetchArticles(): Promise<Article[]> {
   try {
-    const data: { articles: Article[] } = await apiClient.get(
-      '/api/v1/articles',
-      {
-        next: {
-          revalidate: 60,
-        },
-      },
-    )
+    const data: { articles: Article[] } =
+      await apiClient.get('/api/v1/articles')
 
     return data.articles
   } catch (error) {
@@ -36,11 +30,6 @@ export async function fetchArticleDetail(
   try {
     const data: { article: ArticleDetail } = await apiClient.get(
       `/api/v1/articles/${id}`,
-      {
-        next: {
-          revalidate: 60,
-        },
-      },
     )
 
     return data.article
