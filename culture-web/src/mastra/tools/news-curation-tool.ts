@@ -134,8 +134,7 @@ async function fetchAllTags(): Promise<string[]> {
     return data.tags.map((tag: { name: string }) => tag.name)
   } catch (error) {
     console.error('Error fetching tags:', error)
-    // フォールバック
-    return ['AI', 'startup', 'health', 'sports', 'entertainment']
+    throw new Error('Failed to fetch tags')
   }
 }
 
@@ -168,17 +167,11 @@ async function determineTags(
       },
     )
 
-    console.log('DetermineTagsAgent result:', result)
-
     return JSON.parse(result.text) as string[]
   } catch (error) {
     console.error('Error in determineTags:', error)
     // フォールバック: ユーザーの上位嗜好タグを返す
-    return userAttributes.tagPreferences
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3)
-      .map((pref) => pref.tag)
-      .filter((tag) => allTags.includes(tag))
+    throw new Error('Failed to determine tags')
   }
 }
 
@@ -203,14 +196,7 @@ async function fetchNewsByTags(tags: string[]) {
     }))
   } catch (error) {
     console.error('Error fetching news by tags:', error)
-    return tags.map((tag, idx) => ({
-      id: `news-${tag}-${idx}`,
-      title: `Latest updates in ${tag}`,
-      url: `https://news.example.com/${tag}/${idx}`,
-      source: 'Example News',
-      publishedAt: new Date(),
-      tags: [tag],
-    }))
+    throw new Error('Failed to fetch news articles')
   }
 }
 
@@ -237,39 +223,23 @@ async function saveNewsFetchHistory(
       return
     }
 
-    // apiClientを使用（認証ヘッダー自動追加）
-    const result = await apiClient.post('/api/v1/tag_search_histories', {
+    await apiClient.post('/api/v1/tag_search_histories', {
       tag_search_history: {
         article_ids: articleIds,
       },
     })
-
-    console.log('News fetch history saved successfully:', result)
   } catch (error) {
     console.error('Error saving news fetch history:', error)
-    // フォールバック: ログ出力のみ
-    console.log(`Fallback: Saving news fetch history for user ${userId}:`, {
-      tags,
-      news: news.map((n) => ({
-        id: n.id,
-        title: n.title,
-      })),
-    })
+    throw new Error('Failed to save news fetch history')
   }
 }
 
 const getInfoForCuration = async (userId: number) => {
-  // userId を使ってユーザーの属性を取得する。
   const userAttributes = await fetchUserAttributes(userId)
-  // 全てのタグを取得する。
   const allTags = await fetchAllTags()
-  // 属性情報を元にニュース取得用のタグを決定する。全てのタグを使って存在チェックを行う（Agentが行う）
   const tags = await determineTags(userAttributes, allTags)
-  // タグに基づいてニュースを検索する。（Rails）
   const news = await fetchNewsByTags(tags)
-  // 取得したニュースを履歴テーブルに保存する。（Rails）
   await saveNewsFetchHistory(userId, tags, news)
-  // その上で返却する。
   return {
     userAttributes,
     tags,

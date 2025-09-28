@@ -1,9 +1,12 @@
+import { PostgresStore } from '@mastra/pg'
+import { LibSQLStore } from '@mastra/libsql'
+
 // Use PostgreSQL for production, memory storage for development
 export async function getStorage() {
   if (process.env.NODE_ENV === 'production') {
     try {
       // Dynamic import to avoid initialization issues
-      const { PostgresStore } = await import('@mastra/pg')
+      console.log('Using PostgresStore for storage')
 
       const connectionString =
         process.env.DATABASE_URL ||
@@ -21,8 +24,7 @@ export async function getStorage() {
     }
   }
 
-  // Dynamic import to avoid initialization issues
-  const { LibSQLStore } = await import('@mastra/libsql')
+  console.log('Using LibSQLStore for storage')
   return new LibSQLStore({
     url: ':memory:',
   })
