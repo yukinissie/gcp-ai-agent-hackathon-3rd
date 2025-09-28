@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import { HomeClient } from './_components/HomeClient'
 import { fetchArticles } from './_drivers/fetchArticles'
+import { fetchTagSearchHistoryArticles } from './_drivers/fetchTagSearchHistoryArticles'
 
 export default async function Home() {
   const session = await auth()
@@ -15,5 +16,15 @@ export default async function Home() {
   }
 
   const articles = await fetchArticles()
-  return <HomeClient userId={session.user.id} articles={articles} />
+  const tagSearchHistoryArticles = await fetchTagSearchHistoryArticles()
+  return (
+    <HomeClient
+      userId={session.user.id}
+      articles={
+        tagSearchHistoryArticles.length > 0
+          ? tagSearchHistoryArticles
+          : articles
+      }
+    />
+  )
 }
