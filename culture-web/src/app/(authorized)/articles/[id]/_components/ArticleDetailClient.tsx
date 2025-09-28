@@ -17,7 +17,7 @@ import {
   rateArticleBad,
   type ArticleRatingResponse,
 } from '../_actions/article-rating'
-import type { ArticleDetail } from '../../types'
+import type { ArticleDetail } from '../../../types'
 
 interface ArticleDetailClientProps {
   article: ArticleDetail
