@@ -1,7 +1,6 @@
 'use server'
 
-import { auth } from '@/auth'
-import { Article } from '../_components/types'
+import type { Article } from '../_components/types'
 import { apiClient } from '@/lib/apiClient'
 
 export interface ArticleDetail extends Article {
