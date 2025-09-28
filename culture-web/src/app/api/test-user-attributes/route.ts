@@ -28,7 +28,7 @@ async function testFetchUserAttributes(userId: number) {
     }
 
     // Direct import to avoid module resolution issues
-    const { apiClient } = await import('../../../lib/api-client')
+    const { apiClient } = await import('../../../lib/apiClient')
 
     console.log('📡 API Route: Calling Rails API /api/v1/user_attributes...')
     const data = await apiClient.get('/api/v1/user_attributes')

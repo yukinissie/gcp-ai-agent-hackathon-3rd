@@ -2,14 +2,14 @@
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { Container, Box, Flex, Text } from '@radix-ui/themes'
+import { Container, Box, Flex } from '@radix-ui/themes'
 import { LogoutSection } from '../../_components/Logout'
 import { ThemeToggle } from '../../../_components/ThemeToggle'
 import { ArticleList } from './ArticleList'
 import { ChatSidebar } from './ChatSidebar'
 import { fetchArticles } from '../_actions/articles'
 import { homeStyles } from '../_styles/page.styles'
-import { Article } from './types'
+import type { Article } from './types'
 
 interface HomeClientProps {
   userId: string

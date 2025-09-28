@@ -1,7 +1,7 @@
 import { createTool } from '@mastra/core/tools'
 import { z } from 'zod'
 import { determineNewsTagsAgent } from '../agents/determine-tags-agent'
-import { apiClient } from '../../lib/api-client'
+import { apiClient } from '../../lib/apiClient'
 
 export const newsCurationTool = createTool({
   id: 'news-curation',
