@@ -168,11 +168,12 @@ async function determineTags(
       },
     )
 
+    console.log(`✅ determineTags: Result - ${result.text}`)
+
     return JSON.parse(result.text) as string[]
   } catch (error) {
     console.error('Error in determineTags:', error)
-    // フォールバック: ユーザーの上位嗜好タグを返す
-    throw new Error('Failed to determine tags')
+    return []
   }
 }
 
