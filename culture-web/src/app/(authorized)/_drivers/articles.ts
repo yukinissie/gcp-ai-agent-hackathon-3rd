@@ -1,14 +1,5 @@
-import type { Article } from '../_components/types'
 import { apiClient } from '@/lib/apiClient'
-
-export interface ArticleDetail extends Article {
-  content: string
-  content_format: string
-  source_url?: string
-  published: boolean
-  created_at: string
-  updated_at: string
-}
+import type { Article, ArticleDetail } from '../types'
 
 export async function fetchArticles(): Promise<Article[]> {
   try {

@@ -8,14 +8,14 @@ import { ThemeToggle } from '../../../_components/ThemeToggle'
 import { ArticleList } from './ArticleList'
 import { ChatSidebar } from './ChatSidebar'
 import { homeStyles } from '../_styles/page.styles'
-import type { Article } from './types'
+import type { Article } from '../../types'
 
 interface HomeClientProps {
   userId: string
   articles: Article[]
 }
 
-export function HomeClient({ userId, articles }: HomeClientProps) {
+export function HomeClient(props: HomeClientProps) {
   const [isChatOpen, setIsChatOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -79,7 +79,7 @@ export function HomeClient({ userId, articles }: HomeClientProps) {
         </Box>
         <Container size="4">
           <Box py="6">
-            <ArticleList articles={articles} />
+            <ArticleList articles={props.articles} />
           </Box>
         </Container>
       </Box>
@@ -87,7 +87,7 @@ export function HomeClient({ userId, articles }: HomeClientProps) {
       {/* AIチャットサイドパネル */}
       {isChatOpen && (
         <Box style={chatSidebarStyle}>
-          <ChatSidebar onClose={handleCloseChat} userId={userId} />
+          <ChatSidebar onClose={handleCloseChat} userId={props.userId} />
         </Box>
       )}
 

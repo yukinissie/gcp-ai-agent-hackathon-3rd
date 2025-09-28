@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { fetchArticleDetail } from '../../home/_drivers/articles'
+import { fetchArticleDetail } from '../../_drivers/articles'
 import { ArticleDetailClient } from '../_components/ArticleDetailClient'
 
 interface PageProps {

@@ -1,16 +1,21 @@
 import { Card, Text, Heading, Badge, Flex, Box } from '@radix-ui/themes'
-import { ArticleCardProps } from './types'
 import { articleCardStyles } from '../_styles/articleCard.styles'
 import { useRouter } from 'next/navigation'
+import type { Article } from '../../types'
 
-export function ArticleCard({ article, onClick }: ArticleCardProps) {
+type ArticleCardProps = {
+  article: Article
+  onClick?: (article: Article) => void
+}
+
+export function ArticleCard(props: ArticleCardProps) {
   const router = useRouter()
 
   const handleClick = () => {
-    if (onClick) {
-      onClick(article)
+    if (props.onClick) {
+      props.onClick(props.article)
     } else {
-      router.push(`/articles/${article.id}`)
+      router.push(`/articles/${props.article.id}`)
     }
   }
 
@@ -26,14 +31,16 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
   return (
     <Card
       variant="surface"
-      style={onClick ? articleCardStyles.card : articleCardStyles.cardDefault}
+      style={
+        props.onClick ? articleCardStyles.card : articleCardStyles.cardDefault
+      }
       onMouseEnter={(e) => {
-        if (onClick) {
+        if (props.onClick) {
           Object.assign(e.currentTarget.style, articleCardStyles.cardHover)
         }
       }}
       onMouseLeave={(e) => {
-        if (onClick) {
+        if (props.onClick) {
           Object.assign(e.currentTarget.style, articleCardStyles.cardLeave)
         }
       }}
@@ -41,11 +48,11 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
     >
       <Flex gap="4" align="start">
         {/* 画像部分 */}
-        {article.image_url && (
+        {props.article.image_url && (
           <Box style={articleCardStyles.imageContainer}>
             <img
-              src={article.image_url}
-              alt={article.title}
+              src={props.article.image_url}
+              alt={props.article.title}
               style={articleCardStyles.image}
             />
           </Box>
@@ -58,34 +65,34 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
           style={articleCardStyles.contentContainer}
         >
           <Flex align="center" gap="2" wrap="wrap">
-            {article.tags.length > 0 && (
+            {props.article.tags.length > 0 && (
               <Badge color="blue" variant="soft">
-                {article.tags[0].name}
+                {props.article.tags[0].name}
               </Badge>
             )}
             <Text size="2" color="gray">
-              {formatDate(article.published_at)}
+              {formatDate(props.article.published_at)}
             </Text>
           </Flex>
 
           <Heading size="4" weight="bold" style={articleCardStyles.headingText}>
-            {article.title}
+            {props.article.title}
           </Heading>
 
           <Text size="2" color="gray" style={articleCardStyles.excerptText}>
-            {article.summary}
+            {props.article.summary}
           </Text>
 
           <Flex justify="between" align="end" mt="auto">
             <Flex gap="1" wrap="wrap">
-              {article.tags.slice(0, 2).map((tag) => (
+              {props.article.tags.slice(0, 2).map((tag) => (
                 <Badge key={tag.id} color="gray" variant="soft" size="1">
                   {tag.name}
                 </Badge>
               ))}
-              {article.tags.length > 2 && (
+              {props.article.tags.length > 2 && (
                 <Badge color="gray" variant="soft" size="1">
-                  +{article.tags.length - 2}
+                  +{props.article.tags.length - 2}
                 </Badge>
               )}
             </Flex>
@@ -96,7 +103,7 @@ export function ArticleCard({ article, onClick }: ArticleCardProps) {
               color="gray"
               style={articleCardStyles.authorText}
             >
-              {article.author}
+              {props.article.author}
             </Text>
           </Flex>
         </Flex>

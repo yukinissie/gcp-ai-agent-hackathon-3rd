@@ -1,14 +1,14 @@
 import { Heading, Text, Flex, Box } from '@radix-ui/themes'
 import { ArticleCard } from './ArticleCard'
-import { Article } from './types'
 import { articleListStyles } from '../_styles/articleList.styles'
+import type { Article } from '../../types'
 
 interface ArticleListProps {
   articles: Article[]
 }
 
-export function ArticleList({ articles }: ArticleListProps) {
-  if (articles.length === 0) {
+export function ArticleList(props: ArticleListProps) {
+  if (props.articles.length === 0) {
     return (
       <Flex
         direction="column"
@@ -37,7 +37,7 @@ export function ArticleList({ articles }: ArticleListProps) {
         </Flex>
 
         <Flex direction="column" gap="3" width="100%">
-          {articles.map((article) => (
+          {props.articles.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}
         </Flex>

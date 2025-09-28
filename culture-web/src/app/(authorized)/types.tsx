@@ -14,7 +14,11 @@ export interface Article {
   tags: Tag[]
 }
 
-export interface ArticleCardProps {
-  article: Article
-  onClick?: (article: Article) => void
+export interface ArticleDetail extends Article {
+  content: string
+  content_format: string
+  source_url?: string
+  published: boolean
+  created_at: string
+  updated_at: string
 }

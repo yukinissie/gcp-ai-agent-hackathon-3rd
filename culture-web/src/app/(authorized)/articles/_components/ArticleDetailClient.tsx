@@ -12,12 +12,12 @@ import {
 import Link from 'next/link'
 import { marked } from 'marked'
 import { useState, useTransition } from 'react'
-import { ArticleDetail } from '../../home/_drivers/articles'
 import {
   rateArticleGood,
   rateArticleBad,
-  ArticleRatingResponse,
+  type ArticleRatingResponse,
 } from '../_actions/article-rating'
+import type { ArticleDetail } from '../../types'
 
 interface ArticleDetailClientProps {
   article: ArticleDetail

@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 import { HomeClient } from './_components/HomeClient'
-import { fetchArticles } from './_drivers/articles'
+import { fetchArticles } from '../_drivers/articles'
 
 export default async function Home() {
   const session = await auth()
