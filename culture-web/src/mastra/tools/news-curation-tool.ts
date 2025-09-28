@@ -1,5 +1,5 @@
 import { createTool } from '@mastra/core/tools'
-import { z } from 'zod'
+import { json, z } from 'zod'
 import { determineNewsTagsAgent } from '../agents/determine-tags-agent'
 import { apiClient } from '../../lib/apiClient'
 
@@ -160,7 +160,11 @@ async function determineTags(
 					Please strictly follow the JSON Schema below and return **JSON only**. No explanatory text before or after.
 					Schema:
 						- ["tag1", "tag2", ...]
-            - [] if no relevant tags can be determined.`,
+            - [] if no relevant tags can be determined.
+
+          Example:
+            ["technology", "health", "science"]
+          `,
         },
       ],
       {
