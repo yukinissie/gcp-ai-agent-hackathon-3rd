@@ -1,6 +1,6 @@
 import { auth } from '@/auth'
 
-const API_BASE_URL = process.env.RAILS_API_URL || 'http://localhost:3000'
+const apiBaseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000'
 
 export const apiClient = {
   async get(endpoint: string, options: RequestInit = {}) {
@@ -14,7 +14,7 @@ export const apiClient = {
       options.headers,
     )
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'GET',
       headers,
       ...options,
@@ -38,7 +38,7 @@ export const apiClient = {
       options.headers,
     )
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(data),
