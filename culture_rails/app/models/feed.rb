@@ -41,7 +41,6 @@ class Feed < ApplicationRecord
       require "nokogiri"
 
       xml = Net::HTTP.get(URI.parse(endpoint))
-      Rails.logger.info "RSS XML content (first 500 chars): #{xml[0..500]}"
 
       doc = Nokogiri::XML(xml) { |config| config.strict }
 
@@ -50,10 +49,8 @@ class Feed < ApplicationRecord
         raise "XML parsing errors: #{doc.errors.map(&:message).join(', ')}"
       end
 
-      Rails.logger.info "XML parsed successfully: root=#{doc.root&.name}"
       doc
     rescue => e
-      Rails.logger.error "Failed to parse XML for Feed #{id}: #{e.message}"
       update!(status: "error", last_error: e.message)
       nil
     end
@@ -200,7 +197,7 @@ class Feed < ApplicationRecord
   def extract_link_from_xml(item_node)
     # RSS2.0の場合
     link = item_node.xpath("link").text.strip
-    
+
     # Atomの場合は複数のパターンを試す
     if link.blank?
       # 1. rel="alternate"属性があるlink要素のhref属性

@@ -4,7 +4,7 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
 
   def create
     tag_search_history = current_user.tag_search_histories.build(tag_search_history_params)
-    
+
     if tag_search_history.save
       render json: { success: true }, status: :created
     else
@@ -14,23 +14,23 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
 
   def articles
     latest_history = current_user.tag_search_histories.order(created_at: :desc).first
-    
+
     unless latest_history
-      render json: { 
-        success: false, 
-        error: "not_found", 
-        message: "検索履歴が見つかりません" 
+      render json: {
+        success: false,
+        error: "not_found",
+        message: "検索履歴が見つかりません"
       }, status: :not_found
       return
     end
 
     article_ids = latest_history.article_ids_array.map(&:to_i)
-    
+
     # より効率的な実装: 記事をハッシュで取得してメモリ内でソート
     articles_hash = Article.includes(:tags)
                           .where(id: article_ids, published: true)
                           .index_by(&:id)
-    
+
     # 元の順序を保持しつつ存在する記事のみを取得
     articles = article_ids.filter_map { |id| articles_hash[id] }
 

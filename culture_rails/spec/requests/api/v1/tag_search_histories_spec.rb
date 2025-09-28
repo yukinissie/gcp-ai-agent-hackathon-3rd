@@ -54,7 +54,7 @@ RSpec.describe "Api::V1::TagSearchHistories", type: :request do
 
         it "バリデーションエラーが返ること" do
           post '/api/v1/tag_search_histories', params: invalid_params, headers: headers, as: :json
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           expect(JSON.parse(response.body, symbolize_names: true)[:success]).to be false
           expect(JSON.parse(response.body, symbolize_names: true)[:errors]).to be_present
@@ -98,12 +98,12 @@ RSpec.describe "Api::V1::TagSearchHistories", type: :request do
 
         it "最新の検索履歴から記事一覧が返ること" do
           get '/api/v1/tag_search_histories/articles', headers: headers, as: :json
-          
+
           expect(response).to have_http_status(:ok)
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body[:success]).to be true
           expect(response_body[:data][:articles].size).to eq(3)
-          
+
           # 順序も確認
           returned_ids = response_body[:data][:articles].map { |a| a[:id] }
           expect(returned_ids).to eq(articles.first(3).pluck(:id))
@@ -117,21 +117,21 @@ RSpec.describe "Api::V1::TagSearchHistories", type: :request do
 
       context "複数の検索履歴がある時" do
         let!(:old_history) do
-          create(:tag_search_history, 
-                 user: user, 
+          create(:tag_search_history,
+                 user: user,
                  article_ids: articles.last(2).pluck(:id),
                  created_at: 1.day.ago)
         end
         let!(:new_history) do
-          create(:tag_search_history, 
-                 user: user, 
+          create(:tag_search_history,
+                 user: user,
                  article_ids: articles.first(3).pluck(:id),
                  created_at: 1.hour.ago)
         end
 
         it "最新の検索履歴が返ること" do
           get '/api/v1/tag_search_histories/articles', headers: headers, as: :json
-          
+
           expect(response).to have_http_status(:ok)
           response_body = JSON.parse(response.body, symbolize_names: true)
           returned_ids = response_body[:data][:articles].map { |a| a[:id] }
@@ -142,7 +142,7 @@ RSpec.describe "Api::V1::TagSearchHistories", type: :request do
       context "検索履歴が存在しない時" do
         it "404エラーが返ること" do
           get '/api/v1/tag_search_histories/articles', headers: headers, as: :json
-          
+
           expect(response).to have_http_status(:not_found)
           response_body = JSON.parse(response.body, symbolize_names: true)
           expect(response_body[:success]).to be false

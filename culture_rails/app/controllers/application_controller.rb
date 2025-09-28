@@ -42,10 +42,10 @@ class ApplicationController < ActionController::API
   end
 
   def extract_token_from_header
-    auth_header = request.headers['Authorization']
-    return nil unless auth_header&.start_with?('Bearer ')
+    auth_header = request.headers["Authorization"]
+    return nil unless auth_header&.start_with?("Bearer ")
 
-    auth_header.split(' ').last
+    auth_header.split(" ").last
   end
 
   def current_user

@@ -46,10 +46,10 @@ RSpec.describe TagSearchHistory, type: :model do
 
   describe '#article_ids_array' do
     context 'article_idsがjsonb配列の場合' do
-      let(:tag_search_history) { build(:tag_search_history, article_ids: [1, 2, 3]) }
+      let(:tag_search_history) { build(:tag_search_history, article_ids: [ 1, 2, 3 ]) }
 
       it '配列がそのまま返されること' do
-        expect(tag_search_history.article_ids_array).to eq([1, 2, 3])
+        expect(tag_search_history.article_ids_array).to eq([ 1, 2, 3 ])
       end
     end
 
@@ -66,8 +66,8 @@ RSpec.describe TagSearchHistory, type: :model do
     let(:tag_search_history) { build(:tag_search_history) }
 
     it '配列がそのまま設定されること' do
-      tag_search_history.article_ids_array = [4, 5, 6]
-      expect(tag_search_history.article_ids).to eq([4, 5, 6])
+      tag_search_history.article_ids_array = [ 4, 5, 6 ]
+      expect(tag_search_history.article_ids).to eq([ 4, 5, 6 ])
     end
 
     it '空の配列が設定できること' do
