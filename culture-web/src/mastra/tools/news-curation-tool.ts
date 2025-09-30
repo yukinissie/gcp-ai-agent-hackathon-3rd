@@ -2,6 +2,7 @@ import { createTool } from '@mastra/core/tools'
 import { json, z } from 'zod'
 import { determineNewsTagsAgent } from '../agents/determine-tags-agent'
 import { apiClient } from '../../lib/apiClient'
+import { decideNewsAgent } from '../agents/decide-news-agent'
 
 export const newsCurationTool = createTool({
   id: 'news-curation',
@@ -240,12 +241,56 @@ async function saveNewsFetchHistory(
   }
 }
 
+async function getDecideNews(
+  news: {
+    id: string
+    title: string
+    url: string
+    source: string
+    publishedAt: Date
+    tags: string[]
+  }[],
+) {
+  try {
+    const result = await decideNewsAgent.generateVNext(
+      [
+        {
+          role: 'user',
+          content: `You are an intelligent news selection agent that decides which news articles to present to users based on their attributes and preferences.
+
+          News Articles: ${JSON.stringify(news, null, 2)}
+
+					Please strictly follow the JSON Schema below and return **JSON only**. No explanatory text before or after.
+					Schema:
+						- [{"id": "article_id", "title": "article_title", "url": "article_url", "source": "article_source", "publishedAt": "2023-01-01T00:00:00Z", "tags": ["tag1", "tag2"]}, ...]
+            - [] if no relevant tags can be determined.
+
+          Example:
+            [{"id": "1", "title": "Article 1", "url": "http://example.com/article1", "source": "Source 1", "publishedAt": "2023-01-01T00:00:00Z", "tags": ["technology", "health"]}]
+          `,
+        },
+      ],
+      {
+        format: 'aisdk',
+      },
+    )
+
+    console.log(`✅ determineTags: Result - ${result.text}`)
+
+    return JSON.parse(result.text)
+  } catch (error) {
+    console.error('Error in determineTags:', error)
+    return []
+  }
+}
+
 const getInfoForCuration = async (userId: number) => {
   const userAttributes = await fetchUserAttributes(userId)
   const allTags = await fetchAllTags()
   const tags = await determineTags(userAttributes, allTags)
   const news = await fetchNewsByTags(tags)
-  await saveNewsFetchHistory(userId, tags, news)
+  const decideNews = await getDecideNews(news)
+  await saveNewsFetchHistory(userId, tags, decideNews)
   return {
     userAttributes,
     tags,
