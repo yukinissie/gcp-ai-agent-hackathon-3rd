@@ -275,11 +275,11 @@ async function getDecideNews(
       },
     )
 
-    console.log(`✅ determineTags: Result - ${result.text}`)
+    console.log(`✅ getDecideNews: Result - ${result.text}`)
 
     return JSON.parse(result.text)
   } catch (error) {
-    console.error('Error in determineTags:', error)
+    console.error('Error in getDecideNews:', error)
     return []
   }
 }
