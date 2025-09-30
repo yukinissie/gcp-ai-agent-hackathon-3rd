@@ -16,8 +16,8 @@ interface HomeClientProps {
 }
 
 export function HomeClient(props: HomeClientProps) {
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(window.innerWidth > 768)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -29,6 +29,14 @@ export function HomeClient(props: HomeClientProps) {
 
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  useEffect(() => {
+    if (!isMobile) {
+      setIsChatOpen(true)
+    } else {
+      setIsChatOpen(false)
+    }
+  }, [isMobile])
 
   const handleCloseChat = () => {
     setIsChatOpen(false)
