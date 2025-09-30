@@ -1,7 +1,7 @@
 import { Heading, Text, Flex, Box } from '@radix-ui/themes'
 import { ArticleCard } from './ArticleCard'
 import { articleListStyles } from '../_styles/articleList.styles'
-import type { Article } from '../../types'
+import type { Article } from '../../../types'
 
 interface ArticleListProps {
   articles: Article[]
