@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/apiClient'
-import type { Article } from '../../types'
+import type { Article } from '../../../types'
 
 export async function fetchArticles(): Promise<Article[]> {
   try {
