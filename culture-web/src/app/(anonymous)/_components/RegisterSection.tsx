@@ -23,7 +23,7 @@ export function RegisterSection() {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button>新規登録</Button>
+        <Button style={{ width: '100%' }}>新規登録</Button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
@@ -38,7 +38,12 @@ export function RegisterSection() {
                 <Text as="div" size="2" mb="1" weight="bold">
                   メールアドレス
                 </Text>
-                <TextField.Root name="email" placeholder="email@example.com" />
+                <TextField.Root
+                  name="email"
+                  placeholder="email@example.com"
+                  type="email"
+                  required
+                />
               </label>
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
@@ -48,6 +53,7 @@ export function RegisterSection() {
                   name="password"
                   placeholder="password"
                   type="password"
+                  required
                 />
               </label>
               <label>

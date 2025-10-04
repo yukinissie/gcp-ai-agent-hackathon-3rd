@@ -24,7 +24,7 @@ export function LoginSection() {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button>ログイン</Button>
+        <Button variant="surface" style={{ width: '100%'}}>ログイン</Button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
@@ -34,12 +34,17 @@ export function LoginSection() {
             自分だけのニュース体験を始めましょう！
           </Dialog.Description>
           <Form action={formAction}>
-            <Flex direction="column" gap="4">
+            <Flex direction="column" gap="4" as="div">
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
                   メールアドレス
                 </Text>
-                <TextField.Root name="email" placeholder="email@example.com" />
+                <TextField.Root
+                  name="email"
+                  placeholder="email@example.com"
+                  type="email"
+                  required
+                />
               </label>
               <label>
                 <Text as="div" size="2" mb="1" weight="bold">
@@ -49,21 +54,23 @@ export function LoginSection() {
                   name="password"
                   placeholder="password"
                   type="password"
+                  required
                 />
               </label>
-            </Flex>
-            {state.errorMessage && (
-              <Text color="red" size="2">
-                {state.errorMessage}
-              </Text>
-            )}
-            <Flex gap="3" justify="end">
-              <Dialog.Close>
-                <Button variant="soft" color="gray">
-                  キャンセル
-                </Button>
-              </Dialog.Close>
-              <SubmitButton />
+              {state.errorMessage && (
+                <Text color="red" size="2">
+                  {state.errorMessage}
+                </Text>
+              )}
+
+              <Flex gap="3" justify="end" as="div">
+                <Dialog.Close>
+                  <Button variant="soft" color="gray">
+                    キャンセル
+                  </Button>
+                </Dialog.Close>
+                <SubmitButton />
+              </Flex>
             </Flex>
           </Form>
         </Flex>

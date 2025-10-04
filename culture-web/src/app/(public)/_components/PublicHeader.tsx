@@ -32,12 +32,18 @@ export function PublicHeader() {
               <Link href="/terms" className={styles.navLink}>
                 利用規約
               </Link>
+              <Link href="/signup" className={styles.navLink}>
+                新規登録
+              </Link>
             </nav>
 
             {/* Mobile Navigation - Compact */}
             <nav className={styles.mobileNav}>
               <Link href="/about" className={styles.navLink}>
                 About
+              </Link>
+              <Link href="/signup" className={styles.navLink}>
+                新規登録
               </Link>
             </nav>
 
