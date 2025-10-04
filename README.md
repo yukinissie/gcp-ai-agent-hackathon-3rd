@@ -191,22 +191,23 @@ dip rails db:reset
 
 | 環境 | URL | リソース | 自動デプロイ |
 |------|-----|---------|------------|
-| **Production** | https://culture-web-prod-xxx.run.app | 4 CPU / 4Gi Memory | main ブランチ |
-| **Staging** | https://culture-web-staging-xxx.run.app | 2 CPU / 2Gi Memory | 手動デプロイ |
+| **Staging** | https://culture-web-staging-xxx.run.app | 2 CPU / 2Gi Memory | main ブランチ |
+| **Production** | https://culture-web-prod-xxx.run.app | 4 CPU / 4Gi Memory | 手動実行 |
 
 ### デプロイ手順
 
-#### 1. GitHub Actions による自動デプロイ
+#### 1. Staging環境への自動デプロイ
 
 ```bash
-# main ブランチへのマージでプロダクション自動デプロイ
+# main ブランチへのマージで Staging 環境へ自動デプロイ
 git push origin main
 ```
 
-#### 2. 手動デプロイ（Staging）
+#### 2. Production環境への手動デプロイ
 
 ```bash
-# GitHub Actions の "Deploy Culture Web (Staging)" ワークフローを手動実行
+# GitHub Actions の "Deploy Culture Web (Production)" ワークフローを手動実行
+# デプロイ時は自動的にリリースタグが作成されます
 ```
 
 #### 3. インフラ更新（Terraform）

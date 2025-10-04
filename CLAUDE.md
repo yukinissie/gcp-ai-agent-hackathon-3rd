@@ -362,25 +362,29 @@ const response = await agent.generate(userMessage);
 
 | Environment | Service | URL Pattern | Resources | Auto Deploy |
 |------------|---------|-------------|-----------|-------------|
-| **Production** | culture-web-prod | `*.run.app` | 4 CPU / 4Gi | main branch push |
-| **Production** | culture-rails-prod | `*.run.app` | 4 CPU / 4Gi | main branch push |
-| **Staging** | culture-web-staging | `*.run.app` | 2 CPU / 2Gi | Manual trigger |
-| **Staging** | culture-rails-staging | `*.run.app` | 2 CPU / 2Gi | Manual trigger |
+| **Staging** | culture-web-staging | `*.run.app` | 2 CPU / 2Gi | main branch push |
+| **Staging** | culture-rails-staging | `*.run.app` | 2 CPU / 2Gi | main branch push |
+| **Production** | culture-web-prod | `*.run.app` | 4 CPU / 4Gi | Manual trigger |
+| **Production** | culture-rails-prod | `*.run.app` | 4 CPU / 4Gi | Manual trigger |
 
 ### CI/CD Pipeline (GitHub Actions)
 
 **Workflow Files**:
-- `deploy-culture-web-production.yml` - Frontend production deployment
-- `deploy-culture-web-staging.yml` - Frontend staging deployment
-- `deploy-culture-rails-production.yml` - Backend production deployment
-- `deploy-culture-rails-staging.yml` - Backend staging deployment
+- `deploy-culture-web-production.yml` - Frontend production deployment (manual)
+- `deploy-culture-web-staging.yml` - Frontend staging deployment (auto on main push)
+- `deploy-culture-rails-production.yml` - Backend production deployment (manual)
+- `deploy-culture-rails-staging.yml` - Backend staging deployment (auto on main push)
 
 **Deployment Process**:
 1. Multi-stage Docker image build
 2. Push to Google Artifact Registry
 3. Deploy to Cloud Run with environment variables from Secret Manager
-4. Automatic release tagging
+4. Automatic release tagging (production only)
 5. Output deployment URL
+
+**Deployment Flow**:
+- **Staging**: Automatically deployed when changes are pushed to `main` branch
+- **Production**: Manually triggered via GitHub Actions workflow dispatch (includes automatic release tagging)
 
 ### Container Strategy
 
