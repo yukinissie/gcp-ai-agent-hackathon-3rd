@@ -358,6 +358,12 @@ const response = await agent.generate(userMessage);
 
 ## 🚀 Deployment Architecture
 
+### Infrastructure Diagram
+
+```
+TODO: Add infrastructure diagram
+```
+
 ### Environments
 
 | Environment | Service | URL Pattern | Resources | Auto Deploy |
