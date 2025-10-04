@@ -1,6 +1,19 @@
 import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 
 const apiBaseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000'
+
+async function handleResponse(response: Response) {
+  if (response.status === 401) {
+    redirect('/api/auth/signin')
+  }
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`)
+  }
+
+  return response.json()
+}
 
 export const apiClient = {
   async get(endpoint: string, options: RequestInit = {}) {
@@ -24,7 +37,7 @@ export const apiClient = {
       throw new Error(`API Error: ${response.status} ${response.statusText}`)
     }
 
-    return response.json()
+    return handleResponse(response)
   },
 
   async post(endpoint: string, payload: unknown, options: RequestInit = {}) {
@@ -49,7 +62,7 @@ export const apiClient = {
       throw new Error(`API Error: ${response.status} ${response.statusText}`)
     }
 
-    return response.json()
+    return handleResponse(response)
   },
 
   async getHeaders(
