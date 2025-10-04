@@ -1,6 +1,6 @@
 # CLAUDE.md - Project Context for AI Assistants
 
-This document provides comprehensive context for AI assistants working on the Culture project - an AI-driven news curation platform for GCP AI Agent Hackathon.
+This document provides comprehensive context for AI assistants working on the Culture project - an AI-driven news curation platform for Google Cloud AI Agent Hackathon.
 
 ## 🎯 Project Overview
 
