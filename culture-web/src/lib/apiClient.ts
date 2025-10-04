@@ -5,7 +5,7 @@ const apiBaseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000'
 
 async function handleResponse(response: Response) {
   if (response.status === 401) {
-    redirect('/api/auth/signin')
+    redirect('/signin')
   }
 
   if (!response.ok) {

@@ -24,7 +24,9 @@ export function LoginSection() {
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button variant="surface" style={{ width: '100%'}}>ログイン</Button>
+        <Button variant="surface" style={{ width: '100%' }}>
+          ログイン
+        </Button>
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth="450px">
