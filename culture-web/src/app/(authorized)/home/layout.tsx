@@ -45,23 +45,14 @@ export default function Layout(props: Props) {
   return (
     <Flex style={homeStyles.mainContainer}>
       <Box
-        style={{
-          position: 'fixed',
-          top: 12,
-          left: 12,
-          zIndex: 1100,
-        }}
-      >
-        <ThemeToggle />
-      </Box>
-      <Box
         style={mainContentStyle}
         data-main-content
         tabIndex={isMobile ? -1 : 0}
       >
-        <Box style={homeStyles.logoutBox}>
+        <Flex justify="between" align="center" p="4">
+          <ThemeToggle />
           <LogoutSection />
-        </Box>
+        </Flex>
         <Container size="4">
           <Box py="6">{props.articles}</Box>
         </Container>

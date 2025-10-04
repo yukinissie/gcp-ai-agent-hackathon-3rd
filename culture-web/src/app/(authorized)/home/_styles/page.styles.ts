@@ -24,11 +24,4 @@ export const homeStyles = {
     flexShrink: '1',
     flexBasis: '0%',
   }),
-  // logout box position inside mainContent to avoid overlap with chat
-  logoutBox: {
-    position: 'absolute' as const,
-    top: 16,
-    right: 16,
-    zIndex: 40,
-  },
 }
