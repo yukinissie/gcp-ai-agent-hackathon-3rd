@@ -360,9 +360,7 @@ const response = await agent.generate(userMessage);
 
 ### Infrastructure Diagram
 
-```
-TODO: Add infrastructure diagram
-```
+<img width="6212" height="3068" alt="image" src="https://github.com/user-attachments/assets/dda1bd63-85c5-48e2-bbad-81ee5bfcff9b" />
 
 ### Environments
 
