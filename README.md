@@ -346,13 +346,9 @@ gcloud auth login
 gcloud auth application-default login
 ```
 
-## 📝 ライセンス
-
-このプロジェクトは MIT ライセンスの下で公開されています。
-
 ## 👥 開発チーム
 
-GCP AI Agent Hackathon 第3回 参加チーム
+第3回 GCP AI Agent Hackathon 参加チーム「カルチャーズ」
 
 ---
 
