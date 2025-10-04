@@ -76,7 +76,7 @@ This document provides comprehensive context for AI assistants working on the Cu
 
 #### Infrastructure & DevOps
 
-- **Cloud**: Google Cloud Platform (Asia-Northeast1)
+- **Cloud**: Google Cloud (Asia-Northeast1)
 - **Containers**: Cloud Run (serverless)
 - **Registry**: Google Artifact Registry
 - **Secrets**: Secret Manager for credentials
