@@ -189,9 +189,8 @@ dip rails db:reset
 
 ### インフラ構成図
 
-```
-TODO: インフラ構成図を追加
-```
+<img width="6212" height="3068" alt="image" src="https://github.com/user-attachments/assets/5b739988-bc81-41a7-950c-a4b08ddc00a7" />
+
 
 ### 環境構成
 
