@@ -18,8 +18,10 @@ export default function TopPage() {
         align="center"
         style={{
           minHeight: 'calc(100vh - 120px)',
-          width: '350px',
+          width: '100%',
+          maxWidth: '350px',
           margin: '0 auto',
+          padding: '0 16px',
         }}
         direction="column"
         gap="6"
@@ -34,7 +36,7 @@ export default function TopPage() {
         <Flex
           gap="2"
           direction="column"
-          style={{ width: 'calc(100vw - 32px)' }}
+          style={{ width: '100%', maxWidth: 'calc(100vw - 32px)' }}
         >
           <RegisterSection />
           <LoginSection />
