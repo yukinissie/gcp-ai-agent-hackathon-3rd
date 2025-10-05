@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Theme, ThemePanel } from '@radix-ui/themes'
+import { Flex, Theme, ThemePanel } from '@radix-ui/themes'
 import { ThemeProvider } from 'next-themes'
 import { SessionProvider } from 'next-auth/react'
 import { Footer } from './_components/Footer'
@@ -37,11 +37,7 @@ export default function RootLayout({
         <SessionProvider>
           <ThemeProvider attribute="class">
             <Theme accentColor="teal" grayColor="sage">
-              <div
-                style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-              >
-                {children}
-              </div>
+              <Flex direction="column">{children}</Flex>
               <Footer />
               {useThemePanel && <ThemePanel />}
             </Theme>
