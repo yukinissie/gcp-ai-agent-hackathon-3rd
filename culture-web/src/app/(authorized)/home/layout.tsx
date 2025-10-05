@@ -3,8 +3,8 @@ import { Box, Container, Flex } from '@radix-ui/themes'
 import { homeStyles } from './_styles/page.styles'
 import type React from 'react'
 import { ThemeToggle } from '@/app/_components/ThemeToggle'
-import { useState, useEffect } from 'react'
 import { LogoutSection } from './_components/Logout'
+import { ChatProvider, useChatContext } from './_contexts/ChatContext'
 
 type Props = {
   children: React.ReactNode
@@ -12,28 +12,8 @@ type Props = {
   chatSideBar: React.ReactNode
 }
 
-export default function Layout(props: Props) {
-  const [isChatOpen, setIsChatOpen] = useState(window.innerWidth > 768)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (!isMobile) {
-      setIsChatOpen(true)
-    } else {
-      setIsChatOpen(false)
-    }
-  }, [isMobile])
+function LayoutContent(props: Props) {
+  const { isChatOpen, isMobile } = useChatContext()
 
   const mainContentStyle =
     isMobile && isChatOpen
@@ -42,6 +22,7 @@ export default function Layout(props: Props) {
           display: 'none',
         }
       : homeStyles.getMainContent(isChatOpen)
+
   return (
     <Flex style={homeStyles.mainContainer}>
       <Box
@@ -59,5 +40,13 @@ export default function Layout(props: Props) {
       </Box>
       {props.chatSideBar}
     </Flex>
+  )
+}
+
+export default function Layout(props: Props) {
+  return (
+    <ChatProvider>
+      <LayoutContent {...props} />
+    </ChatProvider>
   )
 }
