@@ -12,7 +12,7 @@ type ChatContextType = {
 const ChatContext = createContext<ChatContextType | undefined>(undefined)
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
-  const [isChatOpen, setIsChatOpen] = useState(true)
+  const [isChatOpen, setIsChatOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -31,10 +31,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // モバイル状態が変わったときの自動調整
-    if (!isMobile) {
-      setIsChatOpen(true)
-    } else {
+    if (isMobile) {
       setIsChatOpen(false)
+    } else {
+      setIsChatOpen(true)
     }
   }, [isMobile])
 
