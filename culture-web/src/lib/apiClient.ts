@@ -9,7 +9,7 @@ async function handleResponse(response: Response) {
   }
 
   if (!response.ok) {
-    throw new Error(`API Error: ${response.status}`)
+    throw new Error(`API Error: ${response.status} ${response.statusText}`)
   }
 
   return response.json()
@@ -33,10 +33,6 @@ export const apiClient = {
       ...options,
     })
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`)
-    }
-
     return handleResponse(response)
   },
 
@@ -57,10 +53,6 @@ export const apiClient = {
       body: payload ? JSON.stringify(payload) : undefined,
       ...options,
     })
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`)
-    }
 
     return handleResponse(response)
   },
