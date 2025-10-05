@@ -21,21 +21,23 @@ export function ChatSideBarWrapper(props: Props) {
     setIsChatOpen(true)
   }
 
-  const chatSidebarStyle = isMobile
-    ? {
-        ...chatSideBarWrapperStyles.chatSidebar,
-        width: '100vw',
-        left: 0,
-      }
-    : chatSideBarWrapperStyles.chatSidebar
+  const chatSidebarStyle = {
+    ...chatSideBarWrapperStyles.chatSidebar,
+    ...(isMobile && chatSideBarWrapperStyles.chatSidebarMobile),
+    ...(isMobile
+      ? isChatOpen
+        ? chatSideBarWrapperStyles.chatSidebarMobileOpen
+        : chatSideBarWrapperStyles.chatSidebarMobileClosed
+      : isChatOpen
+        ? chatSideBarWrapperStyles.chatSidebarOpen
+        : chatSideBarWrapperStyles.chatSidebarClosed),
+  }
 
   return (
     <>
-      {isChatOpen && (
-        <Box style={chatSidebarStyle}>
-          <ChatSidebar onClose={handleCloseChat} userId={props.userId} />
-        </Box>
-      )}
+      <Box style={chatSidebarStyle}>
+        <ChatSidebar onClose={handleCloseChat} userId={props.userId} />
+      </Box>
 
       {/* チャット再開ボタン */}
       {!isChatOpen && (

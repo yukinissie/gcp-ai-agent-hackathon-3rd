@@ -2,16 +2,11 @@ export const homeStyles = {
   mainContainer: {
     height: '100vh',
   },
-  // base/main content (no dynamic marginRight here)
   mainContent: {
     flex: 1,
     overflow: 'auto' as const,
     transition: 'margin-right 0.3s ease',
-  },
-  // helper to compute mainContent when chat is open/closed
-  getMainContent: (isChatOpen: boolean) => ({
-    flex: '1',
-    marginRight: isChatOpen ? '400px' : '0px',
+    marginRight: '0',
     overflowX: 'auto' as const,
     overflowY: 'auto' as const,
     transitionProperty: 'margin-right',
@@ -23,5 +18,5 @@ export const homeStyles = {
     flexGrow: '1',
     flexShrink: '1',
     flexBasis: '0%',
-  }),
+  },
 }

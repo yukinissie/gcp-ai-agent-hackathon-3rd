@@ -1,5 +1,5 @@
 'use client'
-import { Box, Container, Flex } from '@radix-ui/themes'
+import { Box, Container, Flex, Grid } from '@radix-ui/themes'
 import { homeStyles } from './_styles/page.styles'
 import type React from 'react'
 import { ThemeToggle } from '@/app/_components/ThemeToggle'
@@ -15,18 +15,13 @@ type Props = {
 function LayoutContent(props: Props) {
   const { isChatOpen, isMobile } = useChatContext()
 
-  const mainContentStyle =
-    isMobile && isChatOpen
-      ? {
-          ...homeStyles.getMainContent(isChatOpen),
-          display: 'none',
-        }
-      : homeStyles.getMainContent(isChatOpen)
-
   return (
-    <Flex style={homeStyles.mainContainer}>
+    <Grid
+      columns={isMobile || !isChatOpen ? '1' : '1fr 400px'}
+      style={homeStyles.mainContainer}
+    >
       <Box
-        style={mainContentStyle}
+        style={homeStyles.mainContent}
         data-main-content
         tabIndex={isMobile ? -1 : 0}
       >
@@ -41,7 +36,7 @@ function LayoutContent(props: Props) {
         </Container>
       </Box>
       {props.chatSideBar}
-    </Flex>
+    </Grid>
   )
 }
 

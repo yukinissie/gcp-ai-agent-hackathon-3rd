@@ -5,8 +5,34 @@ export const chatSideBarWrapperStyles = {
     top: 0,
     height: '100vh',
     width: '400px',
-    transition: 'transform 0.3s ease',
+    transition: 'transform 0.3s ease, opacity 0.3s ease',
     zIndex: 1000,
+    backgroundColor: 'var(--color-background)',
+  },
+  chatSidebarOpen: {
+    transform: 'translateX(0)',
+    opacity: 1,
+  },
+  chatSidebarClosed: {
+    transform: 'translateX(100%)',
+    opacity: 0,
+    pointerEvents: 'none' as const,
+  },
+  chatSidebarMobile: {
+    width: '100vw',
+    left: 0,
+    right: 'auto' as const,
+    top: 'auto' as const,
+    bottom: 0,
+  },
+  chatSidebarMobileOpen: {
+    transform: 'translateY(0)',
+    opacity: 1,
+  },
+  chatSidebarMobileClosed: {
+    transform: 'translateY(100%)',
+    opacity: 0,
+    pointerEvents: 'none' as const,
   },
   reopenChatButton: {
     position: 'fixed' as const,

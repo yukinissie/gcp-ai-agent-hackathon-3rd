@@ -5,7 +5,6 @@ export const chatSidebarStyles = {
     flexDirection: 'column' as const,
     backgroundColor: 'var(--gray-1)',
     borderLeft: '1px solid var(--gray-6)',
-    width: '400px',
     minWidth: '350px',
   },
   header: {
