@@ -35,7 +35,7 @@
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                    Infrastructure Layer                     │
-│        Google Cloud Run + Artifact Registry (Google Cloud)           │
+│        Google Cloud Run + Artifact Registry (Google Cloud)  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
