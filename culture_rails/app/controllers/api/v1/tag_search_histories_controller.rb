@@ -42,7 +42,7 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
         author: article.author,
         content: article.content,
         published_at: article.published_at,
-        tags: article.tags.pluck(:name)
+        tags: article.tags.map { |tag| { id: tag.id, name: tag.name, category: tag.category } }
       }
     end
 
