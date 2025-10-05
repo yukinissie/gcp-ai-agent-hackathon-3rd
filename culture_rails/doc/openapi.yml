@@ -1604,9 +1604,20 @@ paths:
                             tags:
                               type: array
                               items:
-                                type: string
-                              example: ["AI", "startup"]
-                              description: タグ名の配列
+                                type: object
+                                additionalProperties: false
+                                properties:
+                                  id:
+                                    type: integer
+                                    example: 1
+                                  name:
+                                    type: string
+                                    example: "AI"
+                                  category:
+                                    type: string
+                                    example: "tech"
+                                required: [id, name, category]
+                              description: タグID、タグ名、カテゴリのオブジェクト配列
                           required: [id, title, summary, author, content, published_at, tags]
                     required: [articles]
                 required: [success, data]
