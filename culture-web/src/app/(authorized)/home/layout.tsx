@@ -35,7 +35,9 @@ function LayoutContent(props: Props) {
           <LogoutSection />
         </Flex>
         <Container size="4">
-          <Box py="6">{props.articles}</Box>
+          <Box py="6" px="4">
+            {props.articles}
+          </Box>
         </Container>
       </Box>
       {props.chatSideBar}
