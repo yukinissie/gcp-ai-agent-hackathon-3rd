@@ -40,7 +40,7 @@ export const apiClient = {
     return handleResponse(response)
   },
 
-  async post(endpoint: string, payload: unknown, options: RequestInit = {}) {
+  async post(endpoint: string, payload?: unknown, options: RequestInit = {}) {
     const session = await auth()
     if (!session) {
       throw new Error('User is not authenticated')
@@ -54,7 +54,7 @@ export const apiClient = {
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(payload),
+      body: payload ? JSON.stringify(payload) : undefined,
       ...options,
     })
 
