@@ -12,6 +12,7 @@ export const chatSideBarWrapperStyles = {
   chatSidebarOpen: {
     transform: 'translateX(0)',
     opacity: 1,
+    pointerEvents: 'auto' as const,
   },
   chatSidebarClosed: {
     transform: 'translateX(100%)',
@@ -28,6 +29,7 @@ export const chatSideBarWrapperStyles = {
   chatSidebarMobileOpen: {
     transform: 'translateY(0)',
     opacity: 1,
+    pointerEvents: 'auto' as const,
   },
   chatSidebarMobileClosed: {
     transform: 'translateY(100%)',
