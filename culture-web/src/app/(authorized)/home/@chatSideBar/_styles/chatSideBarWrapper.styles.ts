@@ -22,9 +22,8 @@ export const chatSideBarWrapperStyles = {
     width: '100vw',
     left: 0,
     right: 'auto' as const,
-    top: 'env(safe-area-inset-top, 0)',
+    top: 'auto' as const,
     bottom: 0,
-    height: 'calc(100vh - env(safe-area-inset-top, 0))',
   },
   chatSidebarMobileOpen: {
     transform: 'translateY(0)',
