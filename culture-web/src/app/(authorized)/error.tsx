@@ -14,6 +14,20 @@ interface ErrorPageProps {
 }
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
+  // Detailed error logging for debugging
+  console.error('=== Error Page Triggered ===')
+  console.error('Error name:', error.name)
+  console.error('Error message:', error.message)
+  console.error('Error digest:', error.digest)
+  console.error('Error stack:', error.stack)
+  console.error('Error cause:', error.cause)
+  console.error('Error object:', error)
+  console.error('Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    timestamp: new Date().toISOString(),
+  })
+  console.error('===========================')
+
   const [countdown, setCountdown] = useState(5)
   const isUnauthorized = error.name === 'UnauthorizedError'
 
@@ -136,6 +150,35 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
               >
                 {error.message}
               </Text>
+            )}
+            {error.digest && (
+              <Text
+                size="2"
+                color="gray"
+                align="center"
+                style={{ opacity: 0.5, fontFamily: 'monospace' }}
+              >
+                Digest: {error.digest}
+              </Text>
+            )}
+            {error.stack && (
+              <Box
+                mt="4"
+                p="3"
+                style={{
+                  backgroundColor: 'var(--gray-3)',
+                  borderRadius: '8px',
+                  maxWidth: '600px',
+                  overflow: 'auto',
+                }}
+              >
+                <Text
+                  size="1"
+                  style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}
+                >
+                  {error.stack}
+                </Text>
+              </Box>
             )}
           </Flex>
 
