@@ -7,6 +7,10 @@ type Props = {
 
 export default async function Layout(props: Props) {
   const session = await auth()
-  if (!session) return <UnauthenticatedScreen />
+
+  if (!session || (session.expires && new Date(session.expires) < new Date())) {
+    return <UnauthenticatedScreen />
+  }
+
   return <div>{props.children}</div>
 }
