@@ -1,11 +1,18 @@
 import { auth } from '@/auth'
-import { redirect } from 'next/navigation'
 
 const apiBaseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000'
 
+export class UnauthorizedError extends Error {
+  constructor(message = 'Session expired. Please sign in again.') {
+    super(message)
+    this.name = 'UnauthorizedError'
+  }
+}
+
 async function handleResponse(response: Response) {
   if (response.status === 401) {
-    redirect('/signin')
+    // Throw UnauthorizedError to be caught by error.tsx
+    throw new UnauthorizedError()
   }
 
   if (!response.ok) {

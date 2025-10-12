@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/apiClient'
 import type { Article } from '../../../types'
+import { apiClient, UnauthorizedError } from '@/lib/apiClient'
 
 export async function fetchTagSearchHistoryArticles(): Promise<Article[]> {
   try {
@@ -11,6 +11,10 @@ export async function fetchTagSearchHistoryArticles(): Promise<Article[]> {
 
     return data.data.articles
   } catch (error) {
+    // UnauthorizedError should be re-thrown to be caught by error.tsx
+    if (error instanceof UnauthorizedError) {
+      throw error
+    }
     console.error('タグ検索履歴記事一覧の取得に失敗しました:', error)
     return []
   }
