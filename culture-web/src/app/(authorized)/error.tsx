@@ -77,7 +77,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
                 再度ログインしてください。
               </Text>
               <Text size="3" color="amber" weight="bold" mt="2">
-                {countdown}秒後にログインページへ 自動的にリダイレクトします...
+                {countdown}秒後にログインページへ自動的にリダイレクトします...
               </Text>
             </Flex>
 
