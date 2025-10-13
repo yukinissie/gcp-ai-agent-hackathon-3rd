@@ -1558,10 +1558,11 @@ paths:
       description: |
         現在のユーザーの最新の検索履歴から記事一覧を取得します。
         保存されているarticle_idsに基づいて記事データを返します。
+        検索履歴が存在しない場合は空配列を返します。
       tags: [検索履歴]
       responses:
         "200":
-          description: 記事一覧取得成功
+          description: 記事一覧取得成功（検索履歴がない場合も空配列で200を返す）
           content:
             application/json:
               schema:
@@ -1627,12 +1628,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthError"
-        "404":
-          description: 検索履歴が見つからない
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/NotFoundError"
 
 
 components:
