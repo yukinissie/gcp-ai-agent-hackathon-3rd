@@ -18,7 +18,6 @@ import {
   type ArticleRatingResponse,
 } from '../_drivers/article-rating'
 import type { ArticleDetail } from '../../../types'
-import { handleApiError } from '@/lib/errorHandler'
 
 interface ArticleDetailClientProps {
   article: ArticleDetail
@@ -66,8 +65,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
           setCurrentEvaluation(result.current_evaluation)
         }
       } catch (error) {
-        // UnauthorizedError の場合は自動的に /signin にリダイレクト
-        handleApiError(error)
+        console.error('評価の送信に失敗しました:', error)
       }
     })
   }
@@ -81,8 +79,7 @@ export function ArticleDetailClient({ article }: ArticleDetailClientProps) {
           setCurrentEvaluation(result.current_evaluation)
         }
       } catch (error) {
-        // UnauthorizedError の場合は自動的に /signin にリダイレクト
-        handleApiError(error)
+        console.error('評価の送信に失敗しました:', error)
       }
     })
   }

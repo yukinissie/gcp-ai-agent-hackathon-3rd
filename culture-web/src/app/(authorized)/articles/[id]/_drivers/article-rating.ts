@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { apiClient, UnauthorizedError } from '@/lib/apiClient'
+import { apiClient } from '@/lib/apiClient'
 
 export interface ArticleRatingResponse {
   current_evaluation: 'good' | 'bad' | 'none'
@@ -29,10 +29,6 @@ export async function rateArticle(
 
     return result
   } catch (error) {
-    // UnauthorizedError は自動的に /signin にリダイレクトされる
-    if (error instanceof UnauthorizedError) {
-      throw error
-    }
     console.error('[Server Action] 記事評価エラー:', error)
     return null
   }

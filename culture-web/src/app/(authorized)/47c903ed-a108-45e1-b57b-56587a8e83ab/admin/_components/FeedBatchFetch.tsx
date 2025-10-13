@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Button, Flex, Text, Box, Callout } from '@radix-ui/themes'
 import { InfoCircledIcon, CheckCircledIcon } from '@radix-ui/react-icons'
 import { batchFetchFeeds } from '../_actions/batchFetchFeeds'
-import { handleApiError } from '@/lib/errorHandler'
 
 export function FeedBatchFetch() {
   const [isLoading, setIsLoading] = useState(false)
@@ -25,15 +24,9 @@ export function FeedBatchFetch() {
       const data = await batchFetchFeeds()
       setResult(data)
     } catch (err) {
-      // UnauthorizedError の場合は自動的に /signin にリダイレクト
-      try {
-        handleApiError(err)
-      } catch {
-        // handleApiError がエラーを再スローした場合
-        setError(
-          err instanceof Error ? err.message : '不明なエラーが発生しました',
-        )
-      }
+      setError(
+        err instanceof Error ? err.message : '不明なエラーが発生しました',
+      )
     } finally {
       setIsLoading(false)
     }

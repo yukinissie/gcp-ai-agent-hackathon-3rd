@@ -1,6 +1,6 @@
 'use server'
 
-import { apiClient, UnauthorizedError } from '@/lib/apiClient'
+import { apiClient } from '@/lib/apiClient'
 
 interface BatchFetchResponse {
   message: string
@@ -20,10 +20,6 @@ export async function batchFetchFeeds() {
       activeFeedsCount: response.active_feeds_count,
     }
   } catch (error) {
-    // UnauthorizedError は自動的に /signin にリダイレクトされる
-    if (error instanceof UnauthorizedError) {
-      throw error
-    }
     console.error('Failed to batch fetch feeds:', error)
     throw new Error('フィード更新に失敗しました')
   }
