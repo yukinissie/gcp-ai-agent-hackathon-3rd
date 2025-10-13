@@ -26,15 +26,6 @@ export const chatSideBarWrapperStyles = {
     bottom: 0,
     height: 'calc(100vh - env(safe-area-inset-top, 0))',
   },
-  chatSidebarMobileOpen: {
-    transform: 'translateY(0)',
-    opacity: 1,
-  },
-  chatSidebarMobileClosed: {
-    transform: 'translateY(100%)',
-    opacity: 0,
-    pointerEvents: 'none' as const,
-  },
   reopenChatButton: {
     position: 'fixed' as const,
     bottom: '20px',

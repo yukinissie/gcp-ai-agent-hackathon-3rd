@@ -24,13 +24,9 @@ export function ChatSideBarWrapper(props: Props) {
   const chatSidebarStyle = {
     ...chatSideBarWrapperStyles.chatSidebar,
     ...(isMobile && chatSideBarWrapperStyles.chatSidebarMobile),
-    ...(isMobile
-      ? isChatOpen
-        ? chatSideBarWrapperStyles.chatSidebarMobileOpen
-        : chatSideBarWrapperStyles.chatSidebarMobileClosed
-      : isChatOpen
-        ? chatSideBarWrapperStyles.chatSidebarOpen
-        : chatSideBarWrapperStyles.chatSidebarClosed),
+    ...(isChatOpen
+      ? chatSideBarWrapperStyles.chatSidebarOpen
+      : chatSideBarWrapperStyles.chatSidebarClosed),
   }
 
   return (

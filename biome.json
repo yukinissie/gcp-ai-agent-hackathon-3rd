@@ -7,7 +7,13 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["culture-web/**", "!culture-web/node_modules", "!culture-web/.next", "!culture-web/dist", "!culture-web/build"]
+    "includes": [
+      "culture-web/**",
+      "!culture-web/node_modules",
+      "!culture-web/.next",
+      "!culture-web/dist",
+      "!culture-web/build"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -54,7 +60,7 @@
     "enabled": null,
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": "off"
       }
     }
   }
