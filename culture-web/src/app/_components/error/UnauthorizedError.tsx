@@ -4,6 +4,7 @@ import { LockClosedIcon } from '@radix-ui/react-icons'
 import { Button, Card, Flex, Text } from '@radix-ui/themes'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   error: string
@@ -11,9 +12,12 @@ type Props = {
 
 export function UnauthorizedError(props: Props) {
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
   const handleReLogin = async () => {
     setLoading(true)
-    await signOut({ redirectTo: '/signin' })
+    await signOut({ redirect: false })
+    router.push('/signin')
+    setLoading(false)
   }
 
   return (
