@@ -72,8 +72,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: {
     strategy: 'jwt',
-    // maxAge: 24 * 60 * 60, // 1 day (temporary fix for Rails 30-day token issue)
-    maxAge: 60, // 1 minute for test
+    maxAge: 24 * 60 * 60, // 1 day (temporary fix for Rails 30-day token issue)
   },
   callbacks: {
     jwt: async ({ token, user }) => {
