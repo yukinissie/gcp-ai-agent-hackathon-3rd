@@ -17,10 +17,11 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
 
     unless latest_history
       render json: {
-        success: false,
-        error: "not_found",
-        message: "検索履歴が見つかりません"
-      }, status: :not_found
+        success: true,
+        data: {
+          articles: []
+        }
+      }
       return
     end
 
