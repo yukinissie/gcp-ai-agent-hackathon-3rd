@@ -1,5 +1,5 @@
+import { apiClient } from '@/lib/apiClient'
 import type { Article } from '../../../types'
-import { apiClient, UnauthorizedError } from '@/lib/apiClient'
 
 export async function fetchArticles(): Promise<Article[]> {
   try {
@@ -8,10 +8,6 @@ export async function fetchArticles(): Promise<Article[]> {
 
     return data.articles
   } catch (error) {
-    // UnauthorizedError should be re-thrown to be caught by error.tsx
-    if (error instanceof UnauthorizedError) {
-      throw error
-    }
     console.error('記事の取得に失敗しました:', error)
     return []
   }
