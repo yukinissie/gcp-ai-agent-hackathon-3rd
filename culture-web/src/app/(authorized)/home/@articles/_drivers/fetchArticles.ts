@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/apiClient'
 import type { Article } from '../../../types'
-import { UnauthorizedError } from '@/components/error/UnauthorizedError'
+import { UnauthorizedError } from '@/app/_components/error/UnauthorizedError'
 
 export enum FetchArticlesResultType {
   Success = 'success',

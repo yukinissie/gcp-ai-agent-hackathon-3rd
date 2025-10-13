@@ -9,8 +9,8 @@ import {
   fetchTagSearchHistoryArticles,
   FetchTagSearchHistoryArticlesResultType,
 } from './_drivers/fetchTagSearchHistoryArticles'
-import { GeneralError } from '@/components/error/GeneralError'
-import { UnauthorizedError } from '@/components/error/UnauthorizedError'
+import { GeneralError } from '@/app/_components/error/GeneralError'
+import { UnauthorizedError } from '@/app/_components/error/UnauthorizedError'
 
 export default async function ArticlesPage() {
   const articlesResult = await fetchArticles()
