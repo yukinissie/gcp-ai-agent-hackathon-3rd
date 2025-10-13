@@ -5,24 +5,35 @@ import {
   fetchArticles,
   FetchArticlesResultType,
 } from './_drivers/fetchArticles'
-import { fetchTagSearchHistoryArticles } from './_drivers/fetchTagSearchHistoryArticles'
+import {
+  fetchTagSearchHistoryArticles,
+  FetchTagSearchHistoryArticlesResultType,
+} from './_drivers/fetchTagSearchHistoryArticles'
 import { GeneralError } from '@/components/error/GeneralError'
 import { UnauthorizedError } from '@/components/error/UnauthorizedError'
 
 export default async function ArticlesPage() {
-  const result = await fetchArticles()
-
-  if (result.type === FetchArticlesResultType.Unauthorized) {
-    return <UnauthorizedError error={result.error} />
+  const articlesResult = await fetchArticles()
+  switch (articlesResult.type) {
+    case FetchArticlesResultType.Unauthorized:
+      return <UnauthorizedError error={articlesResult.error} />
+    case FetchArticlesResultType.Error:
+      return <GeneralError error={articlesResult.error} />
   }
 
-  if (result.type === FetchArticlesResultType.Error) {
-    return <GeneralError error={result.error} />
+  const tagSearchHistoryResult = await fetchTagSearchHistoryArticles()
+  switch (tagSearchHistoryResult.type) {
+    case FetchTagSearchHistoryArticlesResultType.Unauthorized:
+      return <UnauthorizedError error={tagSearchHistoryResult.error} />
+    case FetchTagSearchHistoryArticlesResultType.Error:
+      return <GeneralError error={tagSearchHistoryResult.error} />
   }
 
-  const articles = result.articles
+  const articles =
+    tagSearchHistoryResult.articles.length > 0
+      ? tagSearchHistoryResult.articles
+      : articlesResult.articles
 
-  const tagSearchHistoryArticles = await fetchTagSearchHistoryArticles()
   return (
     <Box>
       <Flex direction="column" gap="6">
@@ -33,13 +44,7 @@ export default async function ArticlesPage() {
         </Flex>
 
         <Flex direction="column" gap="3" width="100%">
-          <ArticleList
-            articles={
-              tagSearchHistoryArticles.length > 0
-                ? tagSearchHistoryArticles
-                : articles
-            }
-          />
+          <ArticleList articles={articles} />
         </Flex>
       </Flex>
     </Box>
