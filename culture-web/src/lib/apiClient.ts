@@ -2,16 +2,9 @@ import { auth } from '@/auth'
 
 const apiBaseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000'
 
-class UnauthorizedError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'UnauthorizedError'
-  }
-}
-
 async function handleResponse(response: Response) {
   if (response.status === 401) {
-    throw new UnauthorizedError('401 Unauthorized')
+    throw new Error('401 Unauthorized')
   }
 
   if (!response.ok) {

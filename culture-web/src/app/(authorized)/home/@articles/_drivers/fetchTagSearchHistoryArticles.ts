@@ -1,6 +1,5 @@
 import { apiClient } from '@/lib/apiClient'
 import type { Article } from '../../../types'
-import { UnauthorizedError } from '@/components/error/UnauthorizedError'
 
 export enum FetchTagSearchHistoryArticlesResultType {
   Success = 'success',
@@ -34,7 +33,7 @@ export async function fetchTagSearchHistoryArticles(): Promise<FetchTagSearchHis
     }
   } catch (error) {
     console.error('タグ検索履歴記事一覧の取得に失敗しました:', error)
-    if (error instanceof UnauthorizedError) {
+    if (error instanceof Error && error.message.includes('401')) {
       return {
         type: FetchTagSearchHistoryArticlesResultType.Unauthorized,
         error: 'Unauthorized access',
