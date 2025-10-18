@@ -10,6 +10,7 @@ class Api::V1::ArticlesController < ApplicationController
     @articles = build_articles_scope
                   .includes(:tags)
                   .recent
+                  .limit(50)
   end
 
   def show
