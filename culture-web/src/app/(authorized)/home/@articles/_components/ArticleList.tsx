@@ -1,6 +1,5 @@
-import { Heading, Text, Flex, Box } from '@radix-ui/themes'
+import { Text, Flex } from '@radix-ui/themes'
 import { ArticleCard } from './ArticleCard'
-import { articleListStyles } from '../_styles/articleList.styles'
 import type { Article } from '../../../types'
 
 interface ArticleListProps {
@@ -14,7 +13,9 @@ export function ArticleList(props: ArticleListProps) {
         direction="column"
         align="center"
         justify="center"
-        style={articleListStyles.emptyContainer}
+        style={{
+          minHeight: '400px',
+        }}
         gap="3"
       >
         <Text size="4" weight="medium">
@@ -27,21 +28,7 @@ export function ArticleList(props: ArticleListProps) {
     )
   }
 
-  return (
-    <Box>
-      <Flex direction="column" gap="6">
-        <Flex align="center" justify="between">
-          <Heading size="6" weight="bold">
-            記事一覧
-          </Heading>
-        </Flex>
-
-        <Flex direction="column" gap="3" width="100%">
-          {props.articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </Flex>
-      </Flex>
-    </Box>
-  )
+  return props.articles.map((article) => (
+    <ArticleCard key={article.id} article={article} />
+  ))
 }

@@ -1,17 +1,7 @@
-import { ArticleList } from './_components/ArticleList'
-import { fetchArticles } from './_drivers/fetchArticles'
-import { fetchTagSearchHistoryArticles } from './_drivers/fetchTagSearchHistoryArticles'
+import { ArticleListPage } from './_components/ArticleListPage'
 
-export default async function ArticlesPage() {
-  const articles = await fetchArticles()
-  const tagSearchHistoryArticles = await fetchTagSearchHistoryArticles()
-  return (
-    <ArticleList
-      articles={
-        tagSearchHistoryArticles.length > 0
-          ? tagSearchHistoryArticles
-          : articles
-      }
-    />
-  )
+export const dynamic = 'force-dynamic'
+
+export default function Page() {
+  return <ArticleListPage />
 }

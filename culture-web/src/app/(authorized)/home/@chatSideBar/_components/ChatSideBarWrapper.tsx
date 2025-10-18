@@ -1,37 +1,17 @@
 'use client'
 
 import { Box } from '@radix-ui/themes'
-import { useState, useEffect } from 'react'
 import { ChatSidebar } from './ChatSidebar'
 import { chatSideBarWrapperStyles } from '../_styles/chatSideBarWrapper.styles'
 import Image from 'next/image'
+import { useChatContext } from '../../_contexts/ChatContext'
 
 type Props = {
   userId: string
 }
 
 export function ChatSideBarWrapper(props: Props) {
-  const [isChatOpen, setIsChatOpen] = useState(window.innerWidth > 768)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (!isMobile) {
-      setIsChatOpen(true)
-    } else {
-      setIsChatOpen(false)
-    }
-  }, [isMobile])
+  const { isChatOpen, isMobile, setIsChatOpen } = useChatContext()
 
   const handleCloseChat = () => {
     setIsChatOpen(false)
@@ -41,21 +21,24 @@ export function ChatSideBarWrapper(props: Props) {
     setIsChatOpen(true)
   }
 
-  const chatSidebarStyle = isMobile
-    ? {
-        ...chatSideBarWrapperStyles.chatSidebar,
-        width: '100vw',
-        left: 0,
-      }
-    : chatSideBarWrapperStyles.chatSidebar
+  const chatSidebarStyle = {
+    ...chatSideBarWrapperStyles.chatSidebar,
+    ...(isMobile && chatSideBarWrapperStyles.chatSidebarMobile),
+    ...(isChatOpen
+      ? chatSideBarWrapperStyles.chatSidebarOpen
+      : chatSideBarWrapperStyles.chatSidebarClosed),
+  }
+
+  const handleWheel = (e: React.WheelEvent) => {
+    // Prevent scroll propagation to window
+    e.stopPropagation()
+  }
 
   return (
     <>
-      {isChatOpen && (
-        <Box style={chatSidebarStyle}>
-          <ChatSidebar onClose={handleCloseChat} userId={props.userId} />
-        </Box>
-      )}
+      <Box style={chatSidebarStyle} onWheel={handleWheel}>
+        <ChatSidebar onClose={handleCloseChat} userId={props.userId} />
+      </Box>
 
       {/* チャット再開ボタン */}
       {!isChatOpen && (
@@ -81,6 +64,7 @@ export function ChatSideBarWrapper(props: Props) {
               src="/culture.png"
               alt="Open chat"
               fill
+              sizes="60px"
               priority
               style={chatSideBarWrapperStyles.reopenImage}
             />

@@ -1,19 +1,11 @@
 export const homeStyles = {
   mainContainer: {
-    height: '100vh',
+    minHeight: '100vh',
   },
-  // base/main content (no dynamic marginRight here)
   mainContent: {
     flex: 1,
-    overflow: 'auto' as const,
     transition: 'margin-right 0.3s ease',
-  },
-  // helper to compute mainContent when chat is open/closed
-  getMainContent: (isChatOpen: boolean) => ({
-    flex: '1',
-    marginRight: isChatOpen ? '400px' : '0px',
-    overflowX: 'auto' as const,
-    overflowY: 'auto' as const,
+    marginRight: '0',
     transitionProperty: 'margin-right',
     transitionDuration: '0.3s',
     transitionTimingFunction: 'ease',
@@ -23,12 +15,5 @@ export const homeStyles = {
     flexGrow: '1',
     flexShrink: '1',
     flexBasis: '0%',
-  }),
-  // logout box position inside mainContent to avoid overlap with chat
-  logoutBox: {
-    position: 'absolute' as const,
-    top: 16,
-    right: 16,
-    zIndex: 40,
   },
 }

@@ -17,10 +17,11 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
 
     unless latest_history
       render json: {
-        success: false,
-        error: "not_found",
-        message: "検索履歴が見つかりません"
-      }, status: :not_found
+        success: true,
+        data: {
+          articles: []
+        }
+      }
       return
     end
 
@@ -42,7 +43,7 @@ class Api::V1::TagSearchHistoriesController < ApplicationController
         author: article.author,
         content: article.content,
         published_at: article.published_at,
-        tags: article.tags.pluck(:name)
+        tags: article.tags.map { |tag| { id: tag.id, name: tag.name, category: tag.category } }
       }
     end
 

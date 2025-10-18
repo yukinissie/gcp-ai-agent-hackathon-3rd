@@ -4,7 +4,7 @@ import { RegisterSection } from './_components/RegisterSection'
 import { ThemeToggle } from '../_components/ThemeToggle'
 import Image from 'next/image'
 
-export default function PocPage() {
+export default function TopPage() {
   return (
     <Box
       position="relative"
@@ -16,7 +16,13 @@ export default function PocPage() {
       <Flex
         justify="center"
         align="center"
-        style={{ minHeight: 'calc(100vh - 120px)' }}
+        style={{
+          minHeight: 'calc(100vh - 120px)',
+          width: '100%',
+          maxWidth: '350px',
+          margin: '0 auto',
+          padding: '0 16px',
+        }}
         direction="column"
         gap="6"
       >
@@ -27,9 +33,13 @@ export default function PocPage() {
             ここは始まりの村だよ！
           </Text>
         </Flex>
-        <Flex gap="2">
-          <LoginSection />
+        <Flex
+          gap="2"
+          direction="column"
+          style={{ width: '100%', maxWidth: 'calc(100vw - 32px)' }}
+        >
           <RegisterSection />
+          <LoginSection />
         </Flex>
       </Flex>
     </Box>

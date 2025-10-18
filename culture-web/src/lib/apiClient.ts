@@ -2,6 +2,18 @@ import { auth } from '@/auth'
 
 const apiBaseUrl = process.env.RAILS_API_HOST || 'http://localhost:3000'
 
+async function handleResponse(response: Response) {
+  if (response.status === 401) {
+    throw new Error('401 Unauthorized')
+  }
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status} ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
 export const apiClient = {
   async get(endpoint: string, options: RequestInit = {}) {
     const session = await auth()
@@ -20,14 +32,10 @@ export const apiClient = {
       ...options,
     })
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`)
-    }
-
-    return response.json()
+    return handleResponse(response)
   },
 
-  async post(endpoint: string, payload: unknown, options: RequestInit = {}) {
+  async post(endpoint: string, payload?: unknown, options: RequestInit = {}) {
     const session = await auth()
     if (!session) {
       throw new Error('User is not authenticated')
@@ -41,15 +49,11 @@ export const apiClient = {
     const response = await fetch(`${apiBaseUrl}${endpoint}`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(payload),
+      body: payload ? JSON.stringify(payload) : undefined,
       ...options,
     })
 
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`)
-    }
-
-    return response.json()
+    return handleResponse(response)
   },
 
   async getHeaders(

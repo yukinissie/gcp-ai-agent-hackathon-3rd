@@ -54,7 +54,7 @@
     "enabled": null,
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": "off"
       }
     }
   }

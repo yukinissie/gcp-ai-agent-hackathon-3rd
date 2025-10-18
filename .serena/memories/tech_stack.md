@@ -24,7 +24,7 @@
 
 ## インフラ & DevOps
 
-- **クラウド**: Google Cloud Platform（GCP）
+- **クラウド**: Google Cloud（GCP）
 - **コンテナ**: Cloud Run（serverless）
 - **レジストリ**: Google Artifact Registry
 - **IaC**: Terraform（モジュラー構造）

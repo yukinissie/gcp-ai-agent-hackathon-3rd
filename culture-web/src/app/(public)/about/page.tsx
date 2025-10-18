@@ -2,7 +2,6 @@ import {
   Box,
   Card,
   Container,
-  Flex,
   Grid,
   Heading,
   Separator,
@@ -41,13 +40,14 @@ export default function AboutPage() {
           🌟 Cultureとは
         </Heading>
         <Text as="div" size="3" mb="4">
-          Cultureは、AI Agent
-          があなたのためのニュースフィードを提供するパーソナライズドニュースメディアです。
-          GCP AI Agent
-          Hackathonで開発され、高度なAIエージェント技術を活用して、一人ひとりの興味や関心に合わせた文化的なニュースやコンテンツをお届けします。
+          Cultureは、第3回 AI Agent Hackathon with Google Cloudで開発された、
+          AI駆動型ニュースキュレーションプラットフォームです。
+          ユーザーの興味や好みに基づいてニュース記事をキュレーションし、
+          AIエージェントとの対話を通じて新しいコンテンツを発見できます。
         </Text>
         <Text as="div" size="3">
-          私たちのミッションは、AIの力を借りて文化の多様性を伝え、ユーザーが本当に知りたい情報に出会える環境を提供することです。
+          私たちのミッションは、GoogleのAI技術を活用して、
+          一人ひとりに最適化された情報体験を提供することです。
         </Text>
       </Box>
 
@@ -61,11 +61,12 @@ export default function AboutPage() {
           <Card>
             <Box p="4">
               <Heading size="4" mb="3">
-                🤖 パーソナライズAI
+                🤖 AI駆動のニュースキュレーション
               </Heading>
               <Text size="3">
-                高度なAI Agentがあなたの興味や好みを学習し、
-                あなただけのニュースフィードを自動生成します。
+                Googleの生成AI（Gemini 2.0
+                Flash）を活用した記事の要約・分類により、
+                効率的な情報収集を実現します。
               </Text>
             </Box>
           </Card>
@@ -73,11 +74,11 @@ export default function AboutPage() {
           <Card>
             <Box p="4">
               <Heading size="4" mb="3">
-                📰 カスタムニュースフィード
+                📰 パーソナライズされた体験
               </Heading>
               <Text size="3">
-                あなたの関心に基づいて、最新の文化ニュースや記事を AI
-                Agentが厳選してパーソナライズドフィードとしてお届けします。
+                ユーザーの評価履歴（Good/Bad）に基づくコンテンツ推薦で、
+                あなたの興味に合った記事を優先的に表示します。
               </Text>
             </Box>
           </Card>
@@ -85,11 +86,11 @@ export default function AboutPage() {
           <Card>
             <Box p="4">
               <Heading size="4" mb="3">
-                🔍 インテリジェント検索
+                🔍 タグベース検索
               </Heading>
               <Text size="3">
-                AI Agentが搭載されたスマート検索で、過去の閲覧履歴や
-                興味関心から関連性の高いニュースを素早く発見できます。
+                テクノロジー、アート、音楽、スポーツ、ビジネス、科学、ライフスタイルなど、
+                カテゴリ別に整理された記事を簡単に探索できます。
               </Text>
             </Box>
           </Card>
@@ -97,11 +98,11 @@ export default function AboutPage() {
           <Card>
             <Box p="4">
               <Heading size="4" mb="3">
-                💬 AI Agent チャット
+                💬 インタラクティブなチャット
               </Heading>
               <Text size="3">
-                AI Agentとの自然な対話を通じて、
-                ニュースの背景情報や関連トピックを深く理解できます。
+                AIエージェント（Mastra Framework）との対話を通じて、
+                興味のあるトピックを深く探索し、新しい発見につなげます。
               </Text>
             </Box>
           </Card>
@@ -121,16 +122,36 @@ export default function AboutPage() {
                 フロントエンド
               </Heading>
               <Text as="div" size="3" mb="2">
-                • Next.js 15.5 (React 19)
+                • Next.js 15.5 + React 19
               </Text>
               <Text as="div" size="3" mb="2">
-                • TypeScript
+                • TypeScript + Radix UI
               </Text>
               <Text as="div" size="3" mb="2">
-                • Radix UI
+                • App Router (Parallel Routes)
               </Text>
               <Text as="div" size="3">
-                • CSS Modules
+                • NextAuth v5 (Auth.js)
+              </Text>
+            </Box>
+          </Card>
+
+          <Card>
+            <Box p="4">
+              <Heading size="4" mb="3">
+                AI/LLM
+              </Heading>
+              <Text as="div" size="3" mb="2">
+                • Mastra Framework
+              </Text>
+              <Text as="div" size="3" mb="2">
+                • Google Gemini 2.0 Flash
+              </Text>
+              <Text as="div" size="3" mb="2">
+                • ニュースキュレーションエージェント
+              </Text>
+              <Text as="div" size="3">
+                • タグ判定エージェント
               </Text>
             </Box>
           </Card>
@@ -141,33 +162,37 @@ export default function AboutPage() {
                 バックエンド
               </Heading>
               <Text as="div" size="3" mb="2">
-                • Ruby on Rails 8.0
+                • Ruby on Rails 8.0 API
               </Text>
               <Text as="div" size="3" mb="2">
-                • PostgreSQL
+                • PostgreSQL 15+
               </Text>
               <Text as="div" size="3" mb="2">
-                • AI エージェント統合
+                • JWT認証 + RESTful API
               </Text>
               <Text as="div" size="3">
-                • RESTful API
+                • OpenAPI仕様書対応
               </Text>
             </Box>
           </Card>
-        </Grid>
 
-        <Grid columns={{ initial: '1', md: '1' }} gap="4">
           <Card>
             <Box p="4">
               <Heading size="4" mb="3">
-                ☁️ クラウドインフラ
+                インフラ
               </Heading>
-              <Flex direction="column" gap="2">
-                <Text size="3">• Google Cloud Platform (GCP)</Text>
-                <Text size="3">• Cloud Run (サーバーレスデプロイ)</Text>
-                <Text size="3">• Terraform (Infrastructure as Code)</Text>
-                <Text size="3">• GitHub Actions (CI/CD)</Text>
-              </Flex>
+              <Text as="div" size="3" mb="2">
+                • Google Cloud Run
+              </Text>
+              <Text as="div" size="3" mb="2">
+                • Artifact Registry
+              </Text>
+              <Text as="div" size="3" mb="2">
+                • Terraform (IaC)
+              </Text>
+              <Text as="div" size="3">
+                • GitHub Actions (CI/CD)
+              </Text>
             </Box>
           </Card>
         </Grid>
@@ -180,15 +205,15 @@ export default function AboutPage() {
           🎯 プロジェクトの背景
         </Heading>
         <Text as="div" size="3" mb="4">
-          Cultureは、GCP AI Agent
-          Hackathonの一環として開発されたパーソナライズドニュースメディアです。
-          Google
+          Cultureは、第3回 AI Agent Hackathon with Google Cloudで開発された、
+          フルスタックWebアプリケーションです。 Google
           Cloudの最新AI技術を活用して、従来の画一的なニュース配信から脱却し、
-          一人ひとりに最適化された情報体験を実現することを目的としています。
+          一人ひとりに最適化されたパーソナライズドニュース体験を実現します。
         </Text>
         <Text as="div" size="3">
-          私たちは、AI Agentの力でニュースメディアの未来を変革し、
-          読者が本当に価値を感じる情報との出会いを創造することを目指しています。
+          モダンなフロントエンド、強力なAIエージェント、堅牢なバックエンド、
+          そしてスケーラブルなクラウドインフラを組み合わせた、
+          エンタープライズグレードのアーキテクチャを採用しています。
         </Text>
       </Box>
 
@@ -203,22 +228,22 @@ export default function AboutPage() {
         mb="6"
       >
         <Heading size="5" mb="3">
-          🚀 始まりの村へようこそ
+          🚀 今すぐ始める
         </Heading>
         <Text size="3" mb="4">
-          Cultureは「ここは始まりの村だよ！」というメッセージとともに、
-          あなたのパーソナライズドニュース体験の出発点となります。
+          AIエージェントとの対話を通じて、あなただけのニュース体験を始めましょう。
+          アカウントを作成して、パーソナライズされたコンテンツ推薦をお楽しみください。
         </Text>
         <Link href="/" style={{ textDecoration: 'none' }}>
           <Text size="3" weight="medium" style={{ color: 'var(--accent-9)' }}>
-            今すぐ Cultureを体験する →
+            Cultureを体験する →
           </Text>
         </Link>
       </Box>
 
       <Box style={{ textAlign: 'center', color: 'gray' }}>
         <Text size="2">
-          提供者：カルチャーズ（個人） | GCP AI Agent Hackathon 2025
+          開発チーム：カルチャーズ | 第3回 AI Agent Hackathon with Google Cloud
         </Text>
       </Box>
     </Container>

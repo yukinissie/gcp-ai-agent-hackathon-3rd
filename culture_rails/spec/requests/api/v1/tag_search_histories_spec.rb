@@ -140,14 +140,18 @@ RSpec.describe "Api::V1::TagSearchHistories", type: :request do
       end
 
       context "検索履歴が存在しない時" do
-        it "404エラーが返ること" do
+        it "空配列が返ること" do
           get '/api/v1/tag_search_histories/articles', headers: headers, as: :json
 
-          expect(response).to have_http_status(:not_found)
+          expect(response).to have_http_status(:ok)
           response_body = JSON.parse(response.body, symbolize_names: true)
-          expect(response_body[:success]).to be false
-          expect(response_body[:error]).to eq("not_found")
-          expect(response_body[:message]).to eq("検索履歴が見つかりません")
+          expect(response_body[:success]).to be true
+          expect(response_body[:data][:articles]).to eq([])
+        end
+
+        it "OpenAPIスキーマに準拠すること" do
+          get '/api/v1/tag_search_histories/articles', headers: headers, as: :json
+          assert_schema_conform(200)
         end
       end
     end

@@ -4,6 +4,7 @@ import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import {
   Box,
   Flex,
@@ -140,16 +141,16 @@ export function ChatSidebar({
                     alignItems: 'center',
                     justifyContent: 'center',
                     overflow: 'hidden',
+                    position: 'relative',
                   }}
                 >
-                  <img
+                  <Image
                     src="/culture.png"
                     alt="Culture logo"
+                    fill
+                    sizes="72px"
                     style={{
-                      width: '100%',
-                      height: '100%',
                       objectFit: 'cover',
-                      display: 'block',
                     }}
                   />
                 </Box>
@@ -205,20 +206,27 @@ export function ChatSidebar({
                     mb="3"
                   >
                     <Flex align="center" gap="2" mb="1">
-                      <Box style={chatSidebarStyles.avatarBox}>
-                        {message.role === 'user' ? (
-                          <img
-                            src="/user.png"
-                            alt="User avatar"
-                            style={chatSidebarStyles.avatarImage}
-                          />
-                        ) : (
-                          <img
-                            src="/culture.png"
-                            alt="Culture logo"
-                            style={chatSidebarStyles.avatarImage}
-                          />
-                        )}
+                      <Box
+                        style={{
+                          ...chatSidebarStyles.avatarBox,
+                          position: 'relative',
+                        }}
+                      >
+                        <Image
+                          src={
+                            message.role === 'user'
+                              ? '/user.png'
+                              : '/culture.png'
+                          }
+                          alt={
+                            message.role === 'user'
+                              ? 'User avatar'
+                              : 'Culture logo'
+                          }
+                          fill
+                          sizes="24px"
+                          style={chatSidebarStyles.avatarImage}
+                        />
                       </Box>
                       <Text size="1" style={chatSidebarStyles.timestamp}>
                         {isClient

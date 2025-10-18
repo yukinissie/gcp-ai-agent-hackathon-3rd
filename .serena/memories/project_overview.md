@@ -28,6 +28,6 @@ Google Cloud Run での自動化 CI/CD
 
 - **フロントエンド**: TypeScript、Next.js App Router、CSS Modules
 - **バックエンド**: Ruby on Rails、PostgreSQL、Docker Compose
-- **クラウド**: Google Cloud Platform（Asia-Northeast1）
+- **クラウド**: Google Cloud（Asia-Northeast1）
 - **コンテナ**: Cloud Run（サーバーレス）
 - **CI/CD**: GitHub Actions

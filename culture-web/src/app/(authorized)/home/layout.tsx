@@ -1,10 +1,10 @@
 'use client'
-import { Box, Container, Flex } from '@radix-ui/themes'
+import { Box, Container, Flex, Grid } from '@radix-ui/themes'
 import { homeStyles } from './_styles/page.styles'
 import type React from 'react'
 import { ThemeToggle } from '@/app/_components/ThemeToggle'
-import { useState, useEffect } from 'react'
 import { LogoutSection } from './_components/Logout'
+import { ChatProvider, useChatContext } from './_contexts/ChatContext'
 
 type Props = {
   children: React.ReactNode
@@ -12,61 +12,38 @@ type Props = {
   chatSideBar: React.ReactNode
 }
 
-export default function Layout(props: Props) {
-  const [isChatOpen, setIsChatOpen] = useState(window.innerWidth > 768)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+function LayoutContent(props: Props) {
+  const { isChatOpen, isMobile } = useChatContext()
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  useEffect(() => {
-    if (!isMobile) {
-      setIsChatOpen(true)
-    } else {
-      setIsChatOpen(false)
-    }
-  }, [isMobile])
-
-  const mainContentStyle =
-    isMobile && isChatOpen
-      ? {
-          ...homeStyles.getMainContent(isChatOpen),
-          display: 'none',
-        }
-      : homeStyles.getMainContent(isChatOpen)
   return (
-    <Flex style={homeStyles.mainContainer}>
+    <Grid
+      columns={isMobile || !isChatOpen ? '1' : '1fr 400px'}
+      style={homeStyles.mainContainer}
+    >
       <Box
-        style={{
-          position: 'fixed',
-          top: 12,
-          left: 12,
-          zIndex: 1100,
-        }}
-      >
-        <ThemeToggle />
-      </Box>
-      <Box
-        style={mainContentStyle}
+        style={homeStyles.mainContent}
         data-main-content
         tabIndex={isMobile ? -1 : 0}
       >
-        <Box style={homeStyles.logoutBox}>
+        <Flex justify="between" align="center" p="4">
+          <ThemeToggle />
           <LogoutSection />
-        </Box>
+        </Flex>
         <Container size="4">
-          <Box py="6">{props.articles}</Box>
+          <Box py="6" px="4">
+            {props.articles}
+          </Box>
         </Container>
       </Box>
       {props.chatSideBar}
-    </Flex>
+    </Grid>
+  )
+}
+
+export default function Layout(props: Props) {
+  return (
+    <ChatProvider>
+      <LayoutContent {...props} />
+    </ChatProvider>
   )
 }

@@ -1,4 +1,5 @@
 import { auth } from '@/auth'
+import { UnauthenticatedScreen } from './_components/UnauthenticatedScreen'
 
 type Props = {
   children: React.ReactNode
@@ -6,6 +7,10 @@ type Props = {
 
 export default async function Layout(props: Props) {
   const session = await auth()
-  if (!session) return <div>Not authenticated</div>
+
+  if (!session || (session.expires && new Date(session.expires) < new Date())) {
+    return <UnauthenticatedScreen />
+  }
+
   return <div>{props.children}</div>
 }

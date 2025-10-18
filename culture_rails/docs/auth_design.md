@@ -2,7 +2,7 @@
 
 ## 概要
 
-Rails API + GCP + Next.jsの構成で、SorceryGemとJWTを使用した認証機能の実装方法。DHHの思想に沿ったシンプルな設計を採用。
+Rails API + Google Cloud + Next.jsの構成で、SorceryGemとJWTを使用した認証機能の実装方法。DHHの思想に沿ったシンプルな設計を採用。
 
 ## 技術選定
 
