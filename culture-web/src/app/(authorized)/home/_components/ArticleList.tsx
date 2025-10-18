@@ -1,6 +1,6 @@
 import { Text, Flex } from '@radix-ui/themes'
 import { ArticleCard } from './ArticleCard'
-import type { Article } from '../../../types'
+import type { Article } from '../../types'
 
 interface ArticleListProps {
   articles: Article[]

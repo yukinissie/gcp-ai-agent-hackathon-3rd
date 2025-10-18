@@ -1,9 +1,9 @@
 'use client'
 
 import { Card, Text, Heading, Badge, Flex, Box } from '@radix-ui/themes'
-import { articleCardStyles } from '../_styles/articleCard.styles'
+import { articleCardStyles } from './articleCard.styles'
 import { useRouter } from 'next/navigation'
-import type { Article } from '../../../types'
+import type { Article } from '../../types'
 
 type ArticleCardProps = {
   article: Article

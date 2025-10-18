@@ -2,9 +2,10 @@
 
 import { Box } from '@radix-ui/themes'
 import { ChatSidebar } from './ChatSidebar'
-import { chatSideBarWrapperStyles } from '../_styles/chatSideBarWrapper.styles'
 import Image from 'next/image'
-import { useChatContext } from '../../_contexts/ChatContext'
+import { useChatContext } from '../_contexts/ChatContext'
+import { chatSideBarWrapperStyles } from './chatSideBarWrapper.styles'
+
 
 type Props = {
   userId: string
