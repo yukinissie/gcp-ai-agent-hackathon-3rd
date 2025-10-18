@@ -1,5 +1,5 @@
 import { ArticleListPage } from './_components/ArticleListPage'
 
-export default async function ArticlesDefault() {
+export default function ArticlesDefault() {
   return <ArticleListPage />
 }
