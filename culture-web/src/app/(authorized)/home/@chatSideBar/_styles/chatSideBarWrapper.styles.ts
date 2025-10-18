@@ -8,6 +8,7 @@ export const chatSideBarWrapperStyles = {
     transition: 'transform 0.3s ease, opacity 0.3s ease',
     zIndex: 1000,
     backgroundColor: 'var(--color-background)',
+    overflow: 'hidden' as const,
   },
   chatSidebarOpen: {
     transform: 'translateX(0)',

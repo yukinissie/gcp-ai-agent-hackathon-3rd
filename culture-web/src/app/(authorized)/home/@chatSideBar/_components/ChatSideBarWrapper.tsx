@@ -29,9 +29,14 @@ export function ChatSideBarWrapper(props: Props) {
       : chatSideBarWrapperStyles.chatSidebarClosed),
   }
 
+  const handleWheel = (e: React.WheelEvent) => {
+    // Prevent scroll propagation to window
+    e.stopPropagation()
+  }
+
   return (
     <>
-      <Box style={chatSidebarStyle}>
+      <Box style={chatSidebarStyle} onWheel={handleWheel}>
         <ChatSidebar onClose={handleCloseChat} userId={props.userId} />
       </Box>
 
