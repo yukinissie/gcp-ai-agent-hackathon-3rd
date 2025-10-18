@@ -43,7 +43,7 @@ export async function ArticleListPage() {
         </Flex>
 
         <Flex direction="column" gap="3" width="100%">
-          <ArticleList articles={articles.slice(0, 25)} />
+          <ArticleList articles={articles} />
         </Flex>
       </Flex>
     </Box>
