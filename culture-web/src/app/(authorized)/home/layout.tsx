@@ -1,0 +1,49 @@
+'use client'
+import { Box, Container, Flex, Grid } from '@radix-ui/themes'
+import { homeStyles } from './_styles/page.styles'
+import type React from 'react'
+import { ThemeToggle } from '@/app/_components/ThemeToggle'
+import { LogoutSection } from './_components/Logout'
+import { ChatProvider, useChatContext } from './_contexts/ChatContext'
+
+type Props = {
+  children: React.ReactNode
+  articles: React.ReactNode
+  chatSideBar: React.ReactNode
+}
+
+function LayoutContent(props: Props) {
+  const { isChatOpen, isMobile } = useChatContext()
+
+  return (
+    <Grid
+      columns={isMobile || !isChatOpen ? '1' : '1fr 400px'}
+      style={homeStyles.mainContainer}
+    >
+      <Box
+        style={homeStyles.mainContent}
+        data-main-content
+        tabIndex={isMobile ? -1 : 0}
+      >
+        <Flex justify="between" align="center" p="4">
+          <ThemeToggle />
+          <LogoutSection />
+        </Flex>
+        <Container size="4">
+          <Box py="6" px="4">
+            {props.articles}
+          </Box>
+        </Container>
+      </Box>
+      {props.chatSideBar}
+    </Grid>
+  )
+}
+
+export default function Layout(props: Props) {
+  return (
+    <ChatProvider>
+      <LayoutContent {...props} />
+    </ChatProvider>
+  )
+}

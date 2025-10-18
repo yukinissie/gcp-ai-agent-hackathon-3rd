@@ -1,27 +1,17 @@
-import { Flex } from '@radix-ui/themes'
-import { homeStyles } from './_styles/page.styles'
-import { ChatProvider } from './_contexts/ChatContext'
 import { GeneralError } from '@/app/_components/error/GeneralError'
 import { UnauthorizedError } from '@/app/_components/error/UnauthorizedError'
+import { Box, Flex, Heading } from '@radix-ui/themes'
 import {
   fetchArticles,
   FetchArticlesResultType,
-} from './_drivers/fetchArticles'
+} from '../_drivers/fetchArticles'
 import {
   fetchTagSearchHistoryArticles,
   FetchTagSearchHistoryArticlesResultType,
-} from './_drivers/fetchTagSearchHistoryArticles'
-import { auth } from '@/auth'
-import { ChatSideBarWrapper } from './_components/ChatSideBarWrapper'
-import { MainContent } from './_components/MainContent'
+} from '../_drivers/fetchTagSearchHistoryArticles'
+import { ArticleList } from './ArticleList'
 
-export default async function Page() {
-  const session = await auth()
-
-  if (!session || !session.user || !session.user.id) {
-    return <UnauthorizedError error="ユーザー情報を取得できませんでした。" />
-  }
-
+export async function ArticleListPage() {
   const articlesResult = await fetchArticles()
   switch (articlesResult.type) {
     case FetchArticlesResultType.Unauthorized:
@@ -42,12 +32,20 @@ export default async function Page() {
     tagSearchHistoryResult.articles.length > 0
       ? tagSearchHistoryResult.articles
       : articlesResult.articles
+
   return (
-    <ChatProvider>
-      <Flex style={homeStyles.mainContainer}>
-        <MainContent articles={articles} />
-        <ChatSideBarWrapper userId={session.user.id} />
+    <Box>
+      <Flex direction="column" gap="6">
+        <Flex align="center" justify="between">
+          <Heading size="6" weight="bold">
+            記事一覧
+          </Heading>
+        </Flex>
+
+        <Flex direction="column" gap="3" width="100%">
+          <ArticleList articles={articles} />
+        </Flex>
       </Flex>
-    </ChatProvider>
+    </Box>
   )
 }

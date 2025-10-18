@@ -1,12 +1,10 @@
-import { CHAT_SIDEBAR_WIDTH } from '../_constants/layout'
-
 export const chatSideBarWrapperStyles = {
   chatSidebar: {
     position: 'fixed' as const,
     right: 0,
     top: 0,
     height: '100vh',
-    width: CHAT_SIDEBAR_WIDTH,
+    width: '400px',
     transition: 'transform 0.3s ease, opacity 0.3s ease',
     zIndex: 1000,
     backgroundColor: 'var(--color-background)',

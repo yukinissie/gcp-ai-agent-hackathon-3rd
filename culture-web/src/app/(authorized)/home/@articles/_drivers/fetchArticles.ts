@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/apiClient'
-import type { Article } from '../../types'
+import type { Article } from '../../../types'
 import { UnauthorizedError } from '@/app/_components/error/UnauthorizedError'
 
 export enum FetchArticlesResultType {

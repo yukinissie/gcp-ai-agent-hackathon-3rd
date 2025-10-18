@@ -14,8 +14,8 @@ import {
   Button,
 } from '@radix-ui/themes'
 import { marked } from 'marked'
-import { chatInputStyles } from './chatInput.styles'
-import { chatSidebarStyles } from './chatSidebar.styles'
+import { chatSidebarStyles } from '../_styles/chatSidebar.styles'
+import { chatInputStyles } from '../_styles/chatInput.styles'
 
 export function ChatSidebar({
   className,
