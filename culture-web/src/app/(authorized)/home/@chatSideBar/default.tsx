@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import { ChatSideBarWrapper } from './_components/ChatSideBarWrapper'
 import { UnauthorizedError } from '@/app/_components/error/UnauthorizedError'
 
-export default async function ChatSideBarPage() {
+export default async function ChatSideBarDefault() {
   const session = await auth()
 
   if (!session || !session.user || !session.user.id) {
