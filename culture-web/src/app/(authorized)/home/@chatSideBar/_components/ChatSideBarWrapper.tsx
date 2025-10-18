@@ -59,6 +59,7 @@ export function ChatSideBarWrapper(props: Props) {
               src="/culture.png"
               alt="Open chat"
               fill
+              sizes="60px"
               priority
               style={chatSideBarWrapperStyles.reopenImage}
             />

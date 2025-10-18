@@ -148,6 +148,7 @@ export function ChatSidebar({
                     src="/culture.png"
                     alt="Culture logo"
                     fill
+                    sizes="72px"
                     style={{
                       objectFit: 'cover',
                     }}
@@ -223,6 +224,7 @@ export function ChatSidebar({
                               : 'Culture logo'
                           }
                           fill
+                          sizes="24px"
                           style={chatSidebarStyles.avatarImage}
                         />
                       </Box>
