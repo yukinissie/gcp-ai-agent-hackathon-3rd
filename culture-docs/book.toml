@@ -1,0 +1,14 @@
+[book]
+title = "Culture - AI-Powered News Curation Platform"
+authors = ["Culture Team"]
+language = "ja"
+description = "Google Cloud AI Agent Hackathon プロジェクトのドキュメント"
+
+[build]
+build-dir = "book"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/yukinissie/gcp-ai-agent-hackathon-3rd"
+edit-url-template = "https://github.com/yukinissie/gcp-ai-agent-hackathon-3rd/edit/main/culture-docs/{path}"
